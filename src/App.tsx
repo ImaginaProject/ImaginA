@@ -4,6 +4,8 @@ import './App.css'
 
 import MainLayout from './components/main/MainLayout'
 import MainDashboard from './components/main/MainDashboard'
+import DailyCapacityShow from './components/daily-capacity/DailyCapacityShow'
+import DailyCapacityList from './components/daily-capacity/DailyCapacityList'
 
 function App() {
   return (
@@ -12,7 +14,16 @@ function App() {
         layout={MainLayout}
         dashboard={MainDashboard}
       >
-        <Resource name='about'/>
+        {/* For each link in the Layout Menu items you SHOULD add a Resource as follows */}
+        <Resource
+          name='daily-capacity'
+          list={DailyCapacityList}
+          show={DailyCapacityShow}
+        />
+        <Resource name='daily-sells'/>
+        {/* ... */}
+        {/* ... */}
+        {/* ... */}
       </Admin>
     </div>
   )
