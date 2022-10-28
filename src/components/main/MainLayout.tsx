@@ -53,7 +53,7 @@ const MainLayout: FunctionComponent<MainLayoutProps> = (props) => {
   return (
     <Layout>
       <Layout.Header>
-        <Typography.Title style={{color: 'whitesmoke'}}>INNOVA</Typography.Title>
+        <Typography.Title style={{color: 'whitesmoke'}}>ImaginA</Typography.Title>
       </Layout.Header>
 
       <Layout>
