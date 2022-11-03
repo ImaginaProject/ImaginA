@@ -1,4 +1,4 @@
-import { FunctionComponent, useState } from 'react'
+import { FunctionComponent, useState, useEffect } from 'react'
 import { ShowBase, useListContext } from 'react-admin'
 import { Bar } from 'react-chartjs-2'
 import { Space, DatePicker, Dropdown, Button, Menu } from 'antd'
@@ -34,6 +34,13 @@ ChartJS.register(
 
 export interface DailyCapacityListProps {}
 
+const fakeProvidedPosibleTrainedModelList = [
+  'Red entrenada 22 agosto',
+  'Red entrenada 24 agosto',
+  'Red entrenada 30 agosto',
+  'Red entrenada 7 septiembre',
+]
+
 const options = {
   plugins: {
     legend: {
@@ -59,6 +66,13 @@ const DailyCapacityList: FunctionComponent<DailyCapacityListProps> = (props) => 
   const [startDate, setStartDate] = useState(dayjs(new Date()));
   const [endDate, setEndDate] = useState(dayjs(new Date()))
 
+  const [posibleTrainedModelList, setPosibleTrainedModelList] = useState<string[]>([])
+
+  useEffect(() => {
+    // TODO: Request all the posible trained model's name
+    setPosibleTrainedModelList(fakeProvidedPosibleTrainedModelList)
+  }, [])
+
   const {
     data,
     isLoading,
@@ -66,11 +80,9 @@ const DailyCapacityList: FunctionComponent<DailyCapacityListProps> = (props) => 
 
   const menu = (
     <Menu>
-      <Menu.Item>día 1</Menu.Item>
-      <Menu.Item>día 2</Menu.Item>
-      <Menu.Item>día 3</Menu.Item>
-      <Menu.Item>día 4</Menu.Item>
-      <Menu.Item>día 5</Menu.Item>
+      {posibleTrainedModelList.map((name, index) => (
+        <Menu.Item key={index}>{name}</Menu.Item>
+      ))}
     </Menu>
   )
 
@@ -98,33 +110,33 @@ const DailyCapacityList: FunctionComponent<DailyCapacityListProps> = (props) => 
   if (isLoading) return <Loading />
 
   return (
-    <>
-    <Space
-      align='baseline'
-      style={{
-        display: 'flex',
-        justifyContent: 'space-between'
-      }}
-    >
-      <Space>
-        <DatePicker
-          defaultValue={startDate as any}
-          onChange={(value: any) => setStartDate(value)}
-        />
-        <DatePicker
-          defaultValue={endDate as any}
-          onChange={(value: any) => setEndDate(value)}
-        />
+    <Space style={{padding: '2em', width: '100%'}} direction='vertical'>
+      <Space
+        align='baseline'
+        style={{
+          display: 'flex',
+          justifyContent: 'space-between'
+        }}
+      >
+        <Space>
+          <DatePicker
+            defaultValue={startDate as any}
+            onChange={(value: any) => setStartDate(value)}
+          />
+          <DatePicker
+            defaultValue={endDate as any}
+            onChange={(value: any) => setEndDate(value)}
+          />
+        </Space>
+        
+        <Space>
+          <Dropdown overlay={menu} placement='bottomLeft'>
+            <Button type='primary'>Realizar predicción usando</Button>
+          </Dropdown>
+        </Space>
       </Space>
-      
-      <Space>
-        <Dropdown overlay={menu} placement='bottomLeft'>
-          <Button type='primary'>Realizar predicción usando</Button>
-        </Dropdown>
-      </Space>
+      <Bar options={options} data={barData} />
     </Space>
-    <Bar options={options} data={barData} />
-    </>
   )
 }
 
