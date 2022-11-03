@@ -1,4 +1,4 @@
-import { FunctionComponent, useState, useEffect } from 'react'
+import { FunctionComponent, useState, useEffect, useMemo } from 'react'
 import { ShowBase, useListContext } from 'react-admin'
 import { Bar } from 'react-chartjs-2'
 import { Space, DatePicker, Dropdown, Button, Menu } from 'antd'
@@ -32,8 +32,16 @@ ChartJS.register(
   Legend
 )
 
+
+type PredictionResult = {
+  prediction: number,
+  capacity: number,
+  date: string,
+}
+
 export interface DailyCapacityListProps {}
 
+// NOTE: temporally.
 const fakeProvidedPosibleTrainedModelList = [
   'Red entrenada 22 agosto',
   'Red entrenada 24 agosto',
@@ -41,7 +49,22 @@ const fakeProvidedPosibleTrainedModelList = [
   'Red entrenada 7 septiembre',
 ]
 
-const options = {
+const fakePredictionResult: PredictionResult[] = [
+  { capacity: 10, prediction: 11, date: '12 enero'},
+  { capacity: 11, prediction: 10, date: '13 enero'},
+  { capacity: 9, prediction: 10, date: '14 enero'},
+  { capacity: 10, prediction: 10, date: '15 enero'},
+  { capacity: 10, prediction: 10, date: '16 enero'},
+  { capacity: 11, prediction: 10, date: '17 enero'},
+  { capacity: 15, prediction: 14, date: '18 enero'},
+  { capacity: 14, prediction: 15, date: '19 enero'},
+  { capacity: 16, prediction: 15, date: '20 enero'},
+  { capacity: 17, prediction: 17, date: '21 enero'},
+  { capacity: 17, prediction: 18, date: '22 enero'},
+  { capacity: 18, prediction: 17, date: '23 enero'},
+]
+
+const graphOptions = {
   plugins: {
     legend: {
       position: 'right' as const,
@@ -63,14 +86,17 @@ const options = {
 }
 
 const DailyCapacityList: FunctionComponent<DailyCapacityListProps> = (props) => {
-  const [startDate, setStartDate] = useState(dayjs(new Date()));
+  const [startDate, setStartDate] = useState(dayjs(new Date()))
   const [endDate, setEndDate] = useState(dayjs(new Date()))
+
+  const [predictionResult, setPredictionResult] = useState<PredictionResult[]>([]);
 
   const [posibleTrainedModelList, setPosibleTrainedModelList] = useState<string[]>([])
 
   useEffect(() => {
     // TODO: Request all the posible trained model's name
     setPosibleTrainedModelList(fakeProvidedPosibleTrainedModelList)
+    setPredictionResult(fakePredictionResult)
   }, [])
 
   const {
@@ -86,26 +112,37 @@ const DailyCapacityList: FunctionComponent<DailyCapacityListProps> = (props) => 
     </Menu>
   )
 
-  const labels = [
-    '12 enero', '13 enero', '14 enero', '15 enero', '16 enero', '17 enero',
-    '18 enero', '19 enero', '20 enero', '21 enero', '22 enero', '23 enero',
-  ]
+  const labels = useMemo(() => {
+    return 
+  }, [predictionResult])
 
-  const barData = {
-    labels,
-    datasets: [
+  const barData = useMemo(() => {
+    const labels = predictionResult.map((result) => dayjs(result.date, 'DD/MM/YYYY'))
+
+    const realValue = predictionResult.map((result) => {
+      return result.capacity
+    })
+
+    const predictionValue = predictionResult.map((result) => {
+      return result.prediction
+    })
+
+    return {
+      labels,
+      datasets: [
       {
         label: 'real',
-        data: [10, 11, 9, 10, 10, 11, 15, 14, 16, 17, 17, 18],
+        data: realValue,
         backgroundColor: 'rgba(72, 129, 194, 0.7)'
       },
       {
         label: 'prediction',
-        data: [11, 10, 10, 10, 10, 10, 14, 15, 15, 17, 18, 17],
+        data: predictionValue,
         backgroundColor: 'rgba(219, 139, 59, 0.7)'
       },
-    ],
-  }
+      ]
+    }
+  }, [labels, predictionResult])
 
   if (isLoading) return <Loading />
 
@@ -135,7 +172,7 @@ const DailyCapacityList: FunctionComponent<DailyCapacityListProps> = (props) => 
           </Dropdown>
         </Space>
       </Space>
-      <Bar options={options} data={barData} />
+      <Bar options={graphOptions} data={barData} />
     </Space>
   )
 }
