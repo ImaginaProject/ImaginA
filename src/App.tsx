@@ -1,12 +1,11 @@
-import { Admin, Resource } from 'react-admin'
+import { Admin, Resource, CustomRoutes } from 'react-admin'
+import { Route } from 'react-router-dom'
 import 'antd/dist/antd.css'
 import './App.css'
 
 import MainLayout from './components/main/MainLayout'
 import MainDashboard from './components/main/MainDashboard'
-import DailyCapacityShow from './components/daily-capacity/DailyCapacityShow'
-import DailyCapacityList from './components/daily-capacity/DailyCapacityList'
-
+import DailyCapacityPage from './components/daily-capacity/DailyCapacityPage'
 function App() {
   return (
     <div className="App">
@@ -14,12 +13,9 @@ function App() {
         layout={MainLayout}
         dashboard={MainDashboard}
       >
-        {/* For each link in the Layout Menu items you SHOULD add a Resource as follows */}
-        <Resource
-          name='daily-capacity'
-          list={DailyCapacityList}
-          show={DailyCapacityShow}
-        />
+        <CustomRoutes>
+          <Route path='/daily-capacity' element={<DailyCapacityPage/>}/>
+        </CustomRoutes>
         <Resource name='daily-sells'/>
         {/* ... */}
         {/* ... */}
