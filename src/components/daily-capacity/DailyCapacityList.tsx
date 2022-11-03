@@ -119,13 +119,9 @@ const DailyCapacityList: FunctionComponent<DailyCapacityListProps> = (props) => 
   const barData = useMemo(() => {
     const labels = predictionResult.map((result) => dayjs(result.date, 'DD/MM/YYYY'))
 
-    const realValue = predictionResult.map((result) => {
-      return result.capacity
-    })
-
-    const predictionValue = predictionResult.map((result) => {
-      return result.prediction
-    })
+    const realValue = predictionResult.map((result) => result.capacity)
+    const predictionValue = predictionResult.map((result) => result.prediction)
+    console.log(realValue)
 
     return {
       labels,
