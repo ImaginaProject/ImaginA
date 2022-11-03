@@ -1,7 +1,12 @@
-import { FunctionComponent } from 'react'
+import { FunctionComponent, useState } from 'react'
 import { ShowBase, useListContext } from 'react-admin'
-import Loading from '../loading/Loading'
 import { Bar } from 'react-chartjs-2'
+import { Space, DatePicker, Dropdown, Button, Menu } from 'antd'
+import dayjs from 'dayjs'
+import weekday from 'dayjs/plugin/weekday'
+import localeData from 'dayjs/plugin/localeData'
+
+import Loading from '../loading/Loading'
 
 import {
   Chart as ChartJS,
@@ -13,6 +18,11 @@ import {
   Legend,
 } from 'chart.js'
 
+// Load the plugins
+dayjs.extend(weekday)
+dayjs.extend(localeData)
+
+// Register some stuffs that will be used to custom the graph
 ChartJS.register(
   CategoryScale,
   LinearScale,
@@ -46,10 +56,23 @@ const options = {
 }
 
 const DailyCapacityList: FunctionComponent<DailyCapacityListProps> = (props) => {
+  const [startDate, setStartDate] = useState(dayjs(new Date()));
+  const [endDate, setEndDate] = useState(dayjs(new Date()));
+
   const {
     data,
     isLoading,
   } = useListContext();
+
+  const menu = (
+    <Menu>
+      <Menu.Item>día 1</Menu.Item>
+      <Menu.Item>día 2</Menu.Item>
+      <Menu.Item>día 3</Menu.Item>
+      <Menu.Item>día 4</Menu.Item>
+      <Menu.Item>día 5</Menu.Item>
+    </Menu>
+  )
 
   const labels = [
     '12 enero', '13 enero', '14 enero', '15 enero', '16 enero', '17 enero',
@@ -76,7 +99,30 @@ const DailyCapacityList: FunctionComponent<DailyCapacityListProps> = (props) => 
 
   return (
     <>
-    <p>hola</p>
+    <Space
+      align='baseline'
+      style={{
+        display: 'flex',
+        justifyContent: 'space-between'
+      }}
+    >
+      <Space>
+        <DatePicker
+          defaultValue={startDate as any}
+          onChange={(value: any) => setStartDate(value)}
+        />
+        <DatePicker
+          defaultValue={endDate as any}
+          onChange={(value: any) => setEndDate(value)}
+        />
+      </Space>
+      
+      <Space>
+        <Dropdown overlay={menu} placement='bottomLeft'>
+          <Button type='primary'>Realizar predicción usando</Button>
+        </Dropdown>
+      </Space>
+    </Space>
     <Bar options={options} data={barData} />
     </>
   )
