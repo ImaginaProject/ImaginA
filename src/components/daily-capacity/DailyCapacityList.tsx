@@ -57,12 +57,12 @@ const options = {
 
 const DailyCapacityList: FunctionComponent<DailyCapacityListProps> = (props) => {
   const [startDate, setStartDate] = useState(dayjs(new Date()));
-  const [endDate, setEndDate] = useState(dayjs(new Date()));
+  const [endDate, setEndDate] = useState(dayjs(new Date()))
 
   const {
     data,
     isLoading,
-  } = useListContext();
+  } = useListContext()
 
   const menu = (
     <Menu>
