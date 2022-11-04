@@ -1,8 +1,7 @@
 import { FunctionComponent, useState, useEffect, useMemo } from 'react'
-import { ShowBase, useListContext } from 'react-admin'
 import { Bar } from 'react-chartjs-2'
 import { Space, DatePicker, Dropdown, Button, Menu } from 'antd'
-import dayjs from 'dayjs'
+import dayjs, { Dayjs } from 'dayjs'
 import weekday from 'dayjs/plugin/weekday'
 import localeData from 'dayjs/plugin/localeData'
 
@@ -86,8 +85,9 @@ const graphOptions = {
 }
 
 const DailyCapacityList: FunctionComponent<DailyCapacityListProps> = (props) => {
-  const [startDate, setStartDate] = useState(dayjs(new Date()))
-  const [endDate, setEndDate] = useState(dayjs(new Date()))
+  const [isLoading, setIsLoading] = useState(true);
+  const [startDate, setStartDate] = useState<Dayjs | null>(null)
+  const [endDate, setEndDate] = useState<Dayjs | null>(null)
 
   const [predictionResult, setPredictionResult] = useState<PredictionResult[]>([]);
 
@@ -96,13 +96,31 @@ const DailyCapacityList: FunctionComponent<DailyCapacityListProps> = (props) => 
   useEffect(() => {
     // TODO: Request all the posible trained model's name
     setPosibleTrainedModelList(fakeProvidedPosibleTrainedModelList)
-    setPredictionResult(fakePredictionResult)
+    // setPredictionResult(fakePredictionResult)
+
+    setStartDate(dayjs(new Date()))
+    setEndDate(dayjs(new Date()))
   }, [])
 
-  const {
-    data,
-    isLoading,
-  } = useListContext()
+  useEffect(() => {
+    const request = async () => {
+      if (!startDate || !endDate) return;
+
+      const startDateString = dayjs(startDate).format('DD/MM/YYYY')
+      const endDateString = dayjs(endDate).format('DD/MM/YYYY')
+
+      console.debug('request for date:', startDateString, 'to', endDateString)
+      const response = await fetch(
+        `http://localhost:8000/daily-capacity/person-amount-prediction?start_date=${startDateString}&end_date=${endDateString}`)
+      const data = await response.json()
+
+      // Save the prediction data
+      setPredictionResult(data.capacities)
+    }
+
+    setIsLoading(true)
+    request().then(() => setIsLoading(false))
+  }, [startDate, endDate])
 
   const menu = (
     <Menu>
@@ -112,12 +130,11 @@ const DailyCapacityList: FunctionComponent<DailyCapacityListProps> = (props) => 
     </Menu>
   )
 
-  const labels = useMemo(() => {
-    return 
-  }, [predictionResult])
-
   const barData = useMemo(() => {
-    const labels = predictionResult.map((result) => dayjs(result.date, 'DD/MM/YYYY'))
+    const labels = predictionResult.map((result) => {
+      // dayjs(result.date, 'DD/MM/YYYY')
+      return result.date
+    })
 
     const realValue = predictionResult.map((result) => result.capacity)
     const predictionValue = predictionResult.map((result) => result.prediction)
@@ -138,7 +155,7 @@ const DailyCapacityList: FunctionComponent<DailyCapacityListProps> = (props) => 
       },
       ]
     }
-  }, [labels, predictionResult])
+  }, [predictionResult])
 
   if (isLoading) return <Loading />
 
@@ -152,14 +169,14 @@ const DailyCapacityList: FunctionComponent<DailyCapacityListProps> = (props) => 
         }}
       >
         <Space>
-          <DatePicker
+          {startDate && <DatePicker
             defaultValue={startDate as any}
             onChange={(value: any) => setStartDate(value)}
-          />
-          <DatePicker
-            defaultValue={endDate as any}
+          />}
+          {endDate && <DatePicker
+            defaultValue={endDate ? endDate as any : ''}
             onChange={(value: any) => setEndDate(value)}
-          />
+          />}
         </Space>
         
         <Space>
