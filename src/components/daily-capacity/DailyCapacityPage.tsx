@@ -98,7 +98,9 @@ const DailyCapacityList: FunctionComponent<DailyCapacityListProps> = (props) => 
     setPosibleTrainedModelList(fakeProvidedPosibleTrainedModelList)
     // setPredictionResult(fakePredictionResult)
 
-    setStartDate(dayjs(new Date()))
+    const yesterday = new Date()
+    yesterday.setDate(yesterday.getDate() - 5)
+    setStartDate(dayjs(yesterday))
     setEndDate(dayjs(new Date()))
   }, [])
 
