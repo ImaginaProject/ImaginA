@@ -5,6 +5,7 @@ import dayjs, { Dayjs } from 'dayjs'
 import 'dayjs/locale/es'
 import weekday from 'dayjs/plugin/weekday'
 import localeData from 'dayjs/plugin/localeData'
+import customParseFormat from 'dayjs/plugin/customParseFormat'
 
 import Loading from '../loading/Loading'
 
@@ -22,6 +23,7 @@ import {
 dayjs.locale('es')
 dayjs.extend(weekday)
 dayjs.extend(localeData)
+dayjs.extend(customParseFormat)
 
 // Register some stuffs that will be used to custom the graph
 ChartJS.register(
@@ -142,8 +144,9 @@ const DailyCapacityList: FunctionComponent<DailyCapacityListProps> = (props) => 
 
   const barData = useMemo(() => {
     const labels = predictionResult.map((result) => {
-      // dayjs(result.date, 'DD/MM/YYYY')
-      return result.date
+      // Transform the date format
+      const ddQmmm = dayjs(result.date, 'DD/MM/YYYY').format('DD MMM')
+      return ddQmmm
     })
 
     const realValue = predictionResult.map((result) => result.capacity)
