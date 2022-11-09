@@ -1,6 +1,6 @@
 import { FunctionComponent, useState, useEffect, useMemo } from 'react'
 import { Bar } from 'react-chartjs-2'
-import { Space, DatePicker, Dropdown, Button, Menu } from 'antd'
+import { Space, DatePicker, Dropdown, Button, Menu, Typography } from 'antd'
 import dayjs, { Dayjs } from 'dayjs'
 import 'dayjs/locale/es'
 import weekday from 'dayjs/plugin/weekday'
@@ -195,6 +195,7 @@ const DailyCapacityList: FunctionComponent<DailyCapacityListProps> = (props) => 
           </Dropdown>
         </Space>
       </Space>
+      <Typography.Text>{predictionResult.length} resultados predichos</Typography.Text>
       <Bar options={graphOptions} data={barData} />
     </Space>
   )
