@@ -2,6 +2,7 @@ import { FunctionComponent, useState, useEffect, useMemo } from 'react'
 import { Bar } from 'react-chartjs-2'
 import { Space, DatePicker, Dropdown, Button, Menu } from 'antd'
 import dayjs, { Dayjs } from 'dayjs'
+import 'dayjs/locale/es'
 import weekday from 'dayjs/plugin/weekday'
 import localeData from 'dayjs/plugin/localeData'
 
@@ -18,6 +19,7 @@ import {
 } from 'chart.js'
 
 // Load the plugins
+dayjs.locale('es')
 dayjs.extend(weekday)
 dayjs.extend(localeData)
 
@@ -38,15 +40,20 @@ type PredictionResult = {
   date: string,
 }
 
-export interface DailyCapacityListProps {}
+type RegisteredModel = {
+  name: string,
+  description: string,
+  last_date: string,
+  path: string,
+  md5_sum: string,
+}
 
-// NOTE: temporally.
-const fakeProvidedPosibleTrainedModelList = [
-  'Red entrenada 22 agosto',
-  'Red entrenada 24 agosto',
-  'Red entrenada 30 agosto',
-  'Red entrenada 7 septiembre',
-]
+type ExistentModel = {
+  name: string,
+  id: string,
+}
+
+export interface DailyCapacityListProps {}
 
 const fakePredictionResult: PredictionResult[] = [
   { capacity: 10, prediction: 11, date: '12 enero'},
@@ -90,19 +97,28 @@ const DailyCapacityList: FunctionComponent<DailyCapacityListProps> = (props) => 
   const [endDate, setEndDate] = useState<Dayjs | null>(null)
 
   const [predictionResult, setPredictionResult] = useState<PredictionResult[]>([]);
+  const [allModels, setAllModels] = useState<RegisteredModel[]>([]);
 
-  const [posibleTrainedModelList, setPosibleTrainedModelList] = useState<string[]>([])
+  const [posibleTrainedModelList, setPosibleTrainedModelList] = useState<ExistentModel[]>([])
 
   useEffect(() => {
-    // TODO: Request all the posible trained model's name
-    setPosibleTrainedModelList(fakeProvidedPosibleTrainedModelList)
-    // setPredictionResult(fakePredictionResult)
-
     const yesterday = new Date()
     yesterday.setDate(yesterday.getDate() - 5)
     setStartDate(dayjs(yesterday))
     setEndDate(dayjs(new Date()))
   }, [])
+
+  useEffect(() => {
+    const results = allModels.map((model) => {
+      const date_string: string = dayjs(model.last_date).format('DD MMMM')
+      const result: ExistentModel = {
+        id: model.md5_sum,
+        name: `red "${model.name}" entrenada ${date_string}`
+      }
+      return result
+    })
+    setPosibleTrainedModelList(results)
+  }, [allModels])
 
   useEffect(() => {
     const request = async () => {
@@ -118,6 +134,13 @@ const DailyCapacityList: FunctionComponent<DailyCapacityListProps> = (props) => 
 
       // Save the prediction data
       setPredictionResult(data.capacities)
+
+      // Request all the models
+      const responseAllModels = await fetch(
+        `http://localhost:8000/daily-capacity/existent-models`,
+      )
+      const allModelsData = await responseAllModels.json()
+      setAllModels(allModelsData.models as RegisteredModel[])
     }
 
     setIsLoading(true)
@@ -126,8 +149,8 @@ const DailyCapacityList: FunctionComponent<DailyCapacityListProps> = (props) => 
 
   const menu = (
     <Menu>
-      {posibleTrainedModelList.map((name, index) => (
-        <Menu.Item key={index}>{name}</Menu.Item>
+      {posibleTrainedModelList.map((model) => (
+        <Menu.Item key={model.id}>{model.name}</Menu.Item>
       ))}
     </Menu>
   )
