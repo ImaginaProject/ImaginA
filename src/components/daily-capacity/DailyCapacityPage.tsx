@@ -55,21 +55,6 @@ type ExistentModel = {
 
 export interface DailyCapacityListProps {}
 
-const fakePredictionResult: PredictionResult[] = [
-  { capacity: 10, prediction: 11, date: '12 enero'},
-  { capacity: 11, prediction: 10, date: '13 enero'},
-  { capacity: 9, prediction: 10, date: '14 enero'},
-  { capacity: 10, prediction: 10, date: '15 enero'},
-  { capacity: 10, prediction: 10, date: '16 enero'},
-  { capacity: 11, prediction: 10, date: '17 enero'},
-  { capacity: 15, prediction: 14, date: '18 enero'},
-  { capacity: 14, prediction: 15, date: '19 enero'},
-  { capacity: 16, prediction: 15, date: '20 enero'},
-  { capacity: 17, prediction: 17, date: '21 enero'},
-  { capacity: 17, prediction: 18, date: '22 enero'},
-  { capacity: 18, prediction: 17, date: '23 enero'},
-]
-
 const graphOptions = {
   plugins: {
     legend: {
