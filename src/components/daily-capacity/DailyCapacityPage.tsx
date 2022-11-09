@@ -111,13 +111,14 @@ const DailyCapacityList: FunctionComponent<DailyCapacityListProps> = (props) => 
   useEffect(() => {
     const request = async () => {
       if (!startDate || !endDate) return;
+      if (!selectedModel) return;
 
       const startDateString = dayjs(startDate).format('DD/MM/YYYY')
       const endDateString = dayjs(endDate).format('DD/MM/YYYY')
 
       console.debug('request for date:', startDateString, 'to', endDateString)
       const response = await fetch(
-        `http://localhost:8000/daily-capacity/person-amount-prediction?start_date=${startDateString}&end_date=${endDateString}`)
+        `http://localhost:8000/daily-capacity/person-amount-prediction?start_date=${startDateString}&end_date=${endDateString}&model_id=${selectedModel.id}`)
       const data = await response.json()
 
       // Save the prediction data
@@ -133,7 +134,7 @@ const DailyCapacityList: FunctionComponent<DailyCapacityListProps> = (props) => 
 
     setIsLoading(true)
     request().then(() => setIsLoading(false))
-  }, [startDate, endDate])
+  }, [startDate, endDate, selectedModel])
 
   const menu = (
     <Menu>
