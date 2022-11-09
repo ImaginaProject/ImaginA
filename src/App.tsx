@@ -6,6 +6,7 @@ import './App.css'
 import MainLayout from './components/main/MainLayout'
 import MainDashboard from './components/main/MainDashboard'
 import DailyCapacityPage from './components/daily-capacity/DailyCapacityPage'
+import TrainingPage from './components/training/TrainingPage'
 function App() {
   return (
     <div className="App">
@@ -18,7 +19,9 @@ function App() {
         </CustomRoutes>
         <Resource name='daily-sells'/>
         {/* ... */}
-        {/* ... */}
+        <CustomRoutes>
+          <Route path='/training' element={<TrainingPage/>}/>
+        </CustomRoutes>
         {/* ... */}
       </Admin>
     </div>
