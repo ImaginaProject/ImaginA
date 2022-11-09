@@ -35,7 +35,7 @@ const items: MenuItem[] = [
   {
     key: 'entertainment',
     icon: <SettingOutlined />,
-    label: <Link to={'/entertainment'}>Entretenimiento</Link>
+    label: <Link to={'/training'}>Entrenamiento</Link>
   },
   {
     key: 'config-holiday',
