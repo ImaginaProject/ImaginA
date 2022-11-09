@@ -87,6 +87,7 @@ const DailyCapacityList: FunctionComponent<DailyCapacityListProps> = (props) => 
   const [allModels, setAllModels] = useState<RegisteredModel[]>([]);
 
   const [posibleTrainedModelList, setPosibleTrainedModelList] = useState<ExistentModel[]>([])
+  const [selectedModel, setSelectedModel] = useState<ExistentModel | null>(null);
 
   useEffect(() => {
     const yesterday = new Date()
@@ -137,7 +138,10 @@ const DailyCapacityList: FunctionComponent<DailyCapacityListProps> = (props) => 
   const menu = (
     <Menu>
       {posibleTrainedModelList.map((model) => (
-        <Menu.Item key={model.id}>{model.name}</Menu.Item>
+        <Menu.Item
+          key={model.id}
+          onClick={() => setSelectedModel(model)}
+        >{model.name}</Menu.Item>
       ))}
     </Menu>
   )
@@ -194,7 +198,11 @@ const DailyCapacityList: FunctionComponent<DailyCapacityListProps> = (props) => 
         
         <Space>
           <Dropdown overlay={menu} placement='bottomLeft'>
-            <Button type='primary'>Realizar predicción usando</Button>
+            <Button type='primary'>
+              {selectedModel === null ? (
+                'Realizar predicción usando'
+              ) : (`Seleccionado: ${selectedModel.name}`)}
+            </Button>
           </Dropdown>
         </Space>
       </Space>
