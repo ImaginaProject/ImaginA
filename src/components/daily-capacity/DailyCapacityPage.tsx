@@ -135,10 +135,14 @@ const DailyCapacityList: FunctionComponent<DailyCapacityListProps> = (props) => 
       console.debug('request for date:', startDateString, 'to', endDateString)
       const response = await fetch(
         `http://localhost:8000/daily-capacity/person-amount-prediction?start_date=${startDateString}&end_date=${endDateString}&model_id=${selectedModel.id}`)
+      
       const data = await response.json()
-
-      // Save the prediction data
-      setPredictionResult(data.capacities)
+      if (response.status === 200) {
+        // Save the prediction data
+        setPredictionResult(data.capacities)
+      } else {
+        console.error(data)
+      }
     }
 
     setIsLoading(true)
