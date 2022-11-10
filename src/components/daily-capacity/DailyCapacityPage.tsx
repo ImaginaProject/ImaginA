@@ -18,6 +18,7 @@ import {
   Tooltip,
   Legend,
 } from 'chart.js'
+import { LoadingOutlined } from '@ant-design/icons'
 
 // Load the plugins
 dayjs.locale('es')
@@ -80,6 +81,7 @@ const graphOptions = {
 
 const DailyCapacityList: FunctionComponent<DailyCapacityListProps> = (props) => {
   const [isLoading, setIsLoading] = useState(true);
+  const [isLoadingAllModels, setIsLoadingAllModels] = useState(false);
   const [startDate, setStartDate] = useState<Dayjs | null>(null)
   const [endDate, setEndDate] = useState<Dayjs | null>(null)
 
@@ -94,6 +96,20 @@ const DailyCapacityList: FunctionComponent<DailyCapacityListProps> = (props) => 
     yesterday.setDate(yesterday.getDate() - 5)
     setStartDate(dayjs(yesterday))
     setEndDate(dayjs(new Date()))
+
+    const requestAllModels = async () => {
+      // Request all the models
+      console.debug('loading all the model...')
+      const responseAllModels = await fetch(
+        `http://localhost:8000/daily-capacity/existent-models`,
+      )
+      const allModelsData = await responseAllModels.json()
+      setAllModels(allModelsData.models as RegisteredModel[])
+      console.debug('got', allModelsData.models.length, 'models')
+    }
+
+    setIsLoadingAllModels(true)
+    requestAllModels().then(() => setIsLoadingAllModels(false))
   }, [])
 
   useEffect(() => {
@@ -123,13 +139,6 @@ const DailyCapacityList: FunctionComponent<DailyCapacityListProps> = (props) => 
 
       // Save the prediction data
       setPredictionResult(data.capacities)
-
-      // Request all the models
-      const responseAllModels = await fetch(
-        `http://localhost:8000/daily-capacity/existent-models`,
-      )
-      const allModelsData = await responseAllModels.json()
-      setAllModels(allModelsData.models as RegisteredModel[])
     }
 
     setIsLoading(true)
@@ -199,7 +208,7 @@ const DailyCapacityList: FunctionComponent<DailyCapacityListProps> = (props) => 
         
         <Space>
           <Dropdown overlay={menu} placement='bottomLeft'>
-            <Button type='primary'>
+            <Button type='primary' icon={isLoadingAllModels && <LoadingOutlined/>}>
               {selectedModel === null ? (
                 'Realizar predicción usando'
               ) : (`Seleccionado: ${selectedModel.name}`)}
