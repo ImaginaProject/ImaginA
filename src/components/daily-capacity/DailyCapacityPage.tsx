@@ -40,9 +40,9 @@ ChartJS.register(
 )
 
 
-export interface DailyCapacityListProps {}
+export interface DailyCapacityPageProps {}
 
-const DailyCapacityList: FunctionComponent<DailyCapacityListProps> = (props) => {
+const DailyCapacityPage: FunctionComponent<DailyCapacityPageProps> = (props) => {
   const [dc, setDc] = useState(new DailyCapacity());
   const [isLoading, setIsLoading] = useState(true);
   const [isLoadingAllModels, setIsLoadingAllModels] = useState(false);
@@ -134,4 +134,4 @@ const DailyCapacityList: FunctionComponent<DailyCapacityListProps> = (props) => 
   )
 }
 
-export default DailyCapacityList
+export default DailyCapacityPage
