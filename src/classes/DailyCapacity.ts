@@ -7,8 +7,10 @@ export default class DailyCapacity {
   public possibleTrainedModels: ExistentModel[]
   public lastPrediction: PredictionResult[]
   public allModels: RegisteredModel[]
+  private endpoint: string
 
   constructor() {
+    this.endpoint = import.meta.env.VITE_APP_ENDPOINT
     this.graphOptions = {
       plugins: {
         legend: {
@@ -78,7 +80,7 @@ export default class DailyCapacity {
     // Request all the models
     console.debug('loading all the model...')
     const responseAllModels = await fetch(
-      `${import.meta.env.VITE_APP_ENDPOINT}/daily-capacity/existent-models`,
+      `${this.endpoint}/daily-capacity/existent-models`,
     )
     const allModelsData: RegisteredModelResponse = await responseAllModels.json()
     console.debug('got', allModelsData.models.length, 'models')
@@ -104,7 +106,7 @@ export default class DailyCapacity {
 
     console.debug('request for date:', startDateString, 'to', endDateString)
     const response = await fetch(
-      `${import.meta.env.VITE_APP_ENDPOINT}/daily-capacity/person-amount-prediction?start_date=${startDateString}&end_date=${endDateString}&model_id=${modelId}`)
+      `${this.endpoint}/daily-capacity/person-amount-prediction?start_date=${startDateString}&end_date=${endDateString}&model_id=${modelId}`)
     
     const data = await response.json()
     if (response.status === 200) {
