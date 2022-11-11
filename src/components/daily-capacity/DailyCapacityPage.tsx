@@ -1,4 +1,4 @@
-import { FunctionComponent, useState, useEffect, useMemo } from 'react'
+import { FunctionComponent, useState, useEffect } from 'react'
 import { Bar } from 'react-chartjs-2'
 import { Space, DatePicker, Dropdown, Button, Menu, Typography } from 'antd'
 import dayjs, { Dayjs } from 'dayjs'
@@ -17,8 +17,11 @@ import {
   Title,
   Tooltip,
   Legend,
+  type ChartData,
 } from 'chart.js'
 import { LoadingOutlined } from '@ant-design/icons'
+import DailyCapacity from '../../classes/DailyCapacity'
+import { ExistentModel, PredictionResult, RegisteredModel } from '../../types/types'
 
 // Load the plugins
 dayjs.locale('es')
@@ -37,58 +40,17 @@ ChartJS.register(
 )
 
 
-type PredictionResult = {
-  prediction: number,
-  capacity: number,
-  date: string,
-}
-
-type RegisteredModel = {
-  name: string,
-  description: string,
-  last_date: string,
-  path: string,
-  md5_sum: string,
-}
-
-type ExistentModel = {
-  name: string,
-  id: string,
-}
-
 export interface DailyCapacityListProps {}
 
-const graphOptions = {
-  plugins: {
-    legend: {
-      position: 'right' as const,
-    },
-    title: {
-      display: true,
-      text: 'Daily capacities by days',
-    },
-  },
-  responsive: true,
-  scales: {
-    x: {
-      stacked: true,
-    },
-    y: {
-      stacked: !true,
-    },
-  },
-}
-
 const DailyCapacityList: FunctionComponent<DailyCapacityListProps> = (props) => {
+  const [dc, setDc] = useState(new DailyCapacity());
   const [isLoading, setIsLoading] = useState(true);
   const [isLoadingAllModels, setIsLoadingAllModels] = useState(false);
+
   const [startDate, setStartDate] = useState<Dayjs | null>(null)
   const [endDate, setEndDate] = useState<Dayjs | null>(null)
 
-  const [predictionResult, setPredictionResult] = useState<PredictionResult[]>([]);
-  const [allModels, setAllModels] = useState<RegisteredModel[]>([]);
-
-  const [posibleTrainedModelList, setPosibleTrainedModelList] = useState<ExistentModel[]>([])
+  const [posibleTrainedModelList, setPossibleTrainedModelList] = useState<ExistentModel[]>([])
   const [selectedModel, setSelectedModel] = useState<ExistentModel | null>(null);
 
   useEffect(() => {
@@ -97,56 +59,30 @@ const DailyCapacityList: FunctionComponent<DailyCapacityListProps> = (props) => 
     setStartDate(dayjs(yesterday))
     setEndDate(dayjs(new Date()))
 
-    const requestAllModels = async () => {
-      // Request all the models
-      console.debug('loading all the model...')
-      const responseAllModels = await fetch(
-        `http://localhost:8000/daily-capacity/existent-models`,
-      )
-      const allModelsData = await responseAllModels.json()
-      setAllModels(allModelsData.models as RegisteredModel[])
-      console.debug('got', allModelsData.models.length, 'models')
-    }
-
     setIsLoadingAllModels(true)
-    requestAllModels().then(() => setIsLoadingAllModels(false))
+    dc.requestAllModels()
+      .then((allModels) => {
+        console.debug('got all models', allModels)
+        setPossibleTrainedModelList(dc.possibleTrainedModels)
+      })
+      .finally(() => {
+        setIsLoading(false) // TODO: for now eh!
+        setIsLoadingAllModels(false)
+      })
   }, [])
 
   useEffect(() => {
-    const results = allModels.map((model) => {
-      const date_string: string = dayjs(model.last_date).format('DD MMMM')
-      const result: ExistentModel = {
-        id: model.md5_sum,
-        name: `red "${model.name}" entrenada ${date_string}`
-      }
-      return result
-    })
-    setPosibleTrainedModelList(results)
-  }, [allModels])
-
-  useEffect(() => {
-    const request = async () => {
-      if (!startDate || !endDate) return;
-      if (!selectedModel) return;
-
-      const startDateString = dayjs(startDate).format('DD/MM/YYYY')
-      const endDateString = dayjs(endDate).format('DD/MM/YYYY')
-
-      console.debug('request for date:', startDateString, 'to', endDateString)
-      const response = await fetch(
-        `http://localhost:8000/daily-capacity/person-amount-prediction?start_date=${startDateString}&end_date=${endDateString}&model_id=${selectedModel.id}`)
-      
-      const data = await response.json()
-      if (response.status === 200) {
-        // Save the prediction data
-        setPredictionResult(data.capacities)
-      } else {
-        console.error(data)
-      }
-    }
-
+    if (!startDate || !endDate) return;
+    if (!selectedModel) return;
+    
     setIsLoading(true)
-    request().then(() => setIsLoading(false))
+    dc.predicePersonAmount(startDate, endDate, selectedModel.id)
+      .then((prediction) => {
+        console.debug('got prediction', prediction)
+      })
+      .finally(() => {
+        setIsLoading(false)
+      })
   }, [startDate, endDate, selectedModel])
 
   const menu = (
@@ -159,34 +95,6 @@ const DailyCapacityList: FunctionComponent<DailyCapacityListProps> = (props) => 
       ))}
     </Menu>
   )
-
-  const barData = useMemo(() => {
-    const labels = predictionResult.map((result) => {
-      // Transform the date format
-      const ddQmmm = dayjs(result.date, 'DD/MM/YYYY').format('DD MMM')
-      return ddQmmm
-    })
-
-    const realValue = predictionResult.map((result) => result.capacity)
-    const predictionValue = predictionResult.map((result) => result.prediction)
-    console.log(realValue)
-
-    return {
-      labels,
-      datasets: [
-      {
-        label: 'real',
-        data: realValue,
-        backgroundColor: 'rgba(72, 129, 194, 0.7)'
-      },
-      {
-        label: 'prediction',
-        data: predictionValue,
-        backgroundColor: 'rgba(219, 139, 59, 0.7)'
-      },
-      ]
-    }
-  }, [predictionResult])
 
   if (isLoading) return <Loading />
 
@@ -220,8 +128,8 @@ const DailyCapacityList: FunctionComponent<DailyCapacityListProps> = (props) => 
           </Dropdown>
         </Space>
       </Space>
-      <Typography.Text>{predictionResult.length} resultados predichos</Typography.Text>
-      <Bar options={graphOptions} data={barData} />
+      <Typography.Text>{dc.lastPrediction.length} resultados predichos</Typography.Text>
+      <Bar options={dc.graphOptions} data={dc.barData} />
     </Space>
   )
 }
