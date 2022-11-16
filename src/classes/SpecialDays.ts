@@ -8,7 +8,7 @@ export default class SpecialDays {
     this.endpoint = import.meta.env.VITE_APP_ENDPOINT
   }
 
-  async getAll() {
+  async getAll(): Promise<SpecialDay[]> {
     const response = await fetch(`${this.endpoint}/special-days/days`)
     const data: SpecialDayResponse = await response.json()
     return data.days.map((day) => {
@@ -17,7 +17,7 @@ export default class SpecialDays {
     })
   }
 
-  async add(date: Dayjs, isHoliday: boolean, isVacation: boolean) {
+  async add(date: Dayjs, isHoliday: boolean, isVacation: boolean): Promise<boolean> {
     // Import the format, the date is DD/MM/YYYY and the flags should be boolean
     const newSpecialDay = {
       date: date.format('DD/MM/YYYY'),
