@@ -43,6 +43,7 @@ const SpecialDaysPage: FunctionComponent<SpecialDaysPageProps> = (props) => {
   const [isLoading, setIsLoading] = useState(false)
   const [specialDays, setSpecialDays] = useState<SpecialDay[]>([])
   const [errorAlertMessage, setErrorAlertMessage] = useState<string | null>(null);
+  const [isDateWithRange, setIsDateWithRange] = useState(false);
 
   const [form] = Form.useForm()
 
@@ -117,12 +118,35 @@ const SpecialDaysPage: FunctionComponent<SpecialDaysPageProps> = (props) => {
             rules={[
               {
                 required: true,
-                message: 'Please input the date',
+                message: '¡Escriba la fecha!',
               },
             ]}
           >
             <DatePicker/>
           </Form.Item>
+          <Form.Item label='¿Rango de fecha?'>
+            <Checkbox
+              defaultChecked={isDateWithRange}
+              onChange={(e) => setIsDateWithRange(e.target.checked)}
+            >
+              Sí
+            </Checkbox>
+            
+          </Form.Item>
+          {isDateWithRange && (
+          <Form.Item
+            label='Fecha final'
+            name='dateEnd'
+            rules={isDateWithRange ? [
+              {
+                required: true,
+                message: '¡Escriba la fecha final!',
+              },
+            ] : undefined}
+          >
+            <DatePicker/>
+          </Form.Item>
+          )}
           <Typography.Text strong>Configuración del día</Typography.Text>
           <Form.Item label='Día es festivo' name='isHoliday' valuePropName='checked'>
             <Checkbox value={true}>
