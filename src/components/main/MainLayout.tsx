@@ -38,9 +38,9 @@ const items: MenuItem[] = [
     label: <Link to={'/training'}>Entrenamiento</Link>
   },
   {
-    key: 'config-holiday',
+    key: 'config-special-days',
     icon: <SettingOutlined />,
-    label: <Link to={'/config-holiday'}>Config. días especiales</Link>
+    label: <Link to={'/config-special-days'}>Config. días especiales</Link>
   },
   {
     key: 'price-optimization',

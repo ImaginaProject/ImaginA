@@ -7,6 +7,8 @@ import MainLayout from './components/main/MainLayout'
 import MainDashboard from './components/main/MainDashboard'
 import DailyCapacityPage from './components/daily-capacity/DailyCapacityPage'
 import TrainingPage from './components/training/TrainingPage'
+import SpecialDaysPage from './components/special-days/SpecialDaysPage'
+
 function App() {
   return (
     <div className="App">
@@ -23,6 +25,9 @@ function App() {
           <Route path='/training' element={<TrainingPage/>}/>
         </CustomRoutes>
         {/* ... */}
+        <CustomRoutes>
+          <Route path='/config-special-days' element={<SpecialDaysPage/>}/>
+        </CustomRoutes>
       </Admin>
     </div>
   )
