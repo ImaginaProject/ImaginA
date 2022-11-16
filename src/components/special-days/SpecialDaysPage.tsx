@@ -88,6 +88,19 @@ const SpecialDaysPage: FunctionComponent<SpecialDaysPageProps> = (props) => {
       })
   }
 
+  const onDelete = (item: SpecialDay) => {
+    sd.delete(item.date).then((success) => {
+      if (success) {
+        requestAllSpecialDays().catch((reason) => {
+          console.error(reason)
+          showErrorAlert(JSON.stringify(reason))
+        })
+      } else {
+        showErrorAlert('No puede eliminar ese elemento')
+      }
+    }).catch((reason) => showErrorAlert(reason))
+  }
+
   return (
     <Space style={{padding: '2em', width: '100%'}} direction='vertical'>
       <Typography.Title>
@@ -135,7 +148,9 @@ const SpecialDaysPage: FunctionComponent<SpecialDaysPageProps> = (props) => {
         renderItem={(item: SpecialDay) => (
           <List.Item
             actions={[
-              <Button danger><DeleteOutlined/></Button>
+              <Button danger onClick={() => onDelete(item)}>
+                <DeleteOutlined/>
+              </Button>
             ]}
           >
             <Skeleton title={false} loading={isLoading} active>
