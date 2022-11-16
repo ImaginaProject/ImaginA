@@ -1,4 +1,5 @@
 import type { Dayjs } from 'dayjs'
+import dayjs from 'dayjs'
 import { SpecialDay, SpecialDayResponse } from '../types/types'
 
 export default class SpecialDays {
@@ -37,6 +38,24 @@ export default class SpecialDays {
     const data = await response.json()
     console.debug('add():', data)
 
+    if (response.status == 200) {
+      return data.success
+    }
+
+    console.error(data)
+    return false
+  }
+
+  async delete(date: Date): Promise<boolean> {
+    const dateString = dayjs(date).format('DD/MM/YYYY')
+    console.info('delete', dateString)
+
+    const params = new URLSearchParams({ date: dateString })
+    const response = await fetch(`${this.endpoint}/special-days/day?${params}`, {
+      method: 'DELETE',
+    })
+
+    const data = await response.json()
     if (response.status == 200) {
       return data.success
     }
