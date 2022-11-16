@@ -18,3 +18,21 @@ export type PredictionResult = {
   capacity: number,
   date: string,
 }
+
+export type SpecialDay = {
+  date: Date,
+  isHoliday: boolean,
+  isVacation: boolean,
+}
+
+/**
+ * NOTE: Don't use for other purpose that a fetch-response object. Please.
+ * Use `SpecialDay` instead.
+ */
+export type SpecialDayResponse = {
+  days: {
+    date: Date,
+    is_holiday: boolean,
+    is_vacation: boolean,
+  }[]
+}
