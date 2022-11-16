@@ -8,7 +8,7 @@ export interface TrainingPageProps {}
 
 const tabs: TrainingPageTabProps[] = [
   {
-    actionURL: 'http://localhost:8000/daily-capacity/existent-models',
+    actionURL: `${import.meta.env.VITE_APP_ENDPOINT}/daily-capacity/existent-models`,
     directory: 'daily-capacity',
     title: 'Modelo para aforo diario',
   },
