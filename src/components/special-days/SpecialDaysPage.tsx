@@ -42,8 +42,9 @@ const SpecialDaysPage: FunctionComponent<SpecialDaysPageProps> = (props) => {
   const [sd, setSd] = useState(new SpecialDays())
   const [isLoading, setIsLoading] = useState(false)
   const [specialDays, setSpecialDays] = useState<SpecialDay[]>([])
-  const [errorAlertMessage, setErrorAlertMessage] = useState<string | null>(null);
-  const [isDateWithRange, setIsDateWithRange] = useState(false);
+  const [errorAlertMessage, setErrorAlertMessage] = useState<string | null>(null)
+  const [isDateWithRange, setIsDateWithRange] = useState(false)
+  const [isAdding, setIsAdding] = useState(false);
 
   const [form] = Form.useForm()
 
@@ -70,26 +71,76 @@ const SpecialDaysPage: FunctionComponent<SpecialDaysPageProps> = (props) => {
     requestAllSpecialDays().catch((reason) => console.error(reason))
   }, [])
 
-  const onFormFinish = (value: any) => {
+  const onFormFinish = async (value: any) => {
     console.debug(value)
-    sd.add(value.date, value.isHoliday, value.isVacation)
-      .then((success) => {
+    setIsAdding(true)
+    const dates: Dayjs[] = []
+    
+    if (value.dateEnd && value.date != value.dateEnd) {
+      // Get two dates
+      const firstDate: Dayjs = value.date
+      const secondDate: Dayjs = value.dateEnd
+
+      // Get the min/max date
+      const minDate = [firstDate, secondDate].reduce((a, b) => a < b ? a: b)
+      const maxDate = [firstDate, secondDate].reduce((a, b) => a < b ? b: a)
+      console.debug(minDate.format('DD/MM/YYYY'), '<', maxDate.format('DD/MM/YYYY'))
+      if (minDate.format('DD/MM/YYYY') == maxDate.format('DD/MM/YYYY')) {
+        showErrorAlert('Las fechas son la misma')
+        form.resetFields()
+        setIsAdding(false)
+        return
+      }
+
+      // Take the first (AKA the min)
+      let offsetDate = minDate.clone()
+
+      // Go through the dates
+      let watchDog = 100 * 365
+      while (offsetDate <= secondDate && watchDog > 0) {
+        dates.push(offsetDate.clone()) // Add the date
+        console.debug('next date', offsetDate.toDate())
+        offsetDate = offsetDate.add(1, 'd')
+        watchDog -= 1
+      }
+
+      if (watchDog == 0) {
+        console.error('Cannot go through the dates. From', minDate, 'to', maxDate)
+        setIsAdding(false)
+        return
+      }
+    } else {
+      dates.push(value.date as Dayjs)
+    }
+    dates.map((date) => console.info('date:', date))
+
+    for (const index in dates) {
+      // We should do dayjs an standard, what do you think about? xD
+      const currentDate = dayjs(dates[index])
+      try {
+        const success = await sd.add(currentDate, value.isHoliday, value.isVacation)
         console.log('saved?', success)
         if (success) {
-          requestAllSpecialDays().catch((reason) => {
-            console.error(reason)
-            showErrorAlert(JSON.stringify(reason))
-          })
+          // Nothing, because now we are into a loop
         } else {
           showErrorAlert('No puede agregar esa fecha. Verifique que no esté duplicada')
         }
-      })
-      .finally(() => {
-        form.resetFields()
-      })
+      } catch (err) {
+        console.error(err)
+      }
+    }
+
+    form.resetFields()
+    requestAllSpecialDays().catch((reason) => {
+      console.error(reason)
+      showErrorAlert(JSON.stringify(reason))
+    })
+    setIsAdding(false)
   }
 
   const onDelete = (item: SpecialDay) => {
+    setSpecialDays((previous) => previous.filter((sd) => sd != item))
+
     sd.delete(item.date).then((success) => {
       if (success) {
         requestAllSpecialDays().catch((reason) => {
@@ -159,7 +210,12 @@ const SpecialDaysPage: FunctionComponent<SpecialDaysPageProps> = (props) => {
             </Checkbox>
           </Form.Item>
           <Form.Item wrapperCol={{ span: 12, offset: 6 }}>
-            <Button type='primary' htmlType='submit'>
+            <Button
+              type='primary'
+              htmlType='submit'
+              disabled={isAdding}
+              icon={isAdding && <LoadingOutlined/>}
+            >
               Submit
             </Button>
           </Form.Item>
