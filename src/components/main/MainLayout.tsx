@@ -1,5 +1,5 @@
-import { FunctionComponent, HtmlHTMLAttributes } from 'react'
-import { Layout, Menu, Typography } from 'antd'
+import { FunctionComponent, HtmlHTMLAttributes, useEffect, useState } from 'react'
+import { Layout, Menu, Typography, Badge } from 'antd'
 import { DashboardOutlined, SettingOutlined, UserSwitchOutlined } from '@ant-design/icons'
 import { Link } from 'react-router-dom'
 
@@ -50,6 +50,19 @@ const items: MenuItem[] = [
 ]
 
 const MainLayout: FunctionComponent<MainLayoutProps> = (props) => {
+  const [apiData, setApiData] = useState<any>(null);
+
+  // No needed, but request for the API info.
+  useEffect(() => {
+    fetch(`${import.meta.env.VITE_APP_ENDPOINT}/`)
+      .then((response) => response.json())
+      .then((info: any) => setApiData(info))
+      .catch((err) => {
+        setApiData(null)
+        console.error(err)
+      })
+  }, [])
+
   return (
     <Layout>
       <Layout.Header>
@@ -70,7 +83,17 @@ const MainLayout: FunctionComponent<MainLayoutProps> = (props) => {
         </Layout.Content>
       </Layout>
 
-      <Layout.Footer>Footer</Layout.Footer>
+      <Layout.Footer>
+        <small>
+          <small>
+            Version 1.0.1
+            {' '}
+            <Badge status={apiData === null ? 'error' : 'success'}/>
+            {' '}
+            {apiData && (`API version ${apiData.version}`)}
+            </small>
+        </small>
+      </Layout.Footer>
     </Layout>
   )
 }
