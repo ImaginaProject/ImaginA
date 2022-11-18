@@ -11,7 +11,11 @@ import {
   Divider,
   Badge,
   Alert,
+  Calendar,
+  Tag,
+  Tabs,
 } from 'antd'
+import type { CalendarMode } from 'antd/es/calendar/generateCalendar'
 import dayjs, { Dayjs } from 'dayjs'
 import 'dayjs/locale/es'
 import weekday from 'dayjs/plugin/weekday'
@@ -154,6 +158,80 @@ const SpecialDaysPage: FunctionComponent<SpecialDaysPageProps> = () => {
     }).catch((reason) => showErrorAlert(reason))
   }
 
+  const dateCellRender = (date: any) => {
+    const value = dayjs(date)
+
+    // console.log('value!:', value)
+    const [currentDay, setCurrentDay] = useState<SpecialDay | undefined>();
+    useEffect(() => {
+      const matches = specialDays.filter((_sd) => {
+        if (!value) return false
+        return dayjs(_sd.date).format('DD/MM/YYYY') === value.format('DD/MM/YYYY')
+      })
+      setCurrentDay(matches[0])
+    }, [value])
+
+    if (!currentDay) {
+      return (
+        <Tag>
+          <span>Día normal</span>
+        </Tag>
+      )
+    }
+
+    if (currentDay.isHoliday && currentDay.isVacation) {
+      return (
+        <>
+          <Tag color="magenta">
+            <strong>Festivo</strong>
+          </Tag>
+          <Tag color="green">
+            <strong>Vacaciones</strong>
+          </Tag>
+        </>
+      )
+    }
+
+    if (currentDay.isHoliday) {
+      return (
+        <Tag color="magenta">
+          <strong>Festivo</strong>
+        </Tag>
+      )
+    }
+
+    if (currentDay.isVacation) {
+      return (
+        <Tag color="green">
+          <strong>Vacaciones</strong>
+        </Tag>
+      )
+    }
+
+    return (
+      <Tag>
+        <span>Día normal</span>
+      </Tag>
+    )
+  }
+
+  const monthCellRender = (date: any) => {
+    const value = dayjs(date)
+    const stringDays = specialDays
+      .filter((_sd) => dayjs(_sd.date).format('MM/YYYY') === value.format('MM/YYYY'))
+      .map((_sd) => dayjs(_sd.date).format('DD'))
+      .map((day) => Number.parseInt(day, 10))
+      .join(', ')
+    if (!stringDays) return <p>Sin días</p>
+    return (
+      <p>
+        días:
+        {' '}
+        {stringDays}
+      </p>
+    )
+  }
+
   return (
     <Space style={{ padding: '2em', width: '100%' }} direction="vertical">
       <Typography.Title>
@@ -224,36 +302,51 @@ const SpecialDaysPage: FunctionComponent<SpecialDaysPageProps> = () => {
       </Space>
       {errorAlertMessage !== null && <Alert message={errorAlertMessage} type="error" />}
       <Divider />
-      <List
-        dataSource={specialDays}
-        renderItem={(item: SpecialDay) => (
-          <List.Item
-            actions={[
-              <Button danger onClick={() => onDelete(item)}>
-                <DeleteOutlined />
-              </Button>,
-            ]}
-          >
-            <Skeleton title={false} loading={isLoading} active>
-              <Typography.Text strong>
-                Fecha:
-                {' '}
-                {dayjs(item.date).format('DD/MM/YYYY')}
-              </Typography.Text>
-              {item.isHoliday ? (
-                <Badge count="Festivo" style={{ backgroundColor: 'greenyellow' }} />
-              ) : (
-                <Badge count="No festivo" style={{ backgroundColor: 'orangered' }} />
-              )}
-              {item.isVacation ? (
-                <Badge count="Día vacaciones" style={{ backgroundColor: 'red' }} />
-              ) : (
-                <Badge count="No es vacaciones" style={{ backgroundColor: 'olivedrab' }} />
-              )}
-            </Skeleton>
-          </List.Item>
-        )}
-      />
+      <Tabs>
+        <Tabs.TabPane tab="Calendario" key="1">
+          <Calendar
+            dateCellRender={dateCellRender}
+            monthCellRender={monthCellRender}
+            onPanelChange={(value: any, mode: CalendarMode) => {
+              console.log((value as Dayjs).format('YYYY-MM-DD'), mode)
+            }}
+            onChange={(date) => console.log('date:', date)}
+            onSelect={(date) => console.log('select:', date)}
+          />
+        </Tabs.TabPane>
+        <Tabs.TabPane tab="Listado" key="2">
+          <List
+            dataSource={specialDays}
+            renderItem={(item: SpecialDay) => (
+              <List.Item
+                actions={[
+                  <Button danger onClick={() => onDelete(item)}>
+                    <DeleteOutlined />
+                  </Button>,
+                ]}
+              >
+                <Skeleton title={false} loading={isLoading} active>
+                  <Typography.Text strong>
+                    Fecha:
+                    {' '}
+                    {dayjs(item.date).format('DD/MM/YYYY')}
+                  </Typography.Text>
+                  {item.isHoliday ? (
+                    <Badge count="Festivo" style={{ backgroundColor: 'greenyellow' }} />
+                  ) : (
+                    <Badge count="No festivo" style={{ backgroundColor: 'orangered' }} />
+                  )}
+                  {item.isVacation ? (
+                    <Badge count="Día vacaciones" style={{ backgroundColor: 'red' }} />
+                  ) : (
+                    <Badge count="No es vacaciones" style={{ backgroundColor: 'olivedrab' }} />
+                  )}
+                </Skeleton>
+              </List.Item>
+            )}
+          />
+        </Tabs.TabPane>
+      </Tabs>
     </Space>
   )
 }
