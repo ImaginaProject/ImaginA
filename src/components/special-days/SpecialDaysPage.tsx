@@ -18,18 +18,17 @@ import weekday from 'dayjs/plugin/weekday'
 import localeData from 'dayjs/plugin/localeData'
 import customParseFormat from 'dayjs/plugin/customParseFormat'
 
-import Loading from '../loading/Loading'
+// import Loading from '../loading/Loading'
 
 import { DeleteOutlined, LoadingOutlined } from '@ant-design/icons'
 import SpecialDays from '../../classes/SpecialDays'
-import type { SpecialDayResponse, SpecialDay } from '../../types/types'
+import { SpecialDay } from '../../types/types'
 
 // Load the plugins
 dayjs.locale('es')
 dayjs.extend(weekday)
 dayjs.extend(localeData)
 dayjs.extend(customParseFormat)
-
 
 export interface SpecialDaysPageProps {}
 
@@ -38,8 +37,8 @@ const formItemLayout = {
   wrapperCol: { span: 14 },
 }
 
-const SpecialDaysPage: FunctionComponent<SpecialDaysPageProps> = (props) => {
-  const [sd, setSd] = useState(new SpecialDays())
+const SpecialDaysPage: FunctionComponent<SpecialDaysPageProps> = () => {
+  const [sd] = useState(new SpecialDays())
   const [isLoading, setIsLoading] = useState(false)
   const [specialDays, setSpecialDays] = useState<SpecialDay[]>([])
   const [errorAlertMessage, setErrorAlertMessage] = useState<string | null>(null)
@@ -75,17 +74,17 @@ const SpecialDaysPage: FunctionComponent<SpecialDaysPageProps> = (props) => {
     console.debug(value)
     setIsAdding(true)
     const dates: Dayjs[] = []
-    
-    if (value.dateEnd && value.date != value.dateEnd) {
+
+    if (value.dateEnd && value.date !== value.dateEnd) {
       // Get two dates
       const firstDate: Dayjs = value.date
       const secondDate: Dayjs = value.dateEnd
 
       // Get the min/max date
-      const minDate = [firstDate, secondDate].reduce((a, b) => a < b ? a: b)
-      const maxDate = [firstDate, secondDate].reduce((a, b) => a < b ? b: a)
+      const minDate = [firstDate, secondDate].reduce((a, b) => (a < b ? a : b))
+      const maxDate = [firstDate, secondDate].reduce((a, b) => (a < b ? b : a))
       console.debug(minDate.format('DD/MM/YYYY'), '<', maxDate.format('DD/MM/YYYY'))
-      if (minDate.format('DD/MM/YYYY') == maxDate.format('DD/MM/YYYY')) {
+      if (minDate.format('DD/MM/YYYY') === maxDate.format('DD/MM/YYYY')) {
         showErrorAlert('Las fechas son la misma')
         form.resetFields()
         setIsAdding(false)
@@ -104,7 +103,7 @@ const SpecialDaysPage: FunctionComponent<SpecialDaysPageProps> = (props) => {
         watchDog -= 1
       }
 
-      if (watchDog == 0) {
+      if (watchDog === 0) {
         console.error('Cannot go through the dates. From', minDate, 'to', maxDate)
         setIsAdding(false)
         return
@@ -114,10 +113,12 @@ const SpecialDaysPage: FunctionComponent<SpecialDaysPageProps> = (props) => {
     }
     dates.map((date) => console.info('date:', date))
 
-    for (const index in dates) {
+    // eslint-disable-next-line no-restricted-syntax
+    for (let index = 0; index < dates.length; index += 1) {
       // We should do dayjs an standard, what do you think about? xD
       const currentDate = dayjs(dates[index])
       try {
+        // eslint-disable-next-line no-await-in-loop
         const success = await sd.add(currentDate, value.isHoliday, value.isVacation)
         console.log('saved?', success)
         if (success) {
@@ -139,7 +140,7 @@ const SpecialDaysPage: FunctionComponent<SpecialDaysPageProps> = (props) => {
   }
 
   const onDelete = (item: SpecialDay) => {
-    setSpecialDays((previous) => previous.filter((sd) => sd != item))
+    setSpecialDays((previous) => previous.filter((_sd) => _sd !== item))
 
     sd.delete(item.date).then((success) => {
       if (success) {
@@ -154,18 +155,18 @@ const SpecialDaysPage: FunctionComponent<SpecialDaysPageProps> = (props) => {
   }
 
   return (
-    <Space style={{padding: '2em', width: '100%'}} direction='vertical'>
+    <Space style={{ padding: '2em', width: '100%' }} direction="vertical">
       <Typography.Title>
         Configuración de días especiales
       </Typography.Title>
-  
+
       {/* Form that asks for date */}
-      <Space direction='vertical' style={{ width: '100%'}}>
+      <Space direction="vertical" style={{ width: '100%' }}>
         <Typography.Text strong>Agregar nuevo día</Typography.Text>
         <Form {...formItemLayout} form={form} onFinish={onFormFinish}>
           <Form.Item
-            name='date'
-            label='Fecha'
+            name="date"
+            label="Fecha"
             rules={[
               {
                 required: true,
@@ -173,21 +174,21 @@ const SpecialDaysPage: FunctionComponent<SpecialDaysPageProps> = (props) => {
               },
             ]}
           >
-            <DatePicker/>
+            <DatePicker />
           </Form.Item>
-          <Form.Item label='¿Rango de fecha?'>
+          <Form.Item label="¿Rango de fecha?">
             <Checkbox
               defaultChecked={isDateWithRange}
               onChange={(e) => setIsDateWithRange(e.target.checked)}
             >
               Sí
             </Checkbox>
-            
+
           </Form.Item>
           {isDateWithRange && (
           <Form.Item
-            label='Fecha final'
-            name='dateEnd'
+            label="Fecha final"
+            name="dateEnd"
             rules={isDateWithRange ? [
               {
                 required: true,
@@ -195,57 +196,59 @@ const SpecialDaysPage: FunctionComponent<SpecialDaysPageProps> = (props) => {
               },
             ] : undefined}
           >
-            <DatePicker/>
+            <DatePicker />
           </Form.Item>
           )}
           <Typography.Text strong>Configuración del día</Typography.Text>
-          <Form.Item label='Día es festivo' name='isHoliday' valuePropName='checked'>
-            <Checkbox value={true}>
+          <Form.Item label="Día es festivo" name="isHoliday" valuePropName="checked">
+            <Checkbox value>
               Es festivo
             </Checkbox>
           </Form.Item>
-          <Form.Item label='Día es vacaciones' name='isVacation' valuePropName='checked'>
-            <Checkbox value={true}>
+          <Form.Item label="Día es vacaciones" name="isVacation" valuePropName="checked">
+            <Checkbox value>
               Es vacaciones
             </Checkbox>
           </Form.Item>
           <Form.Item wrapperCol={{ span: 12, offset: 6 }}>
             <Button
-              type='primary'
-              htmlType='submit'
+              type="primary"
+              htmlType="submit"
               disabled={isAdding}
-              icon={isAdding && <LoadingOutlined/>}
+              icon={isAdding && <LoadingOutlined />}
             >
               Submit
             </Button>
           </Form.Item>
         </Form>
       </Space>
-      {errorAlertMessage !== null && <Alert message={errorAlertMessage} type='error'/>}
-      <Divider/>
+      {errorAlertMessage !== null && <Alert message={errorAlertMessage} type="error" />}
+      <Divider />
       <List
         dataSource={specialDays}
         renderItem={(item: SpecialDay) => (
           <List.Item
             actions={[
               <Button danger onClick={() => onDelete(item)}>
-                <DeleteOutlined/>
-              </Button>
+                <DeleteOutlined />
+              </Button>,
             ]}
           >
             <Skeleton title={false} loading={isLoading} active>
               <Typography.Text strong>
-                Fecha: {dayjs(item.date).format('DD/MM/YYYY')}
+                Fecha:
+                {' '}
+                {dayjs(item.date).format('DD/MM/YYYY')}
               </Typography.Text>
               {item.isHoliday ? (
-                <Badge count='Festivo' style={{backgroundColor: 'greenyellow'}} />
+                <Badge count="Festivo" style={{ backgroundColor: 'greenyellow' }} />
               ) : (
-                <Badge count='No festivo' style={{backgroundColor: 'orangered'}} />
+                <Badge count="No festivo" style={{ backgroundColor: 'orangered' }} />
               )}
               {item.isVacation ? (
-                <Badge count='Día vacaciones' style={{backgroundColor: 'red'}} />
+                <Badge count="Día vacaciones" style={{ backgroundColor: 'red' }} />
               ) : (
-                <Badge count='No es vacaciones' style={{backgroundColor: 'olivedrab'}} />
+                <Badge count="No es vacaciones" style={{ backgroundColor: 'olivedrab' }} />
               )}
             </Skeleton>
           </List.Item>

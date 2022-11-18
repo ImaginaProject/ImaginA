@@ -1,6 +1,20 @@
-import { FunctionComponent, HtmlHTMLAttributes, useEffect, useState } from 'react'
-import { Layout, Menu, Typography, Badge } from 'antd'
-import { DashboardOutlined, SettingOutlined, UserSwitchOutlined } from '@ant-design/icons'
+import {
+  FunctionComponent,
+  HtmlHTMLAttributes,
+  useEffect,
+  useState,
+} from 'react'
+import {
+  Layout,
+  Menu,
+  Typography,
+  Badge,
+} from 'antd'
+import {
+  DashboardOutlined,
+  SettingOutlined,
+  UserSwitchOutlined,
+} from '@ant-design/icons'
 import { Link } from 'react-router-dom'
 
 import type { MenuProps } from 'antd'
@@ -15,41 +29,42 @@ const items: MenuItem[] = [
   {
     key: 'dashboard',
     icon: <DashboardOutlined />,
-    label: <Link to={'/'}>Dashboard</Link>
+    label: <Link to="/">Dashboard</Link>,
   },
   {
     key: 'daily-capacity',
     icon: <UserSwitchOutlined />,
-    label: <Link to={'/daily-capacity'}>Aforo diario</Link>
+    label: <Link to="/daily-capacity">Aforo diario</Link>,
   },
   {
     key: 'daily-sells',
     icon: <SettingOutlined />,
-    label: <Link to={'/daily-sells'}>Ventas día</Link>
+    label: <Link to="/daily-sells">Ventas día</Link>,
   },
   {
     key: 'import-data',
     icon: <SettingOutlined />,
-    label: <Link to={'/import-data'}>Importación datos</Link>
+    label: <Link to="/import-data">Importación datos</Link>,
   },
   {
     key: 'entertainment',
     icon: <SettingOutlined />,
-    label: <Link to={'/training'}>Entrenamiento</Link>
+    label: <Link to="/training">Entrenamiento</Link>,
   },
   {
     key: 'config-special-days',
     icon: <SettingOutlined />,
-    label: <Link to={'/config-special-days'}>Config. días especiales</Link>
+    label: <Link to="/config-special-days">Config. días especiales</Link>,
   },
   {
     key: 'price-optimization',
     icon: <SettingOutlined />,
-    label: <Link to={'/price-optimization'}>Optimización precios</Link>
+    label: <Link to="/price-optimization">Optimización precios</Link>,
   },
 ]
 
 const MainLayout: FunctionComponent<MainLayoutProps> = (props) => {
+  const { children } = props
   const [apiData, setApiData] = useState<any>(null);
 
   // No needed, but request for the API info.
@@ -66,7 +81,7 @@ const MainLayout: FunctionComponent<MainLayoutProps> = (props) => {
   return (
     <Layout>
       <Layout.Header>
-        <Typography.Title style={{color: 'whitesmoke'}}>ImaginA</Typography.Title>
+        <Typography.Title style={{ color: 'whitesmoke' }}>ImaginA</Typography.Title>
       </Layout.Header>
 
       <Layout>
@@ -79,7 +94,7 @@ const MainLayout: FunctionComponent<MainLayoutProps> = (props) => {
 
         {/* The content is inserted here by React Admin */}
         <Layout.Content>
-          {props.children}
+          {children}
         </Layout.Content>
       </Layout>
 
@@ -88,10 +103,10 @@ const MainLayout: FunctionComponent<MainLayoutProps> = (props) => {
           <small>
             Version 1.0.1
             {' '}
-            <Badge status={apiData === null ? 'error' : 'success'}/>
+            <Badge status={apiData === null ? 'error' : 'success'} />
             {' '}
             {apiData && (`API version ${apiData.version}`)}
-            </small>
+          </small>
         </small>
       </Layout.Footer>
     </Layout>

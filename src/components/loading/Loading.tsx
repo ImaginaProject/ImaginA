@@ -11,7 +11,7 @@ export interface LoadingProps {
 const Loading: FunctionComponent<LoadingProps> = (props) => {
   const {
     children,
-    label = 'Cargando...',
+    label,
   } = props
 
   return (
@@ -21,6 +21,11 @@ const Loading: FunctionComponent<LoadingProps> = (props) => {
       extra={children}
     />
   )
+}
+
+Loading.defaultProps = {
+  label: 'Cargando...',
+  children: undefined,
 }
 
 export default Loading

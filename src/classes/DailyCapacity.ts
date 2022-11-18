@@ -1,12 +1,20 @@
 import dayjs, { Dayjs } from 'dayjs'
-import type { ExistentModel, PredictionResult, RegisteredModel, RegisteredModelResponse } from '../types/types'
-
+import type {
+  ExistentModel,
+  PredictionResult,
+  RegisteredModel,
+  RegisteredModelResponse,
+} from '../types/types'
 
 export default class DailyCapacity {
   public graphOptions: any
+
   public possibleTrainedModels: ExistentModel[]
+
   public lastPrediction: PredictionResult[]
+
   public allModels: RegisteredModel[]
+
   private endpoint: string
 
   constructor() {
@@ -58,17 +66,17 @@ export default class DailyCapacity {
     return {
       labels,
       datasets: [
-      {
-        label: 'real',
-        data: realValue,
-        backgroundColor: 'rgba(72, 129, 194, 0.7)'
-      },
-      {
-        label: 'prediction',
-        data: predictionValue,
-        backgroundColor: 'rgba(219, 139, 59, 0.7)'
-      },
-      ]
+        {
+          label: 'real',
+          data: realValue,
+          backgroundColor: 'rgba(72, 129, 194, 0.7)',
+        },
+        {
+          label: 'prediction',
+          data: predictionValue,
+          backgroundColor: 'rgba(219, 139, 59, 0.7)',
+        },
+      ],
     }
   }
 
@@ -88,10 +96,10 @@ export default class DailyCapacity {
 
     // Register the possible trained models
     this.possibleTrainedModels = this.allModels.map((model) => {
-      const date_string: string = dayjs(model.last_date).format('DD MMMM')
+      const dateString: string = dayjs(model.last_date).format('DD MMMM')
       const result: ExistentModel = {
         id: model.md5_sum,
-        name: `red "${model.name}" entrenada ${date_string}`
+        name: `red "${model.name}" entrenada ${dateString}`,
       }
       return result
     })
@@ -106,15 +114,17 @@ export default class DailyCapacity {
 
     console.debug('request for date:', startDateString, 'to', endDateString)
     const response = await fetch(
-      `${this.endpoint}/daily-capacity/person-amount-prediction?start_date=${startDateString}&end_date=${endDateString}&model_id=${modelId}`)
-    
+      `${this.endpoint}/daily-capacity/person-amount-prediction?start_date=${startDateString}&end_date=${endDateString}&model_id=${modelId}`,
+    )
+
     const data = await response.json()
     if (response.status === 200) {
       // Save the prediction data
       this.lastPrediction = data.capacities
       return data.capacities as PredictionResult[]
-    } else {
-      console.error(data)
     }
+
+    console.error(data)
+    return null
   }
 }

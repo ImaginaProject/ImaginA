@@ -9,28 +9,26 @@ import DailyCapacityPage from './components/daily-capacity/DailyCapacityPage'
 import TrainingPage from './components/training/TrainingPage'
 import SpecialDaysPage from './components/special-days/SpecialDaysPage'
 
-function App() {
-  return (
-    <div className="App">
-      <Admin
-        layout={MainLayout}
-        dashboard={MainDashboard}
-      >
-        <CustomRoutes>
-          <Route path='/daily-capacity' element={<DailyCapacityPage/>}/>
-        </CustomRoutes>
-        <Resource name='daily-sells'/>
-        {/* ... */}
-        <CustomRoutes>
-          <Route path='/training' element={<TrainingPage/>}/>
-        </CustomRoutes>
-        {/* ... */}
-        <CustomRoutes>
-          <Route path='/config-special-days' element={<SpecialDaysPage/>}/>
-        </CustomRoutes>
-      </Admin>
-    </div>
-  )
-}
+const App = () => (
+  <div className="App">
+    <Admin
+      layout={MainLayout}
+      dashboard={MainDashboard}
+    >
+      <CustomRoutes>
+        <Route path="/daily-capacity" element={<DailyCapacityPage />} />
+      </CustomRoutes>
+      <Resource name="daily-sells" />
+      {/* ... */}
+      <CustomRoutes>
+        <Route path="/training" element={<TrainingPage />} />
+      </CustomRoutes>
+      {/* ... */}
+      <CustomRoutes>
+        <Route path="/config-special-days" element={<SpecialDaysPage />} />
+      </CustomRoutes>
+    </Admin>
+  </div>
+)
 
 export default App

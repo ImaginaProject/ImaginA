@@ -1,13 +1,11 @@
-import { FunctionComponent } from "react";
+import { FunctionComponent } from 'react'
 
 export interface MainDashboardProps {}
 
-const MainDashboard: FunctionComponent<MainDashboardProps> = (props) => {
-  return (
-    <div>
-      edit dashboard
-    </div>
-  )
-}
+const MainDashboard: FunctionComponent<MainDashboardProps> = () => (
+  <div>
+    edit dashboard
+  </div>
+)
 
 export default MainDashboard

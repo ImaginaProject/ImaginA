@@ -13,7 +13,7 @@ export default class SpecialDays {
     const response = await fetch(`${this.endpoint}/special-days/days`)
     const data: SpecialDayResponse = await response.json()
     return data.days.map((day) => {
-      const {date, is_holiday: isHoliday, is_vacation: isVacation} = day
+      const { date, is_holiday: isHoliday, is_vacation: isVacation } = day
       return { date, isHoliday, isVacation } as SpecialDay
     })
   }
@@ -30,15 +30,15 @@ export default class SpecialDays {
     const response = await fetch(`${this.endpoint}/special-days/days`, {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json;charset=utf-8'
+        'Content-Type': 'application/json;charset=utf-8',
       },
-      body: JSON.stringify(newSpecialDay)
+      body: JSON.stringify(newSpecialDay),
     })
 
     const data = await response.json()
     console.debug('add():', data)
 
-    if (response.status == 200) {
+    if (response.status === 200) {
       return data.success
     }
 
@@ -56,7 +56,7 @@ export default class SpecialDays {
     })
 
     const data = await response.json()
-    if (response.status == 200) {
+    if (response.status === 200) {
       return data.success
     }
 

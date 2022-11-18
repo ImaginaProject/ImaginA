@@ -1,12 +1,11 @@
 import { FunctionComponent, Key, useState, useEffect } from 'react'
 import dayjs from 'dayjs'
-import Loading from '../loading/Loading'
 import { Space, Table, Upload, Button, Input, Alert, Tooltip } from 'antd'
-import { DeleteOutlined, LoadingOutlined, UploadOutlined } from '@ant-design/icons'
+import { UploadOutlined } from '@ant-design/icons'
 import type { ColumnsType } from 'antd/es/table'
 import type { UploadFile } from 'antd/es/upload/interface'
 import ToolDeleteModel from './ToolDeleteModel'
-
+import Loading from '../loading/Loading'
 
 type RegisteredModel = {
   name: string,
@@ -28,6 +27,12 @@ export interface TrainingPageTabProps {
 }
 
 const TrainingPageTab: FunctionComponent<TrainingPageTabProps> = (props) => {
+  const {
+    actionURL,
+    directory,
+    title,
+  } = props
+
   const [allModels, setAllModels] = useState<RegisteredModel[]>([])
   const [isLoading, setIsLoading] = useState(false)
   const [dataSource, setDataSource] = useState<DataType[]>([])
@@ -38,6 +43,16 @@ const TrainingPageTab: FunctionComponent<TrainingPageTabProps> = (props) => {
 
   const [isErrorAlertShown, setIsErrorAlertShown] = useState(false);
   const [errorAlertMessage, setErrorAlertMessage] = useState('');
+
+  const requestAllModels = async () => {
+    setIsLoading(true)
+    // Request all the models
+    const responseAllModels = await fetch(actionURL)
+    const allModelsData = await responseAllModels.json()
+    setAllModels(allModelsData.models as RegisteredModel[])
+    // Finishs
+    setIsLoading(false)
+  }
 
   const columns: ColumnsType<DataType> = [
     {
@@ -59,28 +74,16 @@ const TrainingPageTab: FunctionComponent<TrainingPageTabProps> = (props) => {
       title: 'Opciones',
       dataIndex: 'model',
       key: 'model',
-      render: (item: RegisteredModel) => {
-        return (
-          <ToolDeleteModel
-            deleteURL={`${props.actionURL}/${item.md5_sum}`}
-            onDelete={() => {
-              requestAllModels()
-            }}
-          />
-        )
-      },
-    }
+      render: (item: RegisteredModel) => (
+        <ToolDeleteModel
+          deleteURL={`${actionURL}/${item.md5_sum}`}
+          onDelete={() => {
+            requestAllModels()
+          }}
+        />
+      ),
+    },
   ]
-
-  const requestAllModels = async () => {
-    setIsLoading(true)
-    // Request all the models
-    const responseAllModels = await fetch(props.actionURL)
-    const allModelsData = await responseAllModels.json()
-    setAllModels(allModelsData.models as RegisteredModel[])
-    // Finishs
-    setIsLoading(false)
-  }
 
   const showErrorAlert = (message: string) => {
     setErrorAlertMessage(message)
@@ -88,7 +91,7 @@ const TrainingPageTab: FunctionComponent<TrainingPageTabProps> = (props) => {
     setTimeout(() => setIsErrorAlertShown(false), 5000)
   }
 
-  useEffect(() => {   
+  useEffect(() => {
     requestAllModels().then()
   }, [])
 
@@ -102,22 +105,22 @@ const TrainingPageTab: FunctionComponent<TrainingPageTabProps> = (props) => {
   }, [allModels])
 
   return (
-    <Space style={{ width: '100%' }} direction='vertical'>
+    <Space style={{ width: '100%' }} direction="vertical">
       <Input
-        placeholder='Model name'
+        placeholder="Model name"
         value={modelName}
         onChange={(e) => setModelName(e.target.value)}
       />
       <Input.TextArea
-        placeholder='Model description (optional)'
+        placeholder="Model description (optional)"
         value={modelDescription}
         onChange={(e) => setModelDescription(e.target.value)}
       />
       <Upload
         disabled={!modelName.trim()}
-        name='model_file'
-        action={props.actionURL}
-        method='POST'
+        name="model_file"
+        action={actionURL}
+        method="POST"
         maxCount={1}
         fileList={fileList}
         showUploadList={{
@@ -139,32 +142,32 @@ const TrainingPageTab: FunctionComponent<TrainingPageTabProps> = (props) => {
           form.append(request.filename || 'model_file', request.file)
 
           try {
-            request.onProgress && request.onProgress({percent: 10})
+            if (request.onProgress) request.onProgress({ percent: 10 })
             const response = await fetch(
               request.action,
               {
                 method: request.method,
                 body: form,
-                headers: { ...request.headers }
+                headers: { ...request.headers },
               },
             )
 
-            request.onProgress && request.onProgress({percent: 90})
+            if (request.onProgress) request.onProgress({ percent: 90 })
             const data = await response.json()
-            request.onProgress && request.onProgress({percent: 100})
+            if (request.onProgress) request.onProgress({ percent: 100 })
 
             if (response.status === 200) {
-              request.onSuccess && request.onSuccess(data)
+              if (request.onSuccess) request.onSuccess(data)
             } else {
-              showErrorAlert(`No puede subir archivo. Error: ${data['app_exception']}`)
+              showErrorAlert(`No puede subir archivo. Error: ${data.app_exception}`)
             }
             setModelName('')
             setModelDescription('')
             setFileList([])
-          } catch(e) {
+          } catch (e) {
             // TODO: check how to pass the error to `onError` because it spends
             //       a type `UploadRequestError` or `ProgressEvent<EventTarget>`
-            request.onError && request.onError(e as any)
+            if (request.onError) request.onError(e as any)
           }
         }}
       >
@@ -176,12 +179,12 @@ const TrainingPageTab: FunctionComponent<TrainingPageTabProps> = (props) => {
         </Button>
       </Upload>
       {isErrorAlertShown && (
-        <Alert message={errorAlertMessage} type='error' />
+        <Alert message={errorAlertMessage} type="error" />
       )}
       {isLoading ? (
         <Loading>Requesting all the models</Loading>
       ) : (
-        <Table columns={columns} dataSource={dataSource}/>
+        <Table columns={columns} dataSource={dataSource} />
       )}
     </Space>
   )

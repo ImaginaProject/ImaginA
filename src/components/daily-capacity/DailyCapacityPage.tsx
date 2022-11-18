@@ -1,6 +1,13 @@
 import { FunctionComponent, useState, useEffect } from 'react'
 import { Bar } from 'react-chartjs-2'
-import { Space, DatePicker, Dropdown, Button, Menu, Typography } from 'antd'
+import {
+  Space,
+  DatePicker,
+  Dropdown,
+  Button,
+  Menu,
+  Typography,
+} from 'antd'
 import dayjs, { Dayjs } from 'dayjs'
 import 'dayjs/locale/es'
 import weekday from 'dayjs/plugin/weekday'
@@ -17,11 +24,10 @@ import {
   Title,
   Tooltip,
   Legend,
-  type ChartData,
 } from 'chart.js'
 import { LoadingOutlined } from '@ant-design/icons'
 import DailyCapacity from '../../classes/DailyCapacity'
-import { ExistentModel, PredictionResult, RegisteredModel } from '../../types/types'
+import { ExistentModel } from '../../types/types'
 
 // Load the plugins
 dayjs.locale('es')
@@ -36,14 +42,13 @@ ChartJS.register(
   BarElement,
   Title,
   Tooltip,
-  Legend
+  Legend,
 )
-
 
 export interface DailyCapacityPageProps {}
 
-const DailyCapacityPage: FunctionComponent<DailyCapacityPageProps> = (props) => {
-  const [dc, setDc] = useState(new DailyCapacity());
+const DailyCapacityPage: FunctionComponent<DailyCapacityPageProps> = () => {
+  const [dc] = useState(new DailyCapacity());
   const [isLoading, setIsLoading] = useState(true);
   const [isLoadingAllModels, setIsLoadingAllModels] = useState(false);
 
@@ -74,7 +79,7 @@ const DailyCapacityPage: FunctionComponent<DailyCapacityPageProps> = (props) => 
   useEffect(() => {
     if (!startDate || !endDate) return;
     if (!selectedModel) return;
-    
+
     setIsLoading(true)
     dc.predicePersonAmount(startDate, endDate, selectedModel.id)
       .then((prediction) => {
@@ -91,7 +96,9 @@ const DailyCapacityPage: FunctionComponent<DailyCapacityPageProps> = (props) => 
         <Menu.Item
           key={model.id}
           onClick={() => setSelectedModel(model)}
-        >{model.name}</Menu.Item>
+        >
+          {model.name}
+        </Menu.Item>
       ))}
     </Menu>
   )
@@ -99,28 +106,32 @@ const DailyCapacityPage: FunctionComponent<DailyCapacityPageProps> = (props) => 
   if (isLoading) return <Loading />
 
   return (
-    <Space style={{padding: '2em', width: '100%'}} direction='vertical'>
+    <Space style={{ padding: '2em', width: '100%' }} direction="vertical">
       <Space
-        align='baseline'
+        align="baseline"
         style={{
           display: 'flex',
-          justifyContent: 'space-between'
+          justifyContent: 'space-between',
         }}
       >
         <Space>
-          {startDate && <DatePicker
-            defaultValue={startDate as any}
-            onChange={(value: any) => setStartDate(value)}
-          />}
-          {endDate && <DatePicker
-            defaultValue={endDate ? endDate as any : ''}
-            onChange={(value: any) => setEndDate(value)}
-          />}
+          {startDate && (
+            <DatePicker
+              defaultValue={startDate as any}
+              onChange={(value: any) => setStartDate(value)}
+            />
+          )}
+          {endDate && (
+            <DatePicker
+              defaultValue={endDate ? endDate as any : ''}
+              onChange={(value: any) => setEndDate(value)}
+            />
+          )}
         </Space>
-        
+
         <Space>
-          <Dropdown overlay={menu} placement='bottomLeft'>
-            <Button type='primary' icon={isLoadingAllModels && <LoadingOutlined/>}>
+          <Dropdown overlay={menu} placement="bottomLeft">
+            <Button type="primary" icon={isLoadingAllModels && <LoadingOutlined />}>
               {selectedModel === null ? (
                 'Realizar predicción usando'
               ) : (`Seleccionado: ${selectedModel.name}`)}
@@ -128,7 +139,11 @@ const DailyCapacityPage: FunctionComponent<DailyCapacityPageProps> = (props) => 
           </Dropdown>
         </Space>
       </Space>
-      <Typography.Text>{dc.lastPrediction.length} resultados predichos</Typography.Text>
+      <Typography.Text>
+        {dc.lastPrediction.length}
+        {' '}
+        resultados predichos
+      </Typography.Text>
       <Bar options={dc.graphOptions} data={dc.barData} />
     </Space>
   )

@@ -3,7 +3,6 @@ import { Tabs, Space, Typography } from 'antd'
 import TrainingPageTab from './TrainingPageTab'
 import type { TrainingPageTabProps } from './TrainingPageTab'
 
-
 export interface TrainingPageProps {}
 
 const tabs: TrainingPageTabProps[] = [
@@ -14,19 +13,17 @@ const tabs: TrainingPageTabProps[] = [
   },
 ]
 
-const TrainingPage: FunctionComponent<TrainingPageProps> = (props) => {
-  return (
-    <Space style={{padding: '2em', width: '100%'}} direction='vertical'>
-      <Typography.Title>Subir modelo entrenado</Typography.Title>
-      <Tabs>
-        {tabs.map((tab) => (
-          <Tabs.TabPane tab={tab.title} key={tab.directory}>
-            <TrainingPageTab {...tab} />
-          </Tabs.TabPane>
-        ))}
-      </Tabs>
-    </Space>
-  )
-}
+const TrainingPage: FunctionComponent<TrainingPageProps> = () => (
+  <Space style={{ padding: '2em', width: '100%' }} direction="vertical">
+    <Typography.Title>Subir modelo entrenado</Typography.Title>
+    <Tabs>
+      {tabs.map((tab) => (
+        <Tabs.TabPane tab={tab.title} key={tab.directory}>
+          <TrainingPageTab {...tab} />
+        </Tabs.TabPane>
+      ))}
+    </Tabs>
+  </Space>
+)
 
 export default TrainingPage

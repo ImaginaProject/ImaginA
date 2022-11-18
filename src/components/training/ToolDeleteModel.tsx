@@ -8,21 +8,24 @@ export interface ToolDeleteModelProps {
 }
 
 const ToolDeleteModel: FunctionComponent<ToolDeleteModelProps> = (props) => {
+  const { deleteURL, onDelete } = props
   const [isDeleting, setIsDeleting] = useState(false);
 
   return (
-    <Tooltip title='Eliminar'>
-      <Button onClick={async () => {
-        setIsDeleting(true)
-        const response = await fetch(props.deleteURL, { method: 'DELETE' })
-        const data = await response.json()
-        if (response.status === 200) {
-          if (data?.success) {
-            props.onDelete()
+    <Tooltip title="Eliminar">
+      <Button
+        onClick={async () => {
+          setIsDeleting(true)
+          const response = await fetch(deleteURL, { method: 'DELETE' })
+          const data = await response.json()
+          if (response.status === 200) {
+            if (data?.success) {
+              onDelete()
+            }
           }
-        }
-        setIsDeleting(false)
-      }}>
+          setIsDeleting(false)
+        }}
+      >
         {isDeleting ? (
           <LoadingOutlined />
         ) : (
