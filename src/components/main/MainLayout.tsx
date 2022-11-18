@@ -9,6 +9,7 @@ import {
   Menu,
   Typography,
   Badge,
+  Modal,
 } from 'antd'
 import {
   DashboardOutlined,
@@ -109,6 +110,21 @@ const MainLayout: FunctionComponent<MainLayoutProps> = (props) => {
           </small>
         </small>
       </Layout.Footer>
+
+      <Modal
+        open={import.meta.env.VITE_APP_ENDPOINT === undefined}
+        title="Error de construcción"
+        closable={false}
+        footer={null}
+      >
+        <p>
+          No se ha definido el
+          {' '}
+          <strong>endpoint</strong>
+          {' '}
+          de la API.
+        </p>
+      </Modal>
     </Layout>
   )
 }
