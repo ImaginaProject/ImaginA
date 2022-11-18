@@ -26,6 +26,8 @@
         "react/jsx-filename-extension": [1, { "extensions": [".tsx"] }],
         "no-console": "off",
         "react/jsx-props-no-spreading": "off",
-        "no-unused-vars": "warn"
+        "no-unused-vars": "warn",
+        "import/no-unresolved": "off",
+        "import/extensions": [1, { "tsx": "always" }]
     }
 }
