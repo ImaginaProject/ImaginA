@@ -14,8 +14,6 @@ import weekday from 'dayjs/plugin/weekday'
 import localeData from 'dayjs/plugin/localeData'
 import customParseFormat from 'dayjs/plugin/customParseFormat'
 
-import Loading from '../loading/Loading'
-
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -26,6 +24,7 @@ import {
   Legend,
 } from 'chart.js'
 import { LoadingOutlined } from '@ant-design/icons'
+import Loading from '../loading/Loading'
 import DailyCapacity from '../../classes/DailyCapacity'
 import { ExistentModel } from '../../types/types'
 
