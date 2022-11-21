@@ -6,7 +6,7 @@ import './App.css'
 import MainLayout from './components/main/MainLayout'
 import MainDashboard from './components/main/MainDashboard'
 import DailyCapacityPage from './components/daily-capacity/DailyCapacityPage'
-import UploadTrainedModelPage from './components/training/TrainingPage'
+import UploadTrainedModelPage from './components/training/UploadTrainedModelPage'
 import SpecialDaysPage from './components/special-days/SpecialDaysPage'
 
 const App = () => (

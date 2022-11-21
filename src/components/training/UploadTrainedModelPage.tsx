@@ -1,7 +1,7 @@
 import { FunctionComponent } from 'react'
 import { Tabs, Space, Typography } from 'antd'
-import TrainedModelsPageTab from './TrainingPageTab'
-import type { TrainedModelsPageTabProps } from './TrainingPageTab'
+import TrainedModelsPageTab from './TrainedModelsPageTab'
+import type { TrainedModelsPageTabProps } from './TrainedModelsPageTab'
 
 export interface UploadTrainedModelPageProps {}
 
