@@ -14,6 +14,7 @@ import {
 import {
   DashboardOutlined,
   SettingOutlined,
+  UploadOutlined,
   UserSwitchOutlined,
 } from '@ant-design/icons'
 import { Link } from 'react-router-dom'
@@ -48,9 +49,23 @@ const items: MenuItem[] = [
     label: <Link to="/import-data">Importación datos</Link>,
   },
   {
-    key: 'entertainment',
+    key: 'training',
     icon: <SettingOutlined />,
-    label: <Link to="/training">Entrenamiento</Link>,
+    label: 'Entrenamiento',
+    // label: <Link to="/training">Entrenamiento</Link>,
+    children: [
+      {
+        key: 'upload-trained-model',
+        icon: <UploadOutlined />,
+        label: <Link to="/upload-model">Subir modelo</Link>,
+        title: 'Subir modelo entrenado',
+      },
+      {
+        key: 'train-model',
+        icon: <SettingOutlined />,
+        label: <Link to="/train">Entrenar modelo</Link>,
+      },
+    ],
   },
   {
     key: 'config-special-days',
@@ -90,6 +105,7 @@ const MainLayout: FunctionComponent<MainLayoutProps> = (props) => {
           <Menu
             defaultSelectedKeys={['1']}
             items={items}
+            mode="inline"
           />
         </Layout.Sider>
 

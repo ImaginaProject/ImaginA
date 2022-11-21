@@ -3,7 +3,7 @@ import { Tabs, Space, Typography } from 'antd'
 import TrainingPageTab from './TrainingPageTab'
 import type { TrainingPageTabProps } from './TrainingPageTab'
 
-export interface TrainingPageProps {}
+export interface UploadTrainedModelPageProps {}
 
 const tabs: TrainingPageTabProps[] = [
   {
@@ -13,7 +13,7 @@ const tabs: TrainingPageTabProps[] = [
   },
 ]
 
-const TrainingPage: FunctionComponent<TrainingPageProps> = () => (
+const UploadTrainedModelPage: FunctionComponent<UploadTrainedModelPageProps> = () => (
   <Space style={{ padding: '2em', width: '100%' }} direction="vertical">
     <Typography.Title>Subir modelo entrenado</Typography.Title>
     <Tabs>
@@ -26,4 +26,4 @@ const TrainingPage: FunctionComponent<TrainingPageProps> = () => (
   </Space>
 )
 
-export default TrainingPage
+export default UploadTrainedModelPage

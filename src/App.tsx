@@ -6,7 +6,7 @@ import './App.css'
 import MainLayout from './components/main/MainLayout'
 import MainDashboard from './components/main/MainDashboard'
 import DailyCapacityPage from './components/daily-capacity/DailyCapacityPage'
-import TrainingPage from './components/training/TrainingPage'
+import UploadTrainedModelPage from './components/training/TrainingPage'
 import SpecialDaysPage from './components/special-days/SpecialDaysPage'
 
 const App = () => (
@@ -21,7 +21,7 @@ const App = () => (
       <Resource name="daily-sells" />
       {/* ... */}
       <CustomRoutes>
-        <Route path="/training" element={<TrainingPage />} />
+        <Route path="/upload-model" element={<UploadTrainedModelPage />} />
       </CustomRoutes>
       {/* ... */}
       <CustomRoutes>
