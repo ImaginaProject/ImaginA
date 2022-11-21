@@ -33,13 +33,13 @@ interface DataType extends RegisteredModel {
   model: any,
 }
 
-export interface TrainingPageTabProps {
+export interface TrainedModelsPageTabProps {
   directory: string,
   title: string,
   actionURL: string,
 }
 
-const TrainingPageTab: FunctionComponent<TrainingPageTabProps> = (props) => {
+const TrainedModelsPageTab: FunctionComponent<TrainedModelsPageTabProps> = (props) => {
   const {
     actionURL,
     directory,
@@ -213,4 +213,4 @@ const TrainingPageTab: FunctionComponent<TrainingPageTabProps> = (props) => {
   )
 }
 
-export default TrainingPageTab
+export default TrainedModelsPageTab

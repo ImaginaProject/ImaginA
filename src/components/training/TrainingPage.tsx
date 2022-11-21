@@ -1,11 +1,11 @@
 import { FunctionComponent } from 'react'
 import { Tabs, Space, Typography } from 'antd'
-import TrainingPageTab from './TrainingPageTab'
-import type { TrainingPageTabProps } from './TrainingPageTab'
+import TrainedModelsPageTab from './TrainingPageTab'
+import type { TrainedModelsPageTabProps } from './TrainingPageTab'
 
 export interface UploadTrainedModelPageProps {}
 
-const tabs: TrainingPageTabProps[] = [
+const tabs: TrainedModelsPageTabProps[] = [
   {
     actionURL: `${import.meta.env.VITE_APP_ENDPOINT}/daily-capacity/existent-models`,
     directory: 'daily-capacity',
@@ -19,7 +19,7 @@ const UploadTrainedModelPage: FunctionComponent<UploadTrainedModelPageProps> = (
     <Tabs>
       {tabs.map((tab) => (
         <Tabs.TabPane tab={tab.title} key={tab.directory}>
-          <TrainingPageTab {...tab} />
+          <TrainedModelsPageTab {...tab} />
         </Tabs.TabPane>
       ))}
     </Tabs>
