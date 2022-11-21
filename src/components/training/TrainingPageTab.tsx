@@ -56,13 +56,20 @@ const TrainingPageTab: FunctionComponent<TrainingPageTabProps> = (props) => {
 
   const [isErrorAlertShown, setIsErrorAlertShown] = useState(false);
   const [errorAlertMessage, setErrorAlertMessage] = useState('');
+  const [errorFetchingError, setErrorFetchingError] = useState('');
 
   const requestAllModels = async () => {
     setIsLoading(true)
     // Request all the models
-    const responseAllModels = await fetch(actionURL)
-    const allModelsData = await responseAllModels.json()
-    setAllModels(allModelsData.models as RegisteredModel[])
+    try {
+      const responseAllModels = await fetch(actionURL)
+      const allModelsData = await responseAllModels.json()
+      setAllModels(allModelsData.models as RegisteredModel[])
+      setErrorFetchingError('')
+    } catch (err) {
+      console.error(err)
+      setErrorFetchingError('Error de conexión: no se puede conectar a la API.')
+    }
     // Finishs
     setIsLoading(false)
   }
@@ -193,6 +200,9 @@ const TrainingPageTab: FunctionComponent<TrainingPageTabProps> = (props) => {
       </Upload>
       {isErrorAlertShown && (
         <Alert message={errorAlertMessage} type="error" />
+      )}
+      {errorFetchingError && (
+        <Alert closable message={errorFetchingError} type="error" />
       )}
       {isLoading ? (
         <Loading>Requesting all the models</Loading>
