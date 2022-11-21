@@ -112,7 +112,9 @@ const TrainedModelsPageTab: FunctionComponent<TrainedModelsPageTabProps> = (prop
   }
 
   useEffect(() => {
-    requestAllModels().then()
+    requestAllModels().then(() => {
+      console.log(`render "${title}" (${directory})`)
+    })
   }, [])
 
   useEffect(() => {
