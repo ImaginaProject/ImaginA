@@ -47,7 +47,15 @@ const items: MenuItem[] = [
   {
     key: 'import-data',
     icon: <SettingOutlined />,
-    label: <Link to="/import-data">Importación datos</Link>,
+    // label: <Link to="/import-data">Importación datos</Link>,
+    label: 'Importación datos',
+    children: [
+      {
+        key: 'dataset-manager',
+        icon: <SettingOutlined />,
+        label: <Link to="/dataset-manager">Administrar dataset</Link>,
+      },
+    ],
   },
   {
     key: 'training',

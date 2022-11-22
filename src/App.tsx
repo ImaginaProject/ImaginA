@@ -8,7 +8,7 @@ import { i18nProvider } from './locale/i18nProvider'
 import MainLayout from './components/main/MainLayout'
 import MainDashboard from './components/main/MainDashboard'
 import DailyCapacityPage from './components/daily-capacity/DailyCapacityPage'
-import DatasetManager from './components/dataset/DatasetManager'
+import DatasetManagerPage from './components/dataset/DatasetManagerPage'
 import UploadTrainedModelPage from './components/training/UploadTrainedModelPage'
 import SpecialDaysPage from './components/special-days/SpecialDaysPage'
 
@@ -23,7 +23,9 @@ const App = () => (
         <Route path="/daily-capacity" element={<DailyCapacityPage />} />
       </CustomRoutes>
       <Resource name="daily-sells" />
-      {/* ... */}
+      <CustomRoutes>
+        <Route path="/dataset-manager" element={<DatasetManagerPage />} />
+      </CustomRoutes>
       <CustomRoutes>
         <Route path="/upload-model" element={<UploadTrainedModelPage />} />
       </CustomRoutes>
