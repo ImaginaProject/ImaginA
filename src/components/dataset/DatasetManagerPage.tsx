@@ -69,6 +69,25 @@ const DatasetManagerPage: FunctionComponent<DatasetManagerPageProps> = () => {
       title: 'Gentío',
       key: 'capacity',
       dataIndex: 'footfall',
+      filters: [
+        {
+          text: '>= 10',
+          value: 10,
+        },
+        {
+          text: '>= 100',
+          value: 100,
+        },
+        {
+          text: '>= 1000',
+          value: 1000,
+        },
+        {
+          text: '>= 10000',
+          value: 10000,
+        },
+      ],
+      onFilter: (value, record) => record.footfall >= value,
     },
     {
       title: 'Opciones',
