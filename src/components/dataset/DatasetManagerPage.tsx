@@ -1,4 +1,9 @@
-import { FunctionComponent, useEffect, useState } from 'react'
+import {
+  FunctionComponent,
+  useEffect,
+  useState,
+  ReactNode,
+} from 'react'
 import dayjs from 'dayjs'
 import {
   Space,
@@ -8,11 +13,43 @@ import {
 } from 'antd'
 import { useTranslate } from 'react-admin'
 import type { ColumnsType } from 'antd/es/table'
-import { DeleteOutlined } from '@ant-design/icons'
+import { DeleteOutlined, LoadingOutlined } from '@ant-design/icons'
 import DatasetManager from '../../classes/DatasetManager'
 import type { DailyCapacityDB } from '../../types/types'
 
 export interface DatasetManagerPageProps {}
+
+interface DeleteButtonProps {
+  children: ReactNode,
+  onDelete: () => Promise<void>,
+}
+const DeleteButton: FunctionComponent<DeleteButtonProps> = (props) => {
+  const { children, onDelete } = props
+  const [isLoading, setIsLoading] = useState(false);
+
+  const onDeleteClick = async () => {
+    setIsLoading(true)
+    try {
+      await onDelete()
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+  return (
+    <Button
+      disabled={isLoading}
+      onClick={onDeleteClick}
+      danger
+    >
+      {isLoading ? (
+        <LoadingOutlined />
+      ) : (
+        children
+      )}
+    </Button>
+  )
+}
 
 const DatasetManagerPage: FunctionComponent<DatasetManagerPageProps> = () => {
   const translate = useTranslate()
@@ -94,13 +131,13 @@ const DatasetManagerPage: FunctionComponent<DatasetManagerPageProps> = () => {
       key: 'options',
       render: (item: DailyCapacityDB) => (
         <Space>
-          <Button
-            onClick={() => {
-              dm.deleteById(item.id)
+          <DeleteButton
+            onDelete={async () => {
+              await dm.deleteById(item.id)
             }}
           >
             <DeleteOutlined />
-          </Button>
+          </DeleteButton>
         </Space>
       ),
     },
