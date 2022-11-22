@@ -7,9 +7,16 @@ let localeData: LocaleType = localeSet.es
 // eslint-disable-next-line import/prefer-default-export
 export const i18nProvider = {
   // required
-  translate: (key: keyof LocaleType, options: any) => (
-    localeData[key] || options.default || '???'
-  ),
+  translate: (key: keyof LocaleType, options: any) => {
+    let words: string = localeData[key] || options.default || '???'
+    if (options?.start) {
+      words = words.charAt(0).toUpperCase() + words.substring(1)
+    }
+    if (options?.end) {
+      words += '.'
+    }
+    return words
+  },
   changeLocale: async (locale: keyof LocaleSetType) => {
     console.info('cahnge locale to', locale)
     currentLocale = locale
