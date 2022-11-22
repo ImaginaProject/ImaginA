@@ -10,6 +10,7 @@ import {
   Typography,
   Badge,
   Modal,
+  Space,
 } from 'antd'
 import {
   DashboardOutlined,
@@ -20,7 +21,7 @@ import {
 import { Link } from 'react-router-dom'
 
 import type { MenuProps } from 'antd'
-import type { CoreLayoutProps } from 'react-admin'
+import { CoreLayoutProps, LocalesMenuButton } from 'react-admin'
 
 type MenuItem = Required<MenuProps>['items'][number];
 
@@ -97,7 +98,10 @@ const MainLayout: FunctionComponent<MainLayoutProps> = (props) => {
   return (
     <Layout>
       <Layout.Header>
-        <Typography.Title style={{ color: 'whitesmoke' }}>ImaginA</Typography.Title>
+        <Space direction="horizontal" style={{ display: 'flex', justifyContent: 'space-between' }}>
+          <Typography.Title style={{ color: 'whitesmoke' }}>ImaginA</Typography.Title>
+          <LocalesMenuButton />
+        </Space>
       </Layout.Header>
 
       <Layout>
