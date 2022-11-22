@@ -13,7 +13,16 @@ export default class DatasetManager {
   async requestAll() {
     const response = fetch(`${this.endpoint}/daily-capacity/dataset`)
     const data = await (await response).json()
-    this.datasetList = data.dataset
+    this.datasetList = data.dataset.map((item: any) => {
+      const processedData: DailyCapacityDB = {
+        date: item.date,
+        footfall: item.footfall,
+        id: item.id,
+        isHoliday: item.is_holiday,
+        isVacation: item.is_vacation,
+      }
+      return processedData
+    })
   }
 
   async deleteById(id: string) {
