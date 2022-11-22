@@ -36,3 +36,16 @@ export type SpecialDayResponse = {
     is_vacation: boolean,
   }[]
 }
+
+/** @deprecated Not used */
+export type RawDailyCapacityDB = {
+  date: Date,
+  is_holiday: boolean,
+  is_vacation: boolean,
+  footfall: number,
+}
+
+export type DailyCapacityDB = SpecialDay & {
+  id: string,
+  footfall: number,
+}
