@@ -65,7 +65,6 @@ const DatasetManagerPage: FunctionComponent<DatasetManagerPageProps> = () => {
   const [dataSource, setDataSource] = useState<(DailyCapacityDB & { key: any })[]>([]);
 
   const [isAddingFormShown, setIsAddingFormShown] = useState(false);
-
   const [isAddingFormSubmiting, setIsAddingFormSubmiting] = useState(false);
 
   const [addingForm] = Form.useForm()
@@ -243,6 +242,9 @@ const DatasetManagerPage: FunctionComponent<DatasetManagerPageProps> = () => {
         <Form
           form={addingForm}
           onFinish={onFinishAddingForm}
+          initialValues={{
+            date: dayjs(new Date()),
+          }}
         >
           <Form.Item
             name="date"
@@ -273,6 +275,16 @@ const DatasetManagerPage: FunctionComponent<DatasetManagerPageProps> = () => {
               {
                 required: true,
                 message: '¡Escriba el aforo!',
+              },
+              {
+                type: 'integer',
+                message: 'Números entero',
+              },
+              {
+                validator: (_, value) => {
+                  if (value < 0) return Promise.reject(new Error('No se pueden números negativo'))
+                  return Promise.resolve()
+                },
               },
             ]}
           >
