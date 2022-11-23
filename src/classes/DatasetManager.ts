@@ -1,3 +1,4 @@
+import dayjs from 'dayjs'
 import { DailyCapacityDB } from '../types/types'
 
 export default class DatasetManager {
@@ -28,5 +29,22 @@ export default class DatasetManager {
   async deleteById(id: string) {
     console.log('Request delete', id)
     return this
+  }
+
+  // eslint-disable-next-line class-methods-use-this
+  async add(data: DailyCapacityDB) {
+    const payload = {
+      date: dayjs(data.date).format('DD/MM/YYYY'),
+      is_holiday: data.isHoliday,
+      is_vacation: data.isVacation,
+      footfall: data.footfall,
+    }
+    await fetch(`${this.endpoint}/datasets`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json;charset=utf-8',
+      },
+      body: JSON.stringify(payload),
+    })
   }
 }
