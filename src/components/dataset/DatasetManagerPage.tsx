@@ -20,7 +20,6 @@ import {
 import { useTranslate } from 'react-admin'
 import type { ColumnsType } from 'antd/es/table'
 import { DeleteOutlined, LoadingOutlined } from '@ant-design/icons'
-import Loading from '../loading/Loading'
 import DatasetManager from '../../classes/DatasetManager'
 import type { DailyCapacityDB } from '../../types/types'
 
@@ -227,11 +226,7 @@ const DatasetManagerPage: FunctionComponent<DatasetManagerPageProps> = () => {
       </Space>
 
       <Divider />
-      {isLoading ? (
-        <Loading label="Cargando dataset..." />
-      ) : (
-        <Table columns={columns} dataSource={dataSource} />
-      )}
+      <Table columns={columns} dataSource={dataSource} loading={isLoading} />
 
       <Modal
         footer={false}
