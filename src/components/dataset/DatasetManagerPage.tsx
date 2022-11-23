@@ -10,6 +10,12 @@ import {
   Typography,
   Table,
   Button,
+  Divider,
+  Modal,
+  Form,
+  DatePicker,
+  Checkbox,
+  InputNumber,
 } from 'antd'
 import { useTranslate } from 'react-admin'
 import type { ColumnsType } from 'antd/es/table'
@@ -55,6 +61,39 @@ const DatasetManagerPage: FunctionComponent<DatasetManagerPageProps> = () => {
   const translate = useTranslate()
   const [dm] = useState(new DatasetManager());
   const [dataSource, setDataSource] = useState<(DailyCapacityDB & { key: any })[]>([]);
+
+  const [isAddingFormShown, setIsAddingFormShown] = useState(false);
+
+  const [addingForm] = Form.useForm()
+
+  const openAddingForm = () => {
+    setIsAddingFormShown(true)
+  }
+
+  const closeAddingForm = () => {
+    addingForm.resetFields()
+    setIsAddingFormShown(false)
+  }
+
+  const onFinishAddingForm = (value: any) => {
+    const {
+      date,
+      isHoliday,
+      isVacation,
+      footfall,
+    } = value
+    console.debug('save', value)
+
+    dm.add({
+      id: '', // Empty because this field is set by the Back-End
+      date,
+      isHoliday,
+      isVacation,
+      footfall,
+    }).finally(() => {
+      closeAddingForm()
+    })
+  }
 
   const columns: ColumnsType<DailyCapacityDB> = [
     {
@@ -145,11 +184,7 @@ const DatasetManagerPage: FunctionComponent<DatasetManagerPageProps> = () => {
 
   useEffect(() => {
     dm.requestAll().then(() => {
-      setDataSource(
-        dm.datasetList.map(
-          (item, key) => ({ key, ...item }),
-        ),
-      )
+      setDataSource(dm.datasetList.map((item, key) => ({ key, ...item })))
     })
   }, [])
 
@@ -161,7 +196,65 @@ const DatasetManagerPage: FunctionComponent<DatasetManagerPageProps> = () => {
       <Typography.Text>
         {translate('menu.dataset.manager.description', { start: true, end: true })}
       </Typography.Text>
+
+      <Space direction="horizontal">
+        <Button onClick={openAddingForm} type="primary">Agregar un elemento</Button>
+        {/* eslint-disable-next-line no-alert */}
+        <Button disabled onClick={() => alert('Not implement yet')}>Agregar desde archivo</Button>
+      </Space>
+
+      <Divider />
       <Table columns={columns} dataSource={dataSource} />
+
+      <Modal
+        footer={false}
+        open={isAddingFormShown}
+        onCancel={closeAddingForm}
+      >
+        <Typography.Title>Agregar dato individual</Typography.Title>
+        <Form
+          form={addingForm}
+          onFinish={onFinishAddingForm}
+        >
+          <Form.Item
+            name="date"
+            label="Fecha"
+            rules={[
+              {
+                required: true,
+                message: '¡Escriba la fecha!',
+              },
+            ]}
+          >
+            <DatePicker />
+          </Form.Item>
+          <Form.Item label="Día es festivo" name="isHoliday" valuePropName="checked">
+            <Checkbox value>
+              Es festivo
+            </Checkbox>
+          </Form.Item>
+          <Form.Item label="Día es vacaciones" name="isVacation" valuePropName="checked">
+            <Checkbox value>
+              Es vacaciones
+            </Checkbox>
+          </Form.Item>
+          <Form.Item
+            label="Aforo"
+            name="footfall"
+            rules={[
+              {
+                required: true,
+                message: '¡Escriba el aforo!',
+              },
+            ]}
+          >
+            <InputNumber />
+          </Form.Item>
+          <Button type="primary" htmlType="submit">
+            Submit
+          </Button>
+        </Form>
+      </Modal>
     </Space>
   )
 }
