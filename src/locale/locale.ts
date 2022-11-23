@@ -9,6 +9,7 @@ const localeSet: LocaleSetType = {
     'menu.dataset.manager.description': 'agrega, edita y elimina registros del dataset',
     'menu.dataset.manager.title': 'administrador de dataset',
   },
+  fr: {},
 }
 
 export default localeSet

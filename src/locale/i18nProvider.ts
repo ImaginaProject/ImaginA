@@ -1,14 +1,14 @@
-import type { LocaleSetType, LocaleType } from './types'
+import type { AvailableLocale, LocaleType } from './types'
 import localeSet from './locale'
 
-let currentLocale: keyof LocaleSetType = 'es'
+let currentLocale: AvailableLocale = 'es'
 let localeData: LocaleType = localeSet.es
 
 // eslint-disable-next-line import/prefer-default-export
 export const i18nProvider = {
   // required
   translate: (key: keyof LocaleType, options: any) => {
-    let words: string = localeData[key] || options.default || '???'
+    let words: string = localeData[key] || options.default || localeSet.es[key] || '???'
     if (options?.start) {
       words = words.charAt(0).toUpperCase() + words.substring(1)
     }
@@ -17,10 +17,11 @@ export const i18nProvider = {
     }
     return words
   },
-  changeLocale: async (locale: keyof LocaleSetType) => {
-    console.info('cahnge locale to', locale)
+  changeLocale: async (_locale: string) => {
+    const locale = _locale as AvailableLocale
     currentLocale = locale
     localeData = localeSet[currentLocale]
+    console.info('change locale to', locale)
   },
   getLocale: () => currentLocale.toString(),
   // optional
