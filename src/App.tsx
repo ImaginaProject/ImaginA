@@ -24,7 +24,7 @@ const App = () => (
       </CustomRoutes>
       <Resource name="daily-sells" />
       <CustomRoutes>
-        <Route path="/dataset-manager" element={<DatasetManagerPage />} />
+        <Route path="/dataset/manager" element={<DatasetManagerPage />} />
       </CustomRoutes>
       <CustomRoutes>
         <Route path="/upload-model" element={<UploadTrainedModelPage />} />

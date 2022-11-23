@@ -53,7 +53,7 @@ const items: MenuItem[] = [
       {
         key: 'dataset-manager',
         icon: <SettingOutlined />,
-        label: <Link to="/dataset-manager">Administrar dataset</Link>,
+        label: <Link to="/dataset/manager">Administrar dataset</Link>,
       },
     ],
   },

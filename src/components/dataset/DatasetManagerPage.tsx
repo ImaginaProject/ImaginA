@@ -20,6 +20,7 @@ import {
 import { useTranslate } from 'react-admin'
 import type { ColumnsType } from 'antd/es/table'
 import { DeleteOutlined, LoadingOutlined } from '@ant-design/icons'
+import Loading from '../loading/Loading'
 import DatasetManager from '../../classes/DatasetManager'
 import type { DailyCapacityDB } from '../../types/types'
 
@@ -58,13 +59,14 @@ const DeleteButton: FunctionComponent<DeleteButtonProps> = (props) => {
 }
 
 const DatasetManagerPage: FunctionComponent<DatasetManagerPageProps> = () => {
-  const translate = useTranslate()
   const [dm] = useState(new DatasetManager());
+  const [isLoading, setIsLoading] = useState(false);
   const [dataSource, setDataSource] = useState<(DailyCapacityDB & { key: any })[]>([]);
 
   const [isAddingFormShown, setIsAddingFormShown] = useState(false);
 
   const [addingForm] = Form.useForm()
+  const translate = useTranslate()
 
   const openAddingForm = () => {
     setIsAddingFormShown(true)
@@ -183,8 +185,11 @@ const DatasetManagerPage: FunctionComponent<DatasetManagerPageProps> = () => {
   ]
 
   useEffect(() => {
+    setIsLoading(true)
     dm.requestAll().then(() => {
       setDataSource(dm.datasetList.map((item, key) => ({ key, ...item })))
+    }).finally(() => {
+      setIsLoading(false)
     })
   }, [])
 
@@ -204,7 +209,11 @@ const DatasetManagerPage: FunctionComponent<DatasetManagerPageProps> = () => {
       </Space>
 
       <Divider />
-      <Table columns={columns} dataSource={dataSource} />
+      {isLoading ? (
+        <Loading label="Cargando dataset..." />
+      ) : (
+        <Table columns={columns} dataSource={dataSource} />
+      )}
 
       <Modal
         footer={false}
