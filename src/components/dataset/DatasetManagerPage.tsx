@@ -118,7 +118,7 @@ const DatasetManagerPage: FunctionComponent<DatasetManagerPageProps> = () => {
 
   const columns: ColumnsType<DailyCapacityDB> = [
     {
-      title: 'Fecha',
+      title: translate('date', { start: true }),
       key: 'date',
       dataIndex: 'date',
       render: (item: Date) => dayjs(item).format('DD/MM/YYYY'),
@@ -129,41 +129,41 @@ const DatasetManagerPage: FunctionComponent<DatasetManagerPageProps> = () => {
       },
     },
     {
-      title: 'Festivo',
+      title: translate('holiday', { start: true }),
       key: 'holiday',
       dataIndex: 'isHoliday',
       render: (item: boolean) => (item ? 'Sí' : 'No'),
       filters: [
         {
-          text: 'Festivos',
+          text: translate('it.is.holiday'),
           value: true,
         },
         {
-          text: 'No festivos',
+          text: translate('it.is.not.holiday'),
           value: false,
         },
       ],
       onFilter: (value, record) => record.isHoliday === value,
     },
     {
-      title: 'Vacaciones',
+      title: translate('vacation', { start: true }),
       key: 'vacation',
       dataIndex: 'isVacation',
       render: (item: boolean) => (item ? 'Sí' : 'No'),
       filters: [
         {
-          text: 'Vacaciones',
+          text: translate('it.is.vacation'),
           value: true,
         },
         {
-          text: 'No vacaciones',
+          text: translate('it.is.not.vacation'),
           value: false,
         },
       ],
       onFilter: (value, record) => record.isVacation === value,
     },
     {
-      title: 'Gentío',
+      title: translate('footfall', { start: true }),
       key: 'capacity',
       dataIndex: 'footfall',
       filters: [
@@ -187,7 +187,7 @@ const DatasetManagerPage: FunctionComponent<DatasetManagerPageProps> = () => {
       onFilter: (value, record) => record.footfall >= value,
     },
     {
-      title: 'Opciones',
+      title: translate('options', { start: true }),
       key: 'options',
       render: (item: DailyCapacityDB) => (
         <Space>
@@ -213,16 +213,20 @@ const DatasetManagerPage: FunctionComponent<DatasetManagerPageProps> = () => {
   return (
     <Space style={{ padding: '2em', width: '100%' }} direction="vertical">
       <Typography.Title>
-        {translate('menu.dataset.manager.title', { start: true })}
+        {translate('dataset.manager.title', { start: true })}
       </Typography.Title>
       <Typography.Text>
-        {translate('menu.dataset.manager.description', { start: true, end: true })}
+        {translate('dataset.manager.description', { start: true, end: true })}
       </Typography.Text>
 
       <Space direction="horizontal">
-        <Button onClick={openAddingForm} type="primary">Agregar un elemento</Button>
+        <Button onClick={openAddingForm} type="primary">
+          {translate('add.a.element', { start: true })}
+        </Button>
         {/* eslint-disable-next-line no-alert */}
-        <Button disabled onClick={() => alert('Not implement yet')}>Agregar desde archivo</Button>
+        <Button disabled onClick={() => alert('Not implement yet')}>
+          {translate('add.from.file', { start: true })}
+        </Button>
       </Space>
 
       <Divider />
@@ -233,7 +237,9 @@ const DatasetManagerPage: FunctionComponent<DatasetManagerPageProps> = () => {
         open={isAddingFormShown}
         onCancel={closeAddingForm}
       >
-        <Typography.Title>Agregar dato individual</Typography.Title>
+        <Typography.Title>
+          {translate('add.individual.data', { start: true })}
+        </Typography.Title>
         <Form
           form={addingForm}
           onFinish={onFinishAddingForm}
@@ -243,41 +249,50 @@ const DatasetManagerPage: FunctionComponent<DatasetManagerPageProps> = () => {
         >
           <Form.Item
             name="date"
-            label="Fecha"
+            label={translate('date', { start: true })}
             rules={[
               {
                 required: true,
-                message: '¡Escriba la fecha!',
+                message: translate(
+                  'dataset.manager.write-date',
+                  { start: true, exclamation: true },
+                ),
               },
             ]}
           >
             <DatePicker />
           </Form.Item>
-          <Form.Item label="Día es festivo" name="isHoliday" valuePropName="checked">
-            <Checkbox value>
-              Es festivo
-            </Checkbox>
-          </Form.Item>
-          <Form.Item label="Día es vacaciones" name="isVacation" valuePropName="checked">
-            <Checkbox value>
-              Es vacaciones
-            </Checkbox>
+          <Form.Item
+            label={translate('holiday.day', { start: true })}
+            name="isHoliday"
+            valuePropName="checked"
+          >
+            <Checkbox value>{translate('it.is.holiday')}</Checkbox>
           </Form.Item>
           <Form.Item
-            label="Aforo"
+            label={translate('vacation.day', { start: true })}
+            name="isVacation"
+            valuePropName="checked"
+          >
+            <Checkbox value>{translate('it.is.vacation')}</Checkbox>
+          </Form.Item>
+          <Form.Item
+            label={translate('footfall', { start: true })}
             name="footfall"
             rules={[
               {
                 required: true,
-                message: '¡Escriba el aforo!',
+                message: translate('dataset.manager.write-footfall'),
               },
               {
                 type: 'integer',
-                message: 'Números entero',
+                message: translate('error.required.integer'),
               },
               {
                 validator: (_, value) => {
-                  if (value < 0) return Promise.reject(new Error('No se pueden números negativo'))
+                  if (value < 0) {
+                    return Promise.reject(new Error(translate('error.non.positive.integer')))
+                  }
                   return Promise.resolve()
                 },
               },
@@ -291,7 +306,7 @@ const DatasetManagerPage: FunctionComponent<DatasetManagerPageProps> = () => {
             disabled={isAddingFormSubmiting}
             icon={(isAddingFormSubmiting && <LoadingOutlined />) || undefined}
           >
-            Submit
+            {translate('submit', { start: true })}
           </Button>
         </Form>
       </Modal>
