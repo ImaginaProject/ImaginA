@@ -11,9 +11,9 @@ export default class DatasetManager {
   }
 
   async requestAll() {
-    const response = fetch(`${this.endpoint}/daily-capacity/dataset`)
+    const response = fetch(`${this.endpoint}/datasets`)
     const data = await (await response).json()
-    this.datasetList = data.dataset.map((item: any) => {
+    this.datasetList = data.entries.map((item: any) => {
       const processedData: DailyCapacityDB = {
         date: item.date,
         footfall: item.footfall,
