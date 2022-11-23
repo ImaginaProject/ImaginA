@@ -24,11 +24,19 @@ export default class DatasetManager {
       }
       return processedData
     })
+    return this.datasetList
   }
 
   async deleteById(id: string) {
-    console.log('Request delete', id)
-    return this
+    const response = await fetch(`${this.endpoint}/datasets/${id}`, { method: 'DELETE' })
+    const data = await response.json()
+    if (response.status === 200) {
+      console.debug('deleting process responses:', data)
+      return data.success as boolean
+    }
+
+    console.warn('deleting process got status code:', response.status)
+    return false
   }
 
   // eslint-disable-next-line class-methods-use-this
@@ -39,12 +47,20 @@ export default class DatasetManager {
       is_vacation: data.isVacation,
       footfall: data.footfall,
     }
-    await fetch(`${this.endpoint}/datasets`, {
+    const response = await fetch(`${this.endpoint}/datasets`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json;charset=utf-8',
       },
       body: JSON.stringify(payload),
     })
+    const json = await response.json()
+    if (response.status === 200) {
+      console.debug('addding entry got json:', json)
+      return json.success as boolean
+    }
+
+    console.warn('got status code:', response.status, data)
+    return false
   }
 }
