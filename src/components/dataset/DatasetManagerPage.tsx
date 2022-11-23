@@ -37,7 +37,8 @@ const DeleteButton: FunctionComponent<DeleteButtonProps> = (props) => {
   const onDeleteClick = async () => {
     setIsLoading(true)
     try {
-      await onDelete()
+      const success = await onDelete()
+      console.info('deleting process successful:', success)
     } finally {
       setIsLoading(false)
     }
@@ -65,6 +66,8 @@ const DatasetManagerPage: FunctionComponent<DatasetManagerPageProps> = () => {
 
   const [isAddingFormShown, setIsAddingFormShown] = useState(false);
 
+  const [isAddingFormSubmiting, setIsAddingFormSubmiting] = useState(false);
+
   const [addingForm] = Form.useForm()
   const translate = useTranslate()
 
@@ -77,6 +80,17 @@ const DatasetManagerPage: FunctionComponent<DatasetManagerPageProps> = () => {
     setIsAddingFormShown(false)
   }
 
+  const requestAllEntries = async () => {
+    setIsLoading(true)
+
+    try {
+      await dm.requestAll();
+      setDataSource(dm.datasetList.map((item, key) => ({ key, ...item })))
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
   const onFinishAddingForm = (value: any) => {
     const {
       date,
@@ -86,13 +100,20 @@ const DatasetManagerPage: FunctionComponent<DatasetManagerPageProps> = () => {
     } = value
     console.debug('save', value)
 
+    setIsAddingFormSubmiting(true)
+
     dm.add({
       id: '', // Empty because this field is set by the Back-End
       date,
-      isHoliday,
-      isVacation,
+      isHoliday: !!isHoliday, // Avoid send undefined, send false instead
+      isVacation: !!isVacation, // Avoid send undefined, send false instead
       footfall,
+    }).then((success) => {
+      if (success) {
+        requestAllEntries()
+      }
     }).finally(() => {
+      setIsAddingFormSubmiting(false)
       closeAddingForm()
     })
   }
@@ -174,7 +195,10 @@ const DatasetManagerPage: FunctionComponent<DatasetManagerPageProps> = () => {
         <Space>
           <DeleteButton
             onDelete={async () => {
-              await dm.deleteById(item.id)
+              const success = await dm.deleteById(item.id)
+              if (success) {
+                await requestAllEntries()
+              }
             }}
           >
             <DeleteOutlined />
@@ -185,12 +209,7 @@ const DatasetManagerPage: FunctionComponent<DatasetManagerPageProps> = () => {
   ]
 
   useEffect(() => {
-    setIsLoading(true)
-    dm.requestAll().then(() => {
-      setDataSource(dm.datasetList.map((item, key) => ({ key, ...item })))
-    }).finally(() => {
-      setIsLoading(false)
-    })
+    requestAllEntries()
   }, [])
 
   return (
@@ -259,7 +278,12 @@ const DatasetManagerPage: FunctionComponent<DatasetManagerPageProps> = () => {
           >
             <InputNumber />
           </Form.Item>
-          <Button type="primary" htmlType="submit">
+          <Button
+            type="primary"
+            htmlType="submit"
+            disabled={isAddingFormSubmiting}
+            icon={(isAddingFormSubmiting && <LoadingOutlined />) || undefined}
+          >
             Submit
           </Button>
         </Form>
