@@ -12,9 +12,10 @@ import {
   Button,
   Input,
   Alert,
-  // Tooltip,
+  Divider,
+  Tooltip,
 } from 'antd'
-import { UploadOutlined } from '@ant-design/icons'
+import { UploadOutlined, SyncOutlined } from '@ant-design/icons'
 import type { ColumnsType } from 'antd/es/table'
 import type { UploadFile } from 'antd/es/upload/interface'
 import ToolDeleteModel from './ToolDeleteModel'
@@ -200,6 +201,12 @@ const TrainedModelsPageTab: FunctionComponent<TrainedModelsPageTabProps> = (prop
           Click para subir un modelo
         </Button>
       </Upload>
+      <Divider />
+      <Tooltip title="Recargar">
+        <Button disabled={isLoading} onClick={requestAllModels}>
+          <SyncOutlined />
+        </Button>
+      </Tooltip>
       {isErrorAlertShown && (
         <Alert message={errorAlertMessage} type="error" />
       )}
