@@ -66,13 +66,18 @@ const items: MenuItem[] = [
       {
         key: 'upload-trained-model',
         icon: <UploadOutlined />,
-        label: <Link to="/upload-model">Subir modelo</Link>,
+        label: <Link to="/training/upload-model">Subir modelo</Link>,
         title: 'Subir modelo entrenado',
       },
       {
         key: 'train-model',
         icon: <SettingOutlined />,
-        label: <Link to="/train">Entrenar modelo</Link>,
+        label: <Link to="/training/train">Entrenar modelo</Link>,
+      },
+      {
+        key: 'retrain-model',
+        icon: <SettingOutlined />,
+        label: <Link to="/training/retraining">Reentrenar</Link>,
       },
     ],
   },

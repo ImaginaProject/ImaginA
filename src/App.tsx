@@ -11,6 +11,7 @@ import DailyCapacityPage from './components/daily-capacity/DailyCapacityPage'
 import DatasetManagerPage from './components/dataset/DatasetManagerPage'
 import UploadTrainedModelPage from './components/training/UploadTrainedModelPage'
 import SpecialDaysPage from './components/special-days/SpecialDaysPage'
+import RetrainingListPage from './components/training/RetrainingListPage'
 
 const App = () => (
   <div className="App">
@@ -27,7 +28,10 @@ const App = () => (
         <Route path="/dataset/manager" element={<DatasetManagerPage />} />
       </CustomRoutes>
       <CustomRoutes>
-        <Route path="/upload-model" element={<UploadTrainedModelPage />} />
+        <Route path="/training/retraining" element={<RetrainingListPage />} />
+      </CustomRoutes>
+      <CustomRoutes>
+        <Route path="/training/upload-model" element={<UploadTrainedModelPage />} />
       </CustomRoutes>
       {/* ... */}
       <CustomRoutes>
