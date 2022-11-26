@@ -49,3 +49,14 @@ export type DailyCapacityDB = SpecialDay & {
   id: string,
   footfall: number,
 }
+
+export type RetrainedInfo = {
+  taskId: string,
+  done: boolean,
+  endDate: string,
+  startDate: string,
+  epochs: number,
+  name: string,
+  status: string,
+  targetEpochs: number,
+}
