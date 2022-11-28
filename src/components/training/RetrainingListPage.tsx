@@ -50,6 +50,7 @@ const RetrainingListPage: FunctionComponent<RetrainingListPageProps> = () => {
   const [availableModelIDs, setAvailableModelIDs] = useState<AvailableModelID[]>([]);
   const [isLoadingModels, setIsLoadingModels] = useState(false);
 
+  const [form] = Form.useForm()
 
   const columns: ColumnsType<DateSource> = [
     {
@@ -123,6 +124,8 @@ const RetrainingListPage: FunctionComponent<RetrainingListPageProps> = () => {
       values.name,
       values.testSize,
       values.validationSplit,
+    ).then(() => {
+      form.resetFields()
     }).finally(() => {
       console.log('Ok, I am happy)))')
     })
