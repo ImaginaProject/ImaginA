@@ -10,15 +10,24 @@ type SnapshotCallback = (ls: RetrainedInfo[]) => void
 export default class RetrainingManager {
   private endpoint: string
 
+  #unsubscribe: null | (() => void)
+
   constructor() {
     this.endpoint = import.meta.env.VITE_APP_ENDPOINT
+    this.#unsubscribe = null
+  }
+
+  unsubscribe() {
+    if (typeof this.#unsubscribe === 'function') {
+      this.#unsubscribe()
+    }
   }
 
   // eslint-disable-next-line class-methods-use-this
   async active(cb?: SnapshotCallback) {
     const ref = fb.ref(fb.realtimeDB, '/retraining')
 
-    fb.onValue(ref, (snapshot) => {
+    this.#unsubscribe = fb.onValue(ref, (snapshot) => {
       const data: RetraindInfoInFirebaseSnapshots = snapshot.val()
       console.debug(data)
       if (cb) {
