@@ -10,6 +10,9 @@ import {
   Table,
   Upload,
   Form,
+  Input,
+  InputNumber,
+  Select,
 } from 'antd'
 import {
   LoadingOutlined,
@@ -22,8 +25,13 @@ import type { ColumnsType } from 'antd/es/table'
 
 import type { RetrainedInfo } from '../../types/types'
 import RetrainingManager from '../../classes/RetrainingManager'
+import DailyCapacity from '../../classes/DailyCapacity'
 
 type DateSource = RetrainedInfo & { key: Key }
+type AvailableModelID = {
+  label: string,
+  value: string,
+}
 
 export interface RetrainingListPageProps {}
 
@@ -35,9 +43,13 @@ const ENABLE_TYPE = [
 
 const RetrainingListPage: FunctionComponent<RetrainingListPageProps> = () => {
   const [rm] = useState(new RetrainingManager());
+  const [dc] = useState(new DailyCapacity())
   const [isUploading, setIsUploading] = useState(false);
   const [uploadFiles, setUploadFiles] = useState<UploadFile[]>([]);
   const [dataSource, setDataSource] = useState<DateSource[]>([])
+  const [availableModelIDs, setAvailableModelIDs] = useState<AvailableModelID[]>([]);
+  const [isLoadingModels, setIsLoadingModels] = useState(false);
+
 
   const columns: ColumnsType<DateSource> = [
     {
@@ -105,13 +117,13 @@ const RetrainingListPage: FunctionComponent<RetrainingListPageProps> = () => {
 
     const file = fileList[0]
     rm.retrain(
-      'a53df9febd652ebf27a641c9886cfef5', // TODO: change it
+      values.modelId,
       file.response.file,
-      100,
-      'Nuevo modelo 1A.1',
-      0.3,
-      0.2,
-    ).finally(() => {
+      values.epochs,
+      values.name,
+      values.testSize,
+      values.validationSplit,
+    }).finally(() => {
       console.log('Ok, I am happy)))')
     })
   }
@@ -148,6 +160,17 @@ const RetrainingListPage: FunctionComponent<RetrainingListPageProps> = () => {
       }))
     }).catch((err) => console.error(err))
 
+    setIsLoadingModels(true)
+    dc.requestAllModels().then((registeredModels) => {
+      const options = registeredModels.map((modelInfo) => (
+        {
+          label: modelInfo.name,
+          value: modelInfo.md5_sum,
+        }
+      ))
+      setAvailableModelIDs(options)
+    }).finally(() => setIsLoadingModels(false))
+
     return () => {
       rm.unsubscribe()
     }
@@ -156,7 +179,36 @@ const RetrainingListPage: FunctionComponent<RetrainingListPageProps> = () => {
   return (
     <Space style={{ padding: '2em', width: '100%' }} direction="vertical">
       <Space>
-        <Form onFinish={activeRetraining}>
+        <Form form={form} onFinish={activeRetraining}>
+          <Form.Item
+            name="name"
+            label="Nombre"
+            rules={[
+              {
+                required: true,
+                message: 'Nombre requerido',
+              },
+            ]}
+          >
+            <Input />
+          </Form.Item>
+          <Form.Item
+            name="epochs"
+            label="Épocas"
+            rules={[
+              {
+                required: true,
+                message: 'La cantidad de épocas es requerido',
+              },
+              // {
+              //   min: 1,
+              //   message: 'Mínimo una época',
+              // },
+            ]}
+            initialValue={100}
+          >
+            <InputNumber min={1} />
+          </Form.Item>
           <Form.Item
             name="fileList"
             label="Archivo"
@@ -205,8 +257,52 @@ const RetrainingListPage: FunctionComponent<RetrainingListPageProps> = () => {
               </Button>
             </Upload>
           </Form.Item>
+          <Form.Item
+            name="testSize"
+            label="Tamaño de muestra de pruebas"
+            initialValue={0.1}
+            rules={[
+              {
+                required: true,
+                message: 'Inserte alguna cantidad aunque sea 0',
+              },
+            ]}
+          >
+            <InputNumber min={0} max={99} addonAfter={<strong>%</strong>} />
+          </Form.Item>
+          <Form.Item
+            name="validationSplit"
+            label="Tamaño de muestra para validación"
+            initialValue={0.1}
+            rules={[
+              {
+                required: true,
+                message: 'Inserte alguna cantidad aunque sea 0',
+              },
+            ]}
+          >
+            <InputNumber min={0} max={99} addonAfter={<strong>%</strong>} />
+          </Form.Item>
+
+          <Form.Item
+            name="modelId"
+            label="Modelo base"
+            rules={[
+              {
+                required: true,
+                message: 'Necesario seleccionar un modelo base',
+              },
+            ]}
+          >
+            <Select
+              placeholder="Modelos disponible seleccionado"
+              options={availableModelIDs}
+              loading={isLoadingModels}
+            />
+          </Form.Item>
+
           <Form.Item>
-            <Button htmlType="submit">
+            <Button htmlType="submit" disabled={isLoadingModels}>
               Agregar tarea de reentrenamiento
             </Button>
           </Form.Item>
