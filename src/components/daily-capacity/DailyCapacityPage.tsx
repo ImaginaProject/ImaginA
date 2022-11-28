@@ -101,8 +101,6 @@ const DailyCapacityPage: FunctionComponent<DailyCapacityPageProps> = () => {
       })
   }, [startDate, endDate, selectedModel])
 
-  if (isLoading) return <Loading />
-
   return (
     <Space style={{ padding: '2em', width: '100%' }} direction="vertical">
       <Space
@@ -144,7 +142,7 @@ const DailyCapacityPage: FunctionComponent<DailyCapacityPageProps> = () => {
         {' '}
         resultados predichos
       </Typography.Text>
-      <Bar options={dc.graphOptions} data={dc.barData} />
+      {isLoading ? <Loading /> : <Bar options={dc.graphOptions} data={dc.barData} />}
     </Space>
   )
 }
