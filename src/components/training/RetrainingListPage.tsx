@@ -13,8 +13,8 @@ import {
   Input,
   InputNumber,
   Select,
-  Modal,
   Alert,
+  Tag,
 } from 'antd'
 import {
   LoadingOutlined,
@@ -66,6 +66,28 @@ const RetrainingListPage: FunctionComponent<RetrainingListPageProps> = () => {
       title: 'Estado',
       key: 'status',
       dataIndex: 'status',
+      render: (item: string) => {
+        let color = 'cyan'
+        switch (item) {
+          case 'running':
+            color = 'geekblue'
+            break
+          case 'stopped':
+            color = 'magenta'
+            break
+          case 'success':
+            color = 'green'
+            break
+          case 'failure':
+            color = 'red'
+            break
+          default:
+            color = 'cyan'
+        }
+        return (
+          <Tag color={color}>{item}</Tag>
+        )
+      },
     },
     {
       title: 'Hora inicio',
