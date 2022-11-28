@@ -129,6 +129,7 @@ const DailyCapacityPage: FunctionComponent<DailyCapacityPageProps> = () => {
           <Select
             placeholder="Realizar predicción usando"
             loading={isLoadingAllModels}
+            value={selectedModel?.id}
             options={posibleTrainedModelList.map((model) => ({
               label: model.name,
               value: model.id,
