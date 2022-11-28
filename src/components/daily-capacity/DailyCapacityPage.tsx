@@ -1,11 +1,14 @@
-import { FunctionComponent, useState, useEffect } from 'react'
+import {
+  FunctionComponent,
+  useState,
+  useEffect,
+  useCallback,
+} from 'react'
 import { Bar } from 'react-chartjs-2'
 import {
   Space,
   DatePicker,
-  Dropdown,
-  Button,
-  Menu,
+  Select,
   Typography,
 } from 'antd'
 import dayjs, { Dayjs } from 'dayjs'
@@ -23,7 +26,6 @@ import {
   Tooltip,
   Legend,
 } from 'chart.js'
-import { LoadingOutlined } from '@ant-design/icons'
 import Loading from '../loading/Loading'
 import DailyCapacity from '../../classes/DailyCapacity'
 import { ExistentModel } from '../../types/types'
@@ -57,6 +59,16 @@ const DailyCapacityPage: FunctionComponent<DailyCapacityPageProps> = () => {
   const [posibleTrainedModelList, setPossibleTrainedModelList] = useState<ExistentModel[]>([])
   const [selectedModel, setSelectedModel] = useState<ExistentModel | null>(null)
 
+  const onModelSelectionChange = useCallback((value: any) => {
+    const currentSelectedOnes = posibleTrainedModelList
+      .filter((model) => model.id === value)
+    if (currentSelectedOnes.length === 0) {
+      console.error(`Cannot find the model for ID = ${value}`)
+      return
+    }
+    setSelectedModel(currentSelectedOnes[0])
+  }, [posibleTrainedModelList])
+
   useEffect(() => {
     const yesterday = new Date()
     yesterday.setDate(yesterday.getDate() - 5)
@@ -89,19 +101,6 @@ const DailyCapacityPage: FunctionComponent<DailyCapacityPageProps> = () => {
       })
   }, [startDate, endDate, selectedModel])
 
-  const menu = (
-    <Menu>
-      {posibleTrainedModelList.map((model) => (
-        <Menu.Item
-          key={model.id}
-          onClick={() => setSelectedModel(model)}
-        >
-          {model.name}
-        </Menu.Item>
-      ))}
-    </Menu>
-  )
-
   if (isLoading) return <Loading />
 
   return (
@@ -129,13 +128,15 @@ const DailyCapacityPage: FunctionComponent<DailyCapacityPageProps> = () => {
         </Space>
 
         <Space>
-          <Dropdown overlay={menu} placement="bottomLeft">
-            <Button type="primary" icon={isLoadingAllModels && <LoadingOutlined />}>
-              {selectedModel === null ? (
-                'Realizar predicción usando'
-              ) : (`Seleccionado: ${selectedModel.name}`)}
-            </Button>
-          </Dropdown>
+          <Select
+            placeholder="Realizar predicción usando"
+            loading={isLoadingAllModels}
+            options={posibleTrainedModelList.map((model) => ({
+              label: model.name,
+              value: model.id,
+            }))}
+            onChange={onModelSelectionChange}
+          />
         </Space>
       </Space>
       <Typography.Text>
