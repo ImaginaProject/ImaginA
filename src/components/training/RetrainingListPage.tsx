@@ -143,6 +143,7 @@ const RetrainingListPage: FunctionComponent<RetrainingListPageProps> = () => {
     }
 
     const file = fileList[0]
+    setWasRecientlyNewTaskAdded(true)
     rm.retrain(
       values.modelId,
       file.response.file,
@@ -152,12 +153,11 @@ const RetrainingListPage: FunctionComponent<RetrainingListPageProps> = () => {
       values.validationSplit,
     ).then(() => {
       form.resetFields()
-      setWasRecientlyNewTaskAdded(true)
-    }).finally(() => {
-      console.log('Ok, I am happy)))')
     }).catch((err) => {
       console.error(err)
-      setWasRecientlyNewTaskAdded(false)
+    }).finally(() => {
+      console.log('Ok, I am happy)))')
+      setWasRecientlyNewTaskAdded(() => false)
     })
   }
 
@@ -184,10 +184,6 @@ const RetrainingListPage: FunctionComponent<RetrainingListPageProps> = () => {
 
   useEffect(() => {
     rm.active((ls) => {
-      if (wasRecientlyNewTaskAdded) {
-        setWasRecientlyNewTaskAdded(() => false)
-      }
-
       if (isWaitingForRealtimeData) {
         setIsWaitingForRealtimeData(() => false)
       }
