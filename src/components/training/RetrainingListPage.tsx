@@ -13,6 +13,8 @@ import {
   Input,
   InputNumber,
   Select,
+  Modal,
+  Alert,
 } from 'antd'
 import {
   LoadingOutlined,
@@ -49,6 +51,7 @@ const RetrainingListPage: FunctionComponent<RetrainingListPageProps> = () => {
   const [dataSource, setDataSource] = useState<DateSource[]>([])
   const [availableModelIDs, setAvailableModelIDs] = useState<AvailableModelID[]>([]);
   const [isLoadingModels, setIsLoadingModels] = useState(false);
+  const [wasRecientlyNewTaskAdded, setWasRecientlyNewTaskAdded] = useState(false)
 
   const [form] = Form.useForm()
 
@@ -126,8 +129,12 @@ const RetrainingListPage: FunctionComponent<RetrainingListPageProps> = () => {
       values.validationSplit,
     ).then(() => {
       form.resetFields()
+      setWasRecientlyNewTaskAdded(true)
     }).finally(() => {
       console.log('Ok, I am happy)))')
+    }).catch((err) => {
+      console.error(err)
+      setWasRecientlyNewTaskAdded(false)
     })
   }
 
@@ -154,6 +161,10 @@ const RetrainingListPage: FunctionComponent<RetrainingListPageProps> = () => {
 
   useEffect(() => {
     rm.active((ls) => {
+      if (wasRecientlyNewTaskAdded) {
+        setWasRecientlyNewTaskAdded(() => false)
+      }
+
       setDataSource(ls.map((values, index) => {
         const report: DateSource = {
           key: index,
@@ -305,12 +316,24 @@ const RetrainingListPage: FunctionComponent<RetrainingListPageProps> = () => {
           </Form.Item>
 
           <Form.Item>
-            <Button htmlType="submit" disabled={isLoadingModels}>
+            <Button
+              htmlType="submit"
+              disabled={isLoadingModels}
+              icon={
+                wasRecientlyNewTaskAdded ? (
+                  <LoadingOutlined />
+                ) : undefined
+              }
+            >
               Agregar tarea de reentrenamiento
             </Button>
           </Form.Item>
         </Form>
       </Space>
+
+      {wasRecientlyNewTaskAdded && (
+        <Alert type="info" icon={<LoadingOutlined />} message="Preparando..." />
+      )}
 
       <Table columns={columns} dataSource={dataSource} />
     </Space>
