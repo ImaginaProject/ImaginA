@@ -99,15 +99,15 @@ const RetrainingListPage: FunctionComponent<RetrainingListPageProps> = () => {
         )
       },
     },
-    {
-      title: 'Opciones',
-      key: 'opctions',
-      render: (item: RetrainedInfo) => (
-        <Space key={item.taskId}>
-          <Button danger>Pausar</Button>
-        </Space>
-      ),
-    },
+    // {
+    //   title: 'Opciones',
+    //   key: 'opctions',
+    //   render: (item: RetrainedInfo) => (
+    //     <Space key={item.taskId}>
+    //       <Button danger>Pausar</Button>
+    //     </Space>
+    //   ),
+    // },
   ]
 
   const activeRetraining = (values: any) => {
