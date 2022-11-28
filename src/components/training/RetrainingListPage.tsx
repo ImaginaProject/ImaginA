@@ -44,14 +44,14 @@ const ENABLE_TYPE = [
 ]
 
 const RetrainingListPage: FunctionComponent<RetrainingListPageProps> = () => {
-  const [rm] = useState(new RetrainingManager());
+  const [rm] = useState(new RetrainingManager())
   const [dc] = useState(new DailyCapacity())
-  const [isUploading, setIsUploading] = useState(false);
-  const [uploadFiles, setUploadFiles] = useState<UploadFile[]>([]);
+  const [isUploading, setIsUploading] = useState(false)
+  const [uploadFiles, setUploadFiles] = useState<UploadFile[]>([])
   const [dataSource, setDataSource] = useState<DateSource[]>([])
   const [isWaitingForRealtimeData, setIsWaitingForRealtimeData] = useState(true)
-  const [availableModelIDs, setAvailableModelIDs] = useState<AvailableModelID[]>([]);
-  const [isLoadingModels, setIsLoadingModels] = useState(false);
+  const [availableModelIDs, setAvailableModelIDs] = useState<AvailableModelID[]>([])
+  const [isLoadingModels, setIsLoadingModels] = useState(false)
   const [wasRecientlyNewTaskAdded, setWasRecientlyNewTaskAdded] = useState(false)
 
   const [form] = Form.useForm()

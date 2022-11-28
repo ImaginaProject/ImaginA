@@ -47,7 +47,7 @@ const SpecialDaysPage: FunctionComponent<SpecialDaysPageProps> = () => {
   const [specialDays, setSpecialDays] = useState<SpecialDay[]>([])
   const [errorAlertMessage, setErrorAlertMessage] = useState<string | null>(null)
   const [isDateWithRange, setIsDateWithRange] = useState(false)
-  const [isAdding, setIsAdding] = useState(false);
+  const [isAdding, setIsAdding] = useState(false)
 
   const [form] = Form.useForm()
 
@@ -162,7 +162,7 @@ const SpecialDaysPage: FunctionComponent<SpecialDaysPageProps> = () => {
     const value = dayjs(date)
 
     // console.log('value!:', value)
-    const [currentDay, setCurrentDay] = useState<SpecialDay | undefined>();
+    const [currentDay, setCurrentDay] = useState<SpecialDay | undefined>()
     useEffect(() => {
       const matches = specialDays.filter((_sd) => {
         if (!value) return false

@@ -1,7 +1,7 @@
 export type AvailableLocale = 'en' | 'es' | 'fr'
 
 export type LocaleType = {
-  [key: string]: string,
+  [key: string]: string;
 }
 
 export type LocaleSetType = {

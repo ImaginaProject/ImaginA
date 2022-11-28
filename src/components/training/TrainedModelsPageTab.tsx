@@ -50,14 +50,14 @@ const TrainedModelsPageTab: FunctionComponent<TrainedModelsPageTabProps> = (prop
   const [allModels, setAllModels] = useState<RegisteredModel[]>([])
   const [isLoading, setIsLoading] = useState(false)
   const [dataSource, setDataSource] = useState<DataType[]>([])
-  const [fileList, setFileList] = useState<UploadFile[]>([]);
+  const [fileList, setFileList] = useState<UploadFile[]>([])
 
-  const [modelName, setModelName] = useState('');
-  const [modelDescription, setModelDescription] = useState('');
+  const [modelName, setModelName] = useState('')
+  const [modelDescription, setModelDescription] = useState('')
 
-  const [isErrorAlertShown, setIsErrorAlertShown] = useState(false);
-  const [errorAlertMessage, setErrorAlertMessage] = useState('');
-  const [errorFetchingError, setErrorFetchingError] = useState('');
+  const [isErrorAlertShown, setIsErrorAlertShown] = useState(false)
+  const [errorAlertMessage, setErrorAlertMessage] = useState('')
+  const [errorFetchingError, setErrorFetchingError] = useState('')
 
   const requestAllModels = async () => {
     setIsLoading(true)

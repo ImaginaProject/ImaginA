@@ -47,15 +47,15 @@ ChartJS.register(
 export interface DailyCapacityPageProps {}
 
 const DailyCapacityPage: FunctionComponent<DailyCapacityPageProps> = () => {
-  const [dc] = useState(new DailyCapacity());
-  const [isLoading, setIsLoading] = useState(true);
-  const [isLoadingAllModels, setIsLoadingAllModels] = useState(false);
+  const [dc] = useState(new DailyCapacity())
+  const [isLoading, setIsLoading] = useState(true)
+  const [isLoadingAllModels, setIsLoadingAllModels] = useState(false)
 
   const [startDate, setStartDate] = useState<Dayjs | null>(null)
   const [endDate, setEndDate] = useState<Dayjs | null>(null)
 
   const [posibleTrainedModelList, setPossibleTrainedModelList] = useState<ExistentModel[]>([])
-  const [selectedModel, setSelectedModel] = useState<ExistentModel | null>(null);
+  const [selectedModel, setSelectedModel] = useState<ExistentModel | null>(null)
 
   useEffect(() => {
     const yesterday = new Date()
@@ -76,8 +76,8 @@ const DailyCapacityPage: FunctionComponent<DailyCapacityPageProps> = () => {
   }, [])
 
   useEffect(() => {
-    if (!startDate || !endDate) return;
-    if (!selectedModel) return;
+    if (!startDate || !endDate) return
+    if (!selectedModel) return
 
     setIsLoading(true)
     dc.predicePersonAmount(startDate, endDate, selectedModel.id)

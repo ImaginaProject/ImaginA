@@ -31,7 +31,7 @@ interface DeleteButtonProps {
 }
 const DeleteButton: FunctionComponent<DeleteButtonProps> = (props) => {
   const { children, onDelete } = props
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false)
 
   const onDeleteClick = async () => {
     setIsLoading(true)
@@ -59,12 +59,12 @@ const DeleteButton: FunctionComponent<DeleteButtonProps> = (props) => {
 }
 
 const DatasetManagerPage: FunctionComponent<DatasetManagerPageProps> = () => {
-  const [dm] = useState(new DatasetManager());
-  const [isLoading, setIsLoading] = useState(false);
-  const [dataSource, setDataSource] = useState<(DailyCapacityDB & { key: any })[]>([]);
+  const [dm] = useState(new DatasetManager())
+  const [isLoading, setIsLoading] = useState(false)
+  const [dataSource, setDataSource] = useState<(DailyCapacityDB & { key: any })[]>([])
 
-  const [isAddingFormShown, setIsAddingFormShown] = useState(false);
-  const [isAddingFormSubmiting, setIsAddingFormSubmiting] = useState(false);
+  const [isAddingFormShown, setIsAddingFormShown] = useState(false)
+  const [isAddingFormSubmiting, setIsAddingFormSubmiting] = useState(false)
 
   const [addingForm] = Form.useForm()
   const translate = useTranslate()
@@ -82,7 +82,7 @@ const DatasetManagerPage: FunctionComponent<DatasetManagerPageProps> = () => {
     setIsLoading(true)
 
     try {
-      await dm.requestAll();
+      await dm.requestAll()
       setDataSource(dm.datasetList.map((item, key) => ({ key, ...item })))
     } finally {
       setIsLoading(false)

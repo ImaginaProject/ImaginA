@@ -23,7 +23,7 @@ import { Link } from 'react-router-dom'
 import type { MenuProps } from 'antd'
 import { CoreLayoutProps, LocalesMenuButton } from 'react-admin'
 
-type MenuItem = Required<MenuProps>['items'][number];
+type MenuItem = Required<MenuProps>['items'][number]
 
 export interface MainLayoutProps
   extends CoreLayoutProps, Omit<HtmlHTMLAttributes<HTMLDivElement>, 'title'> {}
@@ -95,7 +95,7 @@ const items: MenuItem[] = [
 
 const MainLayout: FunctionComponent<MainLayoutProps> = (props) => {
   const { children } = props
-  const [apiData, setApiData] = useState<any>(null);
+  const [apiData, setApiData] = useState<any>(null)
 
   // No needed, but request for the API info.
   useEffect(() => {

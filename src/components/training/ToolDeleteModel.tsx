@@ -1,6 +1,6 @@
-import { FunctionComponent, useState } from 'react';
-import { Tooltip, Button } from 'antd';
-import { DeleteOutlined, LoadingOutlined } from '@ant-design/icons';
+import { FunctionComponent, useState } from 'react'
+import { Tooltip, Button } from 'antd'
+import { DeleteOutlined, LoadingOutlined } from '@ant-design/icons'
 
 export interface ToolDeleteModelProps {
   deleteURL: string,
@@ -9,7 +9,7 @@ export interface ToolDeleteModelProps {
 
 const ToolDeleteModel: FunctionComponent<ToolDeleteModelProps> = (props) => {
   const { deleteURL, onDelete } = props
-  const [isDeleting, setIsDeleting] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false)
 
   return (
     <Tooltip title="Eliminar">

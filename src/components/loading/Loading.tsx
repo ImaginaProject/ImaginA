@@ -1,7 +1,7 @@
-import { Result } from 'antd';
-import { ReactNode } from 'react';
-import type { FunctionComponent } from 'react';
-import { LoadingOutlined } from '@ant-design/icons';
+import { Result } from 'antd'
+import { ReactNode } from 'react'
+import type { FunctionComponent } from 'react'
+import { LoadingOutlined } from '@ant-design/icons'
 
 export interface LoadingProps {
   label?: string,
