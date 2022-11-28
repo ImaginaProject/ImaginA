@@ -49,6 +49,7 @@ const RetrainingListPage: FunctionComponent<RetrainingListPageProps> = () => {
   const [isUploading, setIsUploading] = useState(false);
   const [uploadFiles, setUploadFiles] = useState<UploadFile[]>([]);
   const [dataSource, setDataSource] = useState<DateSource[]>([])
+  const [isWaitingForRealtimeData, setIsWaitingForRealtimeData] = useState(true)
   const [availableModelIDs, setAvailableModelIDs] = useState<AvailableModelID[]>([]);
   const [isLoadingModels, setIsLoadingModels] = useState(false);
   const [wasRecientlyNewTaskAdded, setWasRecientlyNewTaskAdded] = useState(false)
@@ -163,6 +164,10 @@ const RetrainingListPage: FunctionComponent<RetrainingListPageProps> = () => {
     rm.active((ls) => {
       if (wasRecientlyNewTaskAdded) {
         setWasRecientlyNewTaskAdded(() => false)
+      }
+
+      if (isWaitingForRealtimeData) {
+        setIsWaitingForRealtimeData(() => false)
       }
 
       setDataSource(ls.map((values, index) => {
@@ -335,7 +340,7 @@ const RetrainingListPage: FunctionComponent<RetrainingListPageProps> = () => {
         <Alert type="info" icon={<LoadingOutlined />} message="Preparando..." />
       )}
 
-      <Table columns={columns} dataSource={dataSource} />
+      <Table loading={isWaitingForRealtimeData} columns={columns} dataSource={dataSource} />
     </Space>
   )
 }
