@@ -99,7 +99,7 @@ export default class DailyCapacity {
       const dateString: string = dayjs(model.last_date).format('DD MMMM')
       const result: ExistentModel = {
         id: model.md5_sum,
-        name: `red "${model.name}" entrenada ${dateString}`,
+        name: `modelo "${model.name}" entrenado ${dateString}`,
       }
       return result
     })
