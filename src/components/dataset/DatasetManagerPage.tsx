@@ -118,7 +118,7 @@ const DatasetManagerPage: FunctionComponent<DatasetManagerPageProps> = () => {
 
   const columns: ColumnsType<DailyCapacityDB> = [
     {
-      title: translate('date', { start: true }),
+      title: translate('imagina.word.date'),
       key: 'date',
       dataIndex: 'date',
       render: (item: Date) => dayjs(item).format('DD/MM/YYYY'),
@@ -129,41 +129,41 @@ const DatasetManagerPage: FunctionComponent<DatasetManagerPageProps> = () => {
       },
     },
     {
-      title: translate('holiday', { start: true }),
+      title: translate('imagina.word.holiday'),
       key: 'holiday',
       dataIndex: 'isHoliday',
       render: (item: boolean) => (item ? 'Sí' : 'No'),
       filters: [
         {
-          text: translate('it.is.holiday'),
+          text: translate('imagina.holiday.is'),
           value: true,
         },
         {
-          text: translate('it.is.not.holiday'),
+          text: translate('imagina.holiday.is_not'),
           value: false,
         },
       ],
       onFilter: (value, record) => record.isHoliday === value,
     },
     {
-      title: translate('vacation', { start: true }),
+      title: translate('imagina.word.vacation'),
       key: 'vacation',
       dataIndex: 'isVacation',
       render: (item: boolean) => (item ? 'Sí' : 'No'),
       filters: [
         {
-          text: translate('it.is.vacation'),
+          text: translate('imagina.vacation.is'),
           value: true,
         },
         {
-          text: translate('it.is.not.vacation'),
+          text: translate('imagina.vacation.is_not'),
           value: false,
         },
       ],
       onFilter: (value, record) => record.isVacation === value,
     },
     {
-      title: translate('footfall', { start: true }),
+      title: translate('imagina.word.footfall'),
       key: 'capacity',
       dataIndex: 'footfall',
       filters: [
@@ -187,7 +187,7 @@ const DatasetManagerPage: FunctionComponent<DatasetManagerPageProps> = () => {
       onFilter: (value, record) => record.footfall >= value,
     },
     {
-      title: translate('options', { start: true }),
+      title: translate('imagina.word.options'),
       key: 'options',
       render: (item: DailyCapacityDB) => (
         <Space>
@@ -213,19 +213,19 @@ const DatasetManagerPage: FunctionComponent<DatasetManagerPageProps> = () => {
   return (
     <Space style={{ padding: '2em', width: '100%' }} direction="vertical">
       <Typography.Title>
-        {translate('dataset.manager.title', { start: true })}
+        {translate('imagina.dataset.manager.title')}
       </Typography.Title>
       <Typography.Text>
-        {translate('dataset.manager.description', { start: true, end: true })}
+        {translate('imagina.dataset.manager.description')}
       </Typography.Text>
 
       <Space direction="horizontal">
         <Button onClick={openAddingForm} type="primary">
-          {translate('add.a.element', { start: true })}
+          {translate('imagina.dataset.manager.add_element')}
         </Button>
         {/* eslint-disable-next-line no-alert */}
         <Button disabled onClick={() => alert('Not implement yet')}>
-          {translate('add.from.file', { start: true })}
+          {translate('imagina.dataset.manager.add_from_file')}
         </Button>
       </Space>
 
@@ -238,7 +238,7 @@ const DatasetManagerPage: FunctionComponent<DatasetManagerPageProps> = () => {
         onCancel={closeAddingForm}
       >
         <Typography.Title>
-          {translate('add.individual.data', { start: true })}
+          {translate('imagina.dataset.modal.add_data')}
         </Typography.Title>
         <Form
           form={addingForm}
@@ -249,49 +249,48 @@ const DatasetManagerPage: FunctionComponent<DatasetManagerPageProps> = () => {
         >
           <Form.Item
             name="date"
-            label={translate('date', { start: true })}
+            label={translate('imagina.word.date')}
             rules={[
               {
                 required: true,
-                message: translate(
-                  'dataset.manager.write-date',
-                  { start: true, exclamation: true },
-                ),
+                message: translate('imagina.dataset.manager.write_date'),
               },
             ]}
           >
             <DatePicker />
           </Form.Item>
           <Form.Item
-            label={translate('holiday.day', { start: true })}
+            label={translate('imagina.holiday.day')}
             name="isHoliday"
             valuePropName="checked"
           >
-            <Checkbox value>{translate('it.is.holiday')}</Checkbox>
+            <Checkbox value>{translate('imagina.holiday.is')}</Checkbox>
           </Form.Item>
           <Form.Item
-            label={translate('vacation.day', { start: true })}
+            label={translate('imagina.vacation.day')}
             name="isVacation"
             valuePropName="checked"
           >
-            <Checkbox value>{translate('it.is.vacation')}</Checkbox>
+            <Checkbox value>{translate('imagina.vacation.is')}</Checkbox>
           </Form.Item>
           <Form.Item
-            label={translate('footfall', { start: true })}
+            label={translate('imagina.word.footfall')}
             name="footfall"
             rules={[
               {
                 required: true,
-                message: translate('dataset.manager.write-footfall'),
+                message: translate('imagina.dataset.manager.write_footfall'),
               },
               {
                 type: 'integer',
-                message: translate('error.required.integer'),
+                message: translate('imagina.form.error.required_integer'),
               },
               {
                 validator: (_, value) => {
                   if (value < 0) {
-                    return Promise.reject(new Error(translate('error.non.positive.integer')))
+                    return Promise.reject(
+                      new Error(translate('imagina.form.error.require_positive_integer')),
+                    )
                   }
                   return Promise.resolve()
                 },
@@ -306,7 +305,7 @@ const DatasetManagerPage: FunctionComponent<DatasetManagerPageProps> = () => {
             disabled={isAddingFormSubmiting}
             icon={(isAddingFormSubmiting && <LoadingOutlined />) || undefined}
           >
-            {translate('submit', { start: true })}
+            {translate('imagina.word.submit')}
           </Button>
         </Form>
       </Modal>
