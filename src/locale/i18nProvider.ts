@@ -1,52 +1,29 @@
-import type { AvailableLocale, LocaleType } from './types'
+import { resolveBrowserLocale } from 'react-admin'
+// eslint-disable-next-line import/no-extraneous-dependencies
+import polyglotI18nProvider from 'ra-i18n-polyglot'
+// eslint-disable-next-line import/no-extraneous-dependencies
+import en from 'ra-language-english'
+// import fr from 'ra-language-french'
+import customES from './custom-ra-es'
 import localeSet from './locale'
 
-type OptionsType = {
-  exclamation?: boolean,
-  question?: boolean,
-  start?: boolean,
-  end?: boolean,
-  default?: string,
+const translations = {
+  en: {
+    ...en,
+  },
+  es: {
+    ...customES,
+    ...localeSet.es,
+  },
 }
-
-let currentLocale: AvailableLocale = 'es'
-let localeData: LocaleType = localeSet.es
 
 // eslint-disable-next-line import/prefer-default-export
-export const i18nProvider = {
-  // required
-  translate: (key: keyof LocaleType, options?: OptionsType) => {
-    let words: string = localeData[key] || options?.default || localeSet.es[key] || '???'
-    if (options?.start) {
-      words = words.charAt(0).toUpperCase() + words.substring(1)
-    }
-    if (options?.end) {
-      words += '.'
-    }
-    if (options?.exclamation) {
-      if (currentLocale === 'es') {
-        words = `¡${words}`
-      }
-      words = `${words}!`
-    }
-    if (options?.question) {
-      if (currentLocale === 'es') {
-        words = `¿${words}`
-      }
-      words = `${words}?`
-    }
-    return words
-  },
-  changeLocale: async (_locale: string) => {
-    const locale = _locale as AvailableLocale
-    currentLocale = locale
-    localeData = localeSet[currentLocale]
-    console.info('change locale to', locale)
-  },
-  getLocale: () => currentLocale.toString(),
-  // optional
-  getLocales: () => [
-    { locale: 'es', name: 'Español' },
+export const i18nProvider = polyglotI18nProvider(
+  // @ts-expect-error
+  (locale) => (translations[locale] ? translations[locale] : translations.en),
+  resolveBrowserLocale('es'),
+  [
     { locale: 'en', name: 'English' },
+    { locale: 'es', name: 'Español' },
   ],
-}
+)

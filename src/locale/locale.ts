@@ -1,60 +1,48 @@
-/* eslint-disable quote-props */
-import type { LocaleSetType } from './types'
-
-const localeSet: LocaleSetType = {
-  en: {
-    'submit': 'submit',
-    'option': 'option',
-    'options': 'options',
-    'footfall': 'footfall',
-    'date': 'date',
-    'holiday': 'holiday',
-    'vacation': 'vacation',
-    'holiday.date': 'holiday date',
-    'vacation.date': 'vacation date',
-    'holiday.day': 'holiday day',
-    'vacation.day': 'vacation day',
-    'it.is.holiday': 'it is holiday',
-    'it.is.not.holiday': 'it is not holiday',
-    'it.is.vacation': 'it is vacation',
-    'it.is.not.vacation': 'it is not vacation',
-    'add.a.element': 'add a item',
-    'add.from.file': 'add from file',
-    'add.individual.data': 'add a individual data',
-    'dataset.manager.description': 'add, edit and delete dataset items',
-    'dataset.manager.title': 'dataset manager',
-    'dataset.manager.write-date': 'write a date',
-    'dataset.manager.write-footfall': 'write the footfall',
-    'error.required.integer': 'a integer number is required',
-    'error.non.positive.integer': 'this is not a positive number',
-  },
+const localeSet = {
   es: {
-    'submit': 'enviar',
-    'option': 'opción',
-    'options': 'opciones',
-    'footfall': 'gentío',
-    'date': 'fecha',
-    'holiday': 'festivo',
-    'vacation': 'vacación',
-    'holiday.date': 'fecha festiva',
-    'vacation.date': 'fecha vacacional',
-    'holiday.day': 'día festivo',
-    'vacation.day': 'día vacacional',
-    'it.is.holiday': 'es festivo',
-    'it.is.not.holiday': 'no es festivo',
-    'it.is.vacation': 'es vacación',
-    'it.is.not.vacation': 'no es vacación',
-    'add.a.element': 'agregar un elemento',
-    'add.from.file': 'agregar desde archivo',
-    'add.individual.data': 'agregar dato individual',
-    'dataset.manager.description': 'agrega, edita y elimina registros del dataset',
-    'dataset.manager.title': 'administrador de dataset',
-    'dataset.manager.write-date': 'escribe la fecha',
-    'dataset.manager.write-footfall': 'escribe el aforo',
-    'error.required.integer': 'se necesita un número entero',
-    'error.non.positive.integer': 'no es un número positivo',
+    imagina: {
+      word: {
+        submit: 'Enviar',
+        option: 'Opción',
+        options: 'Opciones',
+        footfall: 'Gentío',
+        date: 'Fecha',
+        holiday: 'Festivo',
+        vacation: 'Vacación',
+      },
+      holiday: {
+        date: 'Fecha festiva',
+        day: 'Día festivo',
+        is: 'Es festivo',
+        is_not: 'No es festivo',
+      },
+      vacation: {
+        date: 'Fecha vacacional',
+        day: 'Día vacacional',
+        is: 'Es vacación',
+        is_not: 'No es vacación',
+      },
+      dataset: {
+        manager: {
+          title: 'Administrador de dataset',
+          description: 'Agrega, edita y elimina registros del dataset',
+          add_element: 'Agregar un elemento',
+          add_from_file: 'Agregar desde archivo',
+          write_date: 'Escribe la fecha',
+          write_footfall: 'Escribe el aforo',
+          modal: {
+            add_data: 'Agregar dato individual',
+          },
+        },
+      },
+      form: {
+        error: {
+          required_integer: 'Se necesita un número entero',
+          require_positive_integer: 'No es un número positivo',
+        },
+      },
+    },
   },
-  fr: {},
 }
 
 export default localeSet
