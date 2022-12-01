@@ -8,6 +8,7 @@ import {
   Select,
   Typography,
   Image,
+  Alert,
 } from 'antd'
 import DailyCapacity from '../../classes/DailyCapacity'
 
@@ -29,6 +30,7 @@ const RetrainReportPage: FunctionComponent<RetrainReportPageProps> = () => {
   const [availableModelIDs, setAvailableModelIDs] = useState<AvailableModelID[]>([])
   const [reportPlots, setReportPlots] = useState<ReportPlot[]>([])
   const [isLoadingModels, setIsLoadingModels] = useState(false)
+  const [errorMessage, setErrorMessage] = useState('')
 
   const onSelectedChange = (value: string, option: AvailableModelID | AvailableModelID[]) => {
     if (Array.isArray(option)) {
@@ -36,6 +38,7 @@ const RetrainReportPage: FunctionComponent<RetrainReportPageProps> = () => {
     } else {
       setSelectedModelID(option)
     }
+    setReportPlots([])
   }
 
   useEffect(() => {
@@ -56,15 +59,22 @@ const RetrainReportPage: FunctionComponent<RetrainReportPageProps> = () => {
 
     const modelId = selectedModelID.value
     const url = `${import.meta.env.VITE_APP_ENDPOINT}/reports/model`
+
+    setIsLoadingModels(true)
     fetch(`${url}?model_id=${modelId}`)
       .then((response) => response.json())
       .then((data) => {
         console.log(data)
-        setReportPlots(data.plots.map((plot: string) => ({
-          type: '???', // TODO: edit backend to get the report plot type
-          base64Image: plot,
-        })))
-      })
+        if (data.app_exception) {
+          setErrorMessage(`Error obtenido: ${data.app_exception}`)
+        } else {
+          setErrorMessage('')
+          setReportPlots(data.plots.map((plot: any) => ({
+            type: plot.type,
+            base64Image: plot.resource,
+          })))
+        }
+      }).finally(() => setIsLoadingModels(false))
   }, [selectedModelID])
 
   return (
@@ -92,11 +102,22 @@ const RetrainReportPage: FunctionComponent<RetrainReportPageProps> = () => {
 
       <Space direction="vertical">
         {`Encontrada(s) ${reportPlots.length} gráfica(s)`}
+        {errorMessage && (
+          <Alert closable type="error" message={errorMessage} />
+        )}
         {reportPlots.map((reportPlot) => (
-          <Image
-            width="100%"
-            src={reportPlot.base64Image}
-          />
+          <>
+            <Typography.Text>
+              Grafica para
+              <Typography.Text strong>
+                {` ${reportPlot.type}`}
+              </Typography.Text>
+            </Typography.Text>
+            <Image
+              width="100%"
+              src={reportPlot.base64Image}
+            />
+          </>
         ))}
       </Space>
     </Space>
