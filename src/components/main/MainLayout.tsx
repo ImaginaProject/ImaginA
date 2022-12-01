@@ -79,6 +79,11 @@ const items: MenuItem[] = [
         icon: <SettingOutlined />,
         label: <Link to="/training/retraining">Reentrenar</Link>,
       },
+      {
+        key: 'retrain-model-report',
+        icon: <SettingOutlined />,
+        label: <Link to="/training/retraining/reports">Reportes</Link>,
+      },
     ],
   },
   {
