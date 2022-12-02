@@ -13,6 +13,7 @@ import UploadTrainedModelPage from './components/training/UploadTrainedModelPage
 import SpecialDaysPage from './components/special-days/SpecialDaysPage'
 import RetrainingListPage from './components/training/RetrainingListPage'
 import RetrainReportPage from './components/training/RetrainReportPage'
+import DailySellsPage from './components/daily-sells/DailySellsPage'
 
 const App = () => (
   <div className="App">
@@ -24,7 +25,9 @@ const App = () => (
       <CustomRoutes>
         <Route path="/daily-capacity" element={<DailyCapacityPage />} />
       </CustomRoutes>
-      <Resource name="daily-sells" />
+      <CustomRoutes>
+        <Route path="/daily-sells" element={<DailySellsPage />} />
+      </CustomRoutes>
       <CustomRoutes>
         <Route path="/dataset/manager" element={<DatasetManagerPage />} />
       </CustomRoutes>
@@ -41,6 +44,7 @@ const App = () => (
       <CustomRoutes>
         <Route path="/config-special-days" element={<SpecialDaysPage />} />
       </CustomRoutes>
+      <Resource name="NoFound" />
     </Admin>
   </div>
 )
