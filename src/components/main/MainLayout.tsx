@@ -13,8 +13,16 @@ import {
   Space,
 } from 'antd'
 import {
+  AreaChartOutlined,
+  CalendarOutlined,
+  CloudSyncOutlined,
+  CloudUploadOutlined,
   DashboardOutlined,
+  DatabaseOutlined,
+  FileSyncOutlined,
+  LineChartOutlined,
   SettingOutlined,
+  SlidersOutlined,
   UploadOutlined,
   UserSwitchOutlined,
 } from '@ant-design/icons'
@@ -41,25 +49,25 @@ const items: MenuItem[] = [
   },
   {
     key: 'daily-sells',
-    icon: <SettingOutlined />,
+    icon: <AreaChartOutlined />,
     label: <Link to="/daily-sells">Ventas día</Link>,
   },
   {
     key: 'import-data',
-    icon: <SettingOutlined />,
+    icon: <DatabaseOutlined />,
     // label: <Link to="/import-data">Importación datos</Link>,
     label: 'Importación datos',
     children: [
       {
         key: 'dataset-manager',
-        icon: <SettingOutlined />,
+        icon: <FileSyncOutlined />,
         label: <Link to="/dataset/manager">Administrar dataset</Link>,
       },
     ],
   },
   {
     key: 'training',
-    icon: <SettingOutlined />,
+    icon: <SlidersOutlined />,
     label: 'Entrenamiento',
     // label: <Link to="/training">Entrenamiento</Link>,
     children: [
@@ -71,24 +79,24 @@ const items: MenuItem[] = [
       },
       {
         key: 'train-model',
-        icon: <SettingOutlined />,
+        icon: <CloudUploadOutlined />,
         label: <Link to="/training/train">Entrenar modelo</Link>,
       },
       {
         key: 'retrain-model',
-        icon: <SettingOutlined />,
+        icon: <CloudSyncOutlined />,
         label: <Link to="/training/retraining">Reentrenar</Link>,
       },
       {
         key: 'retrain-model-report',
-        icon: <SettingOutlined />,
+        icon: <LineChartOutlined />,
         label: <Link to="/training/retraining/reports">Reportes</Link>,
       },
     ],
   },
   {
     key: 'config-special-days',
-    icon: <SettingOutlined />,
+    icon: <CalendarOutlined />,
     label: <Link to="/config-special-days">Config. días especiales</Link>,
   },
   {
