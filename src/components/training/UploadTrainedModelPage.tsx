@@ -7,7 +7,7 @@ export interface UploadTrainedModelPageProps {}
 
 const tabs: TrainedModelsPageTabProps[] = [
   {
-    actionURL: `${import.meta.env.VITE_APP_ENDPOINT}/daily-capacity/existent-models`,
+    actionURL: `${import.meta.env.VITE_APP_ENDPOINT}/models/daily-capacity`,
     directory: 'daily-capacity',
     title: 'Modelo para aforo diario',
   },
