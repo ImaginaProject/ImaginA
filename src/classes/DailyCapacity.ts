@@ -6,6 +6,8 @@ import type {
   RegisteredModelResponse,
 } from '../types/types'
 
+const modelGroup = 'daily-capacity'
+
 export default class DailyCapacity {
   public graphOptions: any
 
@@ -88,7 +90,7 @@ export default class DailyCapacity {
     // Request all the models
     console.debug('loading all the model...')
     const responseAllModels = await fetch(
-      `${this.endpoint}/daily-capacity/existent-models`,
+      `${this.endpoint}/models/${modelGroup}`,
     )
     const allModelsData: RegisteredModelResponse = await responseAllModels.json()
     console.debug('got', allModelsData.models.length, 'models')
@@ -108,13 +110,13 @@ export default class DailyCapacity {
     return allModelsData.models
   }
 
-  async predicePersonAmount(startDate: Dayjs, endDate: Dayjs, modelId: string) {
+  async predicePersonAmount(startDate: Dayjs, endDate: Dayjs, modelId: string, price: number) {
     const startDateString = dayjs(startDate).format('DD/MM/YYYY')
     const endDateString = dayjs(endDate).format('DD/MM/YYYY')
 
     console.debug('request for date:', startDateString, 'to', endDateString)
     const response = await fetch(
-      `${this.endpoint}/daily-capacity/person-amount-prediction?start_date=${startDateString}&end_date=${endDateString}&model_id=${modelId}`,
+      `${this.endpoint}/daily-capacity/person-amount?start_date=${startDateString}&end_date=${endDateString}&model_id=${modelId}&price=${price}`,
     )
 
     const data = await response.json()
