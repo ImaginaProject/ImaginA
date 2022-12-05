@@ -2,7 +2,6 @@ import {
   FunctionComponent,
   useState,
   useEffect,
-  useCallback,
 } from 'react'
 import { Bar } from 'react-chartjs-2'
 import {
@@ -10,8 +9,11 @@ import {
   DatePicker,
   Select,
   Typography,
+  Form,
+  InputNumber,
+  Button,
 } from 'antd'
-import dayjs, { Dayjs } from 'dayjs'
+import dayjs from 'dayjs'
 import 'dayjs/locale/es'
 import weekday from 'dayjs/plugin/weekday'
 import localeData from 'dayjs/plugin/localeData'
@@ -53,28 +55,23 @@ const DailyCapacityPage: FunctionComponent<DailyCapacityPageProps> = () => {
   const [isLoading, setIsLoading] = useState(true)
   const [isLoadingAllModels, setIsLoadingAllModels] = useState(false)
 
-  const [startDate, setStartDate] = useState<Dayjs | null>(null)
-  const [endDate, setEndDate] = useState<Dayjs | null>(null)
-
   const [posibleTrainedModelList, setPossibleTrainedModelList] = useState<ExistentModel[]>([])
-  const [selectedModel, setSelectedModel] = useState<ExistentModel | null>(null)
 
-  const onModelSelectionChange = useCallback((value: any) => {
-    const currentSelectedOnes = posibleTrainedModelList
-      .filter((model) => model.id === value)
-    if (currentSelectedOnes.length === 0) {
-      console.error(`Cannot find the model for ID = ${value}`)
-      return
-    }
-    setSelectedModel(currentSelectedOnes[0])
-  }, [posibleTrainedModelList])
+  const [form] = Form.useForm()
+
+  const onFormFinish = (values: any) => {
+    console.log(values)
+    setIsLoading(true)
+    dc.predicePersonAmount(values.startDate, values.endDate, values.modelId, values.price)
+      .then((prediction) => {
+        console.debug('got prediction', prediction)
+      })
+      .finally(() => {
+        setIsLoading(false)
+      })
+  }
 
   useEffect(() => {
-    const yesterday = new Date()
-    yesterday.setDate(yesterday.getDate() - 5)
-    setStartDate(dayjs(yesterday))
-    setEndDate(dayjs(new Date()))
-
     setIsLoadingAllModels(true)
     dc.requestAllModels()
       .then((allModels) => {
@@ -87,57 +84,74 @@ const DailyCapacityPage: FunctionComponent<DailyCapacityPageProps> = () => {
       })
   }, [])
 
-  useEffect(() => {
-    if (!startDate || !endDate) return
-    if (!selectedModel) return
-
-    setIsLoading(true)
-    dc.predicePersonAmount(startDate, endDate, selectedModel.id)
-      .then((prediction) => {
-        console.debug('got prediction', prediction)
-      })
-      .finally(() => {
-        setIsLoading(false)
-      })
-  }, [startDate, endDate, selectedModel])
-
   return (
     <Space style={{ padding: '2em', width: '100%' }} direction="vertical">
-      <Space
-        align="baseline"
-        style={{
-          display: 'flex',
-          justifyContent: 'space-between',
-        }}
+      <Form
+        form={form}
+        onFinish={onFormFinish}
       >
-        <Space>
-          {startDate && (
-            <DatePicker
-              defaultValue={startDate as any}
-              onChange={(value: any) => setStartDate(value)}
-            />
-          )}
-          {endDate && (
-            <DatePicker
-              defaultValue={endDate ? endDate as any : ''}
-              onChange={(value: any) => setEndDate(value)}
-            />
-          )}
-        </Space>
+        <Form.Item
+          name="startDate"
+          label="Fecha inicio"
+          initialValue={dayjs(new Date()).add(-5, 'days')}
+          rules={[
+            {
+              required: true,
+              message: 'La fecha inicial es requerida',
+            },
+          ]}
+        >
+          <DatePicker />
+        </Form.Item>
 
-        <Space>
+        <Form.Item
+          name="endDate"
+          label="Fecha fin"
+          initialValue={dayjs(new Date())}
+          rules={[
+            {
+              required: true,
+              message: 'La fecha final es requerida',
+            },
+          ]}
+        >
+          <DatePicker />
+        </Form.Item>
+
+        <Form.Item
+          name="price"
+          label="Precio"
+          initialValue={1}
+          rules={[
+            {
+              required: true,
+              message: 'El precio es requerido',
+            },
+          ]}
+        >
+          <InputNumber min={0} />
+        </Form.Item>
+
+        <Form.Item name="modelId" label="Modelo">
           <Select
             placeholder="Realizar predicción usando"
             loading={isLoadingAllModels}
-            value={selectedModel?.id}
+            // value={selectedModel?.id}
             options={posibleTrainedModelList.map((model) => ({
               label: model.name,
               value: model.id,
             }))}
-            onChange={onModelSelectionChange}
+            // onChange={onModelSelectionChange}
           />
-        </Space>
-      </Space>
+        </Form.Item>
+
+        <Form.Item>
+          <Button htmlType="submit" type="primary">
+            Predecir
+          </Button>
+        </Form.Item>
+      </Form>
+
       <Typography.Text>
         {dc.lastPrediction.length}
         {' '}
