@@ -93,7 +93,11 @@ const PriceOptimizationPage: FunctionComponent<PriceOptimizationPageProps> = () 
                   { required: true, message: 'Fije un precio mínimo' },
                 ]}
               >
-                <InputNumber min={0} />
+                <InputNumber
+                  // min={0}
+                  formatter={(value) => `$ ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+                  parser={(value) => value!.replace(/\$\s?|(,*)/g, '')}
+                />
               </Form.Item>
             </Col>
             <Col md={12} sm={24}>
@@ -104,7 +108,11 @@ const PriceOptimizationPage: FunctionComponent<PriceOptimizationPageProps> = () 
                   { required: true, message: 'Fije un precio máximo' },
                 ]}
               >
-                <InputNumber min={0} />
+                <InputNumber
+                  // min={0}
+                  formatter={(value) => `$ ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+                  parser={(value) => value!.replace(/\$\s?|(,*)/g, '')}
+                />
               </Form.Item>
             </Col>
           </Row>
