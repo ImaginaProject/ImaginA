@@ -129,4 +129,31 @@ export default class DailyCapacity {
     console.error(data)
     return null
   }
+
+  async optimizePrices(day: Dayjs, minPrice: number, maxPrice: number, modelId: string) {
+    const payload = {
+      date: day.format('DD/MM/YYYY'),
+      min_price: minPrice,
+      max_price: maxPrice,
+      model_id: modelId,
+    }
+
+    try {
+      const response = await fetch(`${this.endpoint}/daily-capacity/optimize-prices`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json;charset=utf-8',
+        },
+        body: JSON.stringify(payload),
+      })
+      const data = await response.json()
+      if (response.status === 200) {
+        return data.image as string
+      }
+      console.error('got status code', response.status, data)
+    } catch (err) {
+      console.error(err)
+    }
+    return null
+  }
 }

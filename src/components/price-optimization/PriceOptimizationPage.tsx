@@ -33,21 +33,13 @@ const PriceOptimizationPage: FunctionComponent<PriceOptimizationPageProps> = () 
 
   const onFormFinish = useCallback((values: any) => {
     console.log('form:', values)
-    const payload = {
-      date: values.date.format('DD/MM/YYYY'),
-      min_price: values.minPrice,
-      max_price: values.maxPrice,
-      model_id: values.modelId,
-    }
 
-    fetch(`${ENDPOINT}/daily-capacity/optimize-prices`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json;charset=utf-8',
-      },
-      body: JSON.stringify(payload),
-    }).then((response) => response.json())
-      .then((data) => setImageB64(data.image))
+    dc.optimizePrices(
+      values.date,
+      values.minPrice,
+      values.maxPrice,
+      values.modelId,
+    ).then((base64Image) => setImageB64(base64Image))
       .catch((err) => console.error(err))
   }, [])
 
