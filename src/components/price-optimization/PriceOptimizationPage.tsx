@@ -21,8 +21,6 @@ import {
 import DailyCapacity from '../../classes/DailyCapacity'
 import { ExistentModel } from '../../types/types'
 
-const ENDPOINT = import.meta.env.VITE_APP_ENDPOINT
-
 export interface PriceOptimizationPageProps {}
 
 const PriceOptimizationPage: FunctionComponent<PriceOptimizationPageProps> = () => {
