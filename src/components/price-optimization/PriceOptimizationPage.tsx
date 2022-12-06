@@ -23,9 +23,9 @@ import { ExistentModel } from '../../types/types'
 
 const ENDPOINT = import.meta.env.VITE_APP_ENDPOINT
 
-export interface DailySellsProps {}
+export interface PriceOptimizationPageProps {}
 
-const DailySells: FunctionComponent<DailySellsProps> = () => {
+const PriceOptimizationPage: FunctionComponent<PriceOptimizationPageProps> = () => {
   const [dc] = useState(new DailyCapacity());
   const [possibleTrainedModelList, setPossibleTrainedModelList] = useState<ExistentModel[]>([]);
   const [imageB64, setImageB64] = useState<string | null>(null);
@@ -60,7 +60,7 @@ const DailySells: FunctionComponent<DailySellsProps> = () => {
 
   return (
     <Space style={{ padding: '2em', width: '100%' }} direction="vertical">
-      <Typography.Title>Ventas diarias</Typography.Title>
+      <Typography.Title>Optimización de precios</Typography.Title>
       <Space direction="vertical">
         <Typography.Text>
           Inserte datos de predicción
@@ -130,4 +130,4 @@ const DailySells: FunctionComponent<DailySellsProps> = () => {
   )
 }
 
-export default DailySells
+export default PriceOptimizationPage
