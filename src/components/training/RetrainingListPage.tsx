@@ -15,10 +15,12 @@ import {
   Select,
   Alert,
   Tag,
+  Tooltip,
 } from 'antd'
 import {
   LoadingOutlined,
   UploadOutlined,
+  DeleteOutlined,
 } from '@ant-design/icons'
 import type { UploadFile } from 'antd/es/upload/interface'
 import type { UploadProps } from 'antd'
@@ -122,15 +124,24 @@ const RetrainingListPage: FunctionComponent<RetrainingListPageProps> = () => {
         )
       },
     },
-    // {
-    //   title: 'Opciones',
-    //   key: 'opctions',
-    //   render: (item: RetrainedInfo) => (
-    //     <Space key={item.taskId}>
-    //       <Button danger>Pausar</Button>
-    //     </Space>
-    //   ),
-    // },
+    {
+      title: 'Opciones',
+      key: 'opctions',
+      render: (item: RetrainedInfo) => (
+        <Space key={item.taskId}>
+          <Tooltip title={`Eliminar "${item.name}"`}>
+            <Button
+              danger
+              onClick={() => {
+                rm.deleteLog(item.taskId)
+              }}
+            >
+              <DeleteOutlined />
+            </Button>
+          </Tooltip>
+        </Space>
+      ),
+    },
   ]
 
   const activeRetraining = (values: any) => {

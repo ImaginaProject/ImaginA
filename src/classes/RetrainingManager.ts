@@ -59,6 +59,13 @@ export default class RetrainingManager {
     })
   }
 
+  async deleteLog(keyId: string) {
+    console.debug('Delete log for ID:', keyId)
+    const ref = fb.ref(fb.realtimeDB, `/retraining/${keyId}`)
+    await fb.remove(ref)
+    return this
+  }
+
   async retrain(
     modelId: string,
     uploadFile: string,

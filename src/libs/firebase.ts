@@ -7,6 +7,7 @@ import {
   onValue,
   get,
   child,
+  remove,
 } from 'firebase/database'
 
 const firebaseConfig = {
@@ -31,5 +32,6 @@ export default {
   onValue,
   get,
   child,
+  remove,
   // analytics,
 }
