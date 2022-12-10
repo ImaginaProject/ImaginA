@@ -1,10 +1,23 @@
-import dayjs from 'dayjs'
-import { DailyCapacityDB } from '../types/types'
+import { DatasetFileDescription, DatasetFile } from '../types/types'
+
+type DatasetFileResponse = {
+  id: string
+  name: string
+  description?: string
+  type: 'csv' | 'xlsx'
+  columns: string[]
+  column_length: number
+  row_length: number
+  file_size: number
+  resource: string
+  md5_sum: string
+  date: Date
+}
 
 export default class DatasetManager {
   private endpoint: string
 
-  public datasetList: DailyCapacityDB[]
+  public datasetList: DatasetFile[]
 
   constructor() {
     this.endpoint = import.meta.env.VITE_APP_ENDPOINT
@@ -12,55 +25,49 @@ export default class DatasetManager {
   }
 
   async requestAll() {
-    const response = fetch(`${this.endpoint}/datasets`)
+    const response = fetch(`${this.endpoint}/datasets/files`)
     const data = await (await response).json()
-    this.datasetList = data.entries.map((item: any) => {
-      const processedData: DailyCapacityDB = {
+    this.datasetList = data.list.map((item: DatasetFileResponse) => {
+      const processedData: DatasetFile = {
+        name: item.name,
+        description: item.description,
         date: item.date,
-        footfall: item.footfall,
+        columnLength: item.column_length,
+        columns: item.columns,
+        fileSize: item.file_size,
         id: item.id,
-        isHoliday: item.is_holiday,
-        isVacation: item.is_vacation,
+        md5Sum: item.md5_sum,
+        resource: item.resource,
+        rowLength: item.row_length,
+        type: item.type,
       }
       return processedData
     })
     return this.datasetList
   }
 
-  async deleteById(id: string) {
-    const response = await fetch(`${this.endpoint}/datasets/${id}`, { method: 'DELETE' })
-    const data = await response.json()
-    if (response.status === 200) {
-      console.debug('deleting process responses:', data)
-      return data.success as boolean
-    }
-
-    console.warn('deleting process got status code:', response.status)
-    return false
-  }
-
   // eslint-disable-next-line class-methods-use-this
-  async add(data: DailyCapacityDB) {
+  async add(data: DatasetFileDescription) {
     const payload = {
-      date: dayjs(data.date).format('DD/MM/YYYY'),
-      is_holiday: data.isHoliday,
-      is_vacation: data.isVacation,
-      footfall: data.footfall,
+      name: data.name,
+      description: data.description,
+      md5_sum_with_ext: data.resource,
+      type: data.type,
     }
-    const response = await fetch(`${this.endpoint}/datasets`, {
+
+    const response = await fetch(`${this.endpoint}/datasets/file`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json;charset=utf-8',
       },
       body: JSON.stringify(payload),
     })
-    const json = await response.json()
+
+    const json: DatasetFileResponse = await response.json()
     if (response.status === 200) {
       console.debug('addding entry got json:', json)
-      return json.success as boolean
+    } else {
+      console.warn('got status code:', response.status, json)
     }
-
-    console.warn('got status code:', response.status, data)
-    return false
   }
 }

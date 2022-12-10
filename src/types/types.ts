@@ -37,19 +37,6 @@ export type SpecialDayResponse = {
   }[]
 }
 
-/** @deprecated Not used */
-export type RawDailyCapacityDB = {
-  date: Date,
-  is_holiday: boolean,
-  is_vacation: boolean,
-  footfall: number,
-}
-
-export type DailyCapacityDB = SpecialDay & {
-  id: string,
-  footfall: number,
-}
-
 export type RetrainedInfo = {
   taskId: string,
   done: boolean,
@@ -59,4 +46,25 @@ export type RetrainedInfo = {
   name: string,
   status: string,
   targetEpochs: number,
+}
+
+export type DatasetFileDescription = {
+  name: string
+  description?: string,
+  type: 'csv' | 'xlsx',
+  resource: string,
+}
+
+export type DatasetFile = {
+  id: string
+  name: string
+  description?: string
+  type: 'csv' | 'xlsx'
+  columns: string[]
+  columnLength: number
+  rowLength: number
+  fileSize: number
+  resource: string
+  md5Sum: string
+  date: Date,
 }
