@@ -132,7 +132,13 @@ const DailyCapacityPage: FunctionComponent<DailyCapacityPageProps> = () => {
           <InputNumber min={0} />
         </Form.Item>
 
-        <Form.Item name="modelId" label="Modelo">
+        <Form.Item
+          name="modelId"
+          label="Modelo"
+          rules={[
+            { required: true, message: 'El modelo es requerido' },
+          ]}
+        >
           <Select
             placeholder="Realizar predicción usando"
             loading={isLoadingAllModels}
