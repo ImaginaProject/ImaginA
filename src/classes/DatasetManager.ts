@@ -2,17 +2,20 @@ import dayjs from 'dayjs'
 import { DailyCapacityDB } from '../types/types'
 
 export default class DatasetManager {
+  private datasetName: string
+
   private endpoint: string
 
   public datasetList: DailyCapacityDB[]
 
-  constructor() {
+  constructor(datasetName: string) {
     this.endpoint = import.meta.env.VITE_APP_ENDPOINT
+    this.datasetName = datasetName
     this.datasetList = []
   }
 
   async requestAll() {
-    const response = fetch(`${this.endpoint}/datasets/daily_capacities`)
+    const response = fetch(`${this.endpoint}/datasets/${this.datasetName}`)
     const data = await (await response).json()
     this.datasetList = data.entries.map((item: any) => {
       const processedData: DailyCapacityDB = {
