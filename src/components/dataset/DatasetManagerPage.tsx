@@ -59,7 +59,7 @@ const DeleteButton: FunctionComponent<DeleteButtonProps> = (props) => {
 }
 
 const DatasetManagerPage: FunctionComponent<DatasetManagerPageProps> = () => {
-  const [dm] = useState(new DatasetManager())
+  const [dm] = useState(new DatasetManager('daily_capacities'))
   const [isLoading, setIsLoading] = useState(false)
   const [dataSource, setDataSource] = useState<(DailyCapacityDB & { key: any })[]>([])
 
