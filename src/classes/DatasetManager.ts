@@ -12,7 +12,7 @@ export default class DatasetManager {
   }
 
   async requestAll() {
-    const response = fetch(`${this.endpoint}/datasets`)
+    const response = fetch(`${this.endpoint}/datasets/daily_capacities`)
     const data = await (await response).json()
     this.datasetList = data.entries.map((item: any) => {
       const processedData: DailyCapacityDB = {
@@ -28,7 +28,7 @@ export default class DatasetManager {
   }
 
   async deleteById(id: string) {
-    const response = await fetch(`${this.endpoint}/datasets/${id}`, { method: 'DELETE' })
+    const response = await fetch(`${this.endpoint}/datasets/daily_capacities/${id}`, { method: 'DELETE' })
     const data = await response.json()
     if (response.status === 200) {
       console.debug('deleting process responses:', data)
@@ -47,7 +47,7 @@ export default class DatasetManager {
       is_vacation: data.isVacation,
       footfall: data.footfall,
     }
-    const response = await fetch(`${this.endpoint}/datasets`, {
+    const response = await fetch(`${this.endpoint}/datasets/daily_capacities`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json;charset=utf-8',
