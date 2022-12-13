@@ -11,6 +11,11 @@ const tabs: TrainedModelsPageTabProps[] = [
     directory: 'daily-capacity',
     title: 'Modelo para aforo diario',
   },
+  {
+    actionURL: `${import.meta.env.VITE_APP_ENDPOINT}/models/daily-sells`,
+    directory: 'daily-sells',
+    title: 'Modelo para ventas diario',
+  },
 ]
 
 const UploadTrainedModelPage: FunctionComponent<UploadTrainedModelPageProps> = () => (
