@@ -1,16 +1,16 @@
 import dayjs from 'dayjs'
-import { DailyCapacityDB } from '../types/types'
+import { DailySellsDB } from '../../types/types'
 
 export default class DatasetManager {
   private datasetName: string
 
   private endpoint: string
 
-  public datasetList: DailyCapacityDB[]
+  public datasetList: DailySellsDB[]
 
-  constructor(datasetName: string) {
+  constructor() {
     this.endpoint = import.meta.env.VITE_APP_ENDPOINT
-    this.datasetName = datasetName
+    this.datasetName = 'daily-sells'
     this.datasetList = []
   }
 
@@ -18,12 +18,20 @@ export default class DatasetManager {
     const response = fetch(`${this.endpoint}/datasets/${this.datasetName}`)
     const data = await (await response).json()
     this.datasetList = data.entries.map((item: any) => {
-      const processedData: DailyCapacityDB = {
-        date: item.date,
-        footfall: item.footfall,
+      const processedData: DailySellsDB = {
         id: item.id,
-        isHoliday: item.is_holiday,
-        isVacation: item.is_vacation,
+        footfall: item.footfall,
+        price: item.price,
+        purchase: {
+          date: item.purchase.date,
+          isHoliday: item.purchase.is_holiday,
+          isVacation: item.purchase.is_vacation,
+        },
+        event: {
+          date: item.event.date,
+          isHoliday: item.event.is_holiday,
+          isVacation: item.event.is_vacation,
+        },
       }
       return processedData
     })
@@ -31,7 +39,7 @@ export default class DatasetManager {
   }
 
   async deleteById(id: string) {
-    const response = await fetch(`${this.endpoint}/datasets/daily_capacities/${id}`, { method: 'DELETE' })
+    const response = await fetch(`${this.endpoint}/datasets/${this.datasetName}/${id}`, { method: 'DELETE' })
     const data = await response.json()
     if (response.status === 200) {
       console.debug('deleting process responses:', data)
@@ -43,14 +51,22 @@ export default class DatasetManager {
   }
 
   // eslint-disable-next-line class-methods-use-this
-  async add(data: DailyCapacityDB) {
+  async add(data: DailySellsDB) {
     const payload = {
-      date: dayjs(data.date).format('DD/MM/YYYY'),
-      is_holiday: data.isHoliday,
-      is_vacation: data.isVacation,
+      purchase: {
+        date: dayjs(data.purchase.date).format('DD/MM/YYYY'),
+        is_holiday: data.purchase.isHoliday,
+        is_vacation: data.purchase.isVacation,
+      },
+      event: {
+        date: dayjs(data.event.date).format('DD/MM/YYYY'),
+        is_holiday: data.event.isHoliday,
+        is_vacation: data.event.isVacation,
+      },
       footfall: data.footfall,
+      price: data.price,
     }
-    const response = await fetch(`${this.endpoint}/datasets/daily_capacities`, {
+    const response = await fetch(`${this.endpoint}/datasets/${this.datasetName}`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json;charset=utf-8',

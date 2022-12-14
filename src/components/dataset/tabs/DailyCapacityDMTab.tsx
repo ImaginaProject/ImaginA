@@ -14,18 +14,15 @@ import {
   Modal,
   Form,
   DatePicker,
-  Checkbox,
   InputNumber,
 } from 'antd'
 import { useTranslate } from 'react-admin'
 import type { ColumnsType } from 'antd/es/table'
 import { DeleteOutlined, LoadingOutlined } from '@ant-design/icons'
-import DatasetManager from '../../classes/DatasetManager'
-import type { DailyCapacityDB } from '../../types/types'
+import DailyCapacityDM from '../../../classes/dataset-manager/DailyCapacityDM'
+import type { DailyCapacityDB } from '../../../types/types'
 
-export interface DatasetManagerPageTabProps {
-  datasetId: string
-}
+export interface DailyCapacityDMTabProps {}
 
 interface DeleteButtonProps {
   children: ReactNode,
@@ -60,25 +57,24 @@ const DeleteButton: FunctionComponent<DeleteButtonProps> = (props) => {
   )
 }
 
-const DatasetManagerPageTab: FunctionComponent<DatasetManagerPageTabProps> = (props) => {
-  const { datasetId } = props
-  const [dm] = useState(new DatasetManager(datasetId))
+const DailyCapacityDMTab: FunctionComponent<DailyCapacityDMTabProps> = () => {
+  const [dm] = useState(new DailyCapacityDM())
   const [isLoading, setIsLoading] = useState(false)
   const [dataSource, setDataSource] = useState<(DailyCapacityDB & { key: any })[]>([])
 
-  const [isAddingFormShown, setIsAddingFormShown] = useState(false)
-  const [isAddingFormSubmiting, setIsAddingFormSubmiting] = useState(false)
+  const [isFormShown, setIsFormShown] = useState(false)
+  const [isFormSubmiting, setIsFormSubmiting] = useState(false)
 
-  const [addingForm] = Form.useForm()
+  const [form] = Form.useForm()
   const translate = useTranslate()
 
-  const openAddingForm = () => {
-    setIsAddingFormShown(true)
+  const openForm = () => {
+    setIsFormShown(true)
   }
 
-  const closeAddingForm = () => {
-    addingForm.resetFields()
-    setIsAddingFormShown(false)
+  const closeForm = () => {
+    form.resetFields()
+    setIsFormShown(false)
   }
 
   const requestAllEntries = async () => {
@@ -92,30 +88,28 @@ const DatasetManagerPageTab: FunctionComponent<DatasetManagerPageTabProps> = (pr
     }
   }
 
-  const onFinishAddingForm = (value: any) => {
+  const onFinishForm = (value: any) => {
     const {
       date,
-      isHoliday,
-      isVacation,
       footfall,
+      price,
     } = value
     console.debug('save', value)
 
-    setIsAddingFormSubmiting(true)
+    setIsFormSubmiting(true)
 
     dm.add({
       id: '', // Empty because this field is set by the Back-End
       date,
-      isHoliday: !!isHoliday, // Avoid send undefined, send false instead
-      isVacation: !!isVacation, // Avoid send undefined, send false instead
       footfall,
+      price,
     }).then((success) => {
       if (success) {
         requestAllEntries()
       }
     }).finally(() => {
-      setIsAddingFormSubmiting(false)
-      closeAddingForm()
+      setIsFormSubmiting(false)
+      closeForm()
     })
   }
 
@@ -130,40 +124,6 @@ const DatasetManagerPageTab: FunctionComponent<DatasetManagerPageTabProps> = (pr
         if (a.date > b.date) return 1
         return -1
       },
-    },
-    {
-      title: translate('imagina.word.holiday'),
-      key: 'holiday',
-      dataIndex: 'isHoliday',
-      render: (item: boolean) => (item ? 'Sí' : 'No'),
-      filters: [
-        {
-          text: translate('imagina.holiday.is'),
-          value: true,
-        },
-        {
-          text: translate('imagina.holiday.is_not'),
-          value: false,
-        },
-      ],
-      onFilter: (value, record) => record.isHoliday === value,
-    },
-    {
-      title: translate('imagina.word.vacation'),
-      key: 'vacation',
-      dataIndex: 'isVacation',
-      render: (item: boolean) => (item ? 'Sí' : 'No'),
-      filters: [
-        {
-          text: translate('imagina.vacation.is'),
-          value: true,
-        },
-        {
-          text: translate('imagina.vacation.is_not'),
-          value: false,
-        },
-      ],
-      onFilter: (value, record) => record.isVacation === value,
     },
     {
       title: translate('imagina.word.footfall'),
@@ -185,6 +145,30 @@ const DatasetManagerPageTab: FunctionComponent<DatasetManagerPageTabProps> = (pr
         {
           text: '>= 10000',
           value: 10000,
+        },
+      ],
+      onFilter: (value, record) => record.footfall >= value,
+    },
+    {
+      title: translate('imagina.word.price'),
+      key: 'price',
+      dataIndex: 'price',
+      filters: [
+        {
+          text: '>= 1000',
+          value: 1000,
+        },
+        {
+          text: '>= 10000',
+          value: 10000,
+        },
+        {
+          text: '>= 100000',
+          value: 100000,
+        },
+        {
+          text: '>= 1000000',
+          value: 1000000,
         },
       ],
       onFilter: (value, record) => record.footfall >= value,
@@ -216,7 +200,7 @@ const DatasetManagerPageTab: FunctionComponent<DatasetManagerPageTabProps> = (pr
   return (
     <Space style={{ padding: '2em', width: '100%' }} direction="vertical">
       <Space direction="horizontal">
-        <Button onClick={openAddingForm} type="primary">
+        <Button onClick={openForm} type="primary">
           {translate('imagina.dataset.manager.add_element')}
         </Button>
         {/* eslint-disable-next-line no-alert */}
@@ -230,15 +214,15 @@ const DatasetManagerPageTab: FunctionComponent<DatasetManagerPageTabProps> = (pr
 
       <Modal
         footer={false}
-        open={isAddingFormShown}
-        onCancel={closeAddingForm}
+        open={isFormShown}
+        onCancel={closeForm}
       >
         <Typography.Title>
           {translate('imagina.dataset.modal.add_data')}
         </Typography.Title>
         <Form
-          form={addingForm}
-          onFinish={onFinishAddingForm}
+          form={form}
+          onFinish={onFinishForm}
           initialValues={{
             date: dayjs(new Date()),
           }}
@@ -255,20 +239,7 @@ const DatasetManagerPageTab: FunctionComponent<DatasetManagerPageTabProps> = (pr
           >
             <DatePicker />
           </Form.Item>
-          <Form.Item
-            label={translate('imagina.holiday.day')}
-            name="isHoliday"
-            valuePropName="checked"
-          >
-            <Checkbox value>{translate('imagina.holiday.is')}</Checkbox>
-          </Form.Item>
-          <Form.Item
-            label={translate('imagina.vacation.day')}
-            name="isVacation"
-            valuePropName="checked"
-          >
-            <Checkbox value>{translate('imagina.vacation.is')}</Checkbox>
-          </Form.Item>
+
           <Form.Item
             label={translate('imagina.word.footfall')}
             name="footfall"
@@ -295,11 +266,25 @@ const DatasetManagerPageTab: FunctionComponent<DatasetManagerPageTabProps> = (pr
           >
             <InputNumber />
           </Form.Item>
+
+          <Form.Item
+            name="price"
+            label="Precio"
+            rules={[
+              { required: true, message: 'El precio es requerido' },
+            ]}
+            initialValue={30000}
+          >
+            <InputNumber
+              formatter={(value) => `$ ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+              parser={(value) => value!.replace(/\$\s?|(,*)/g, '')}
+            />
+          </Form.Item>
           <Button
             type="primary"
             htmlType="submit"
-            disabled={isAddingFormSubmiting}
-            icon={(isAddingFormSubmiting && <LoadingOutlined />) || undefined}
+            disabled={isFormSubmiting}
+            icon={(isFormSubmiting && <LoadingOutlined />) || undefined}
           >
             {translate('imagina.word.submit')}
           </Button>
@@ -309,4 +294,4 @@ const DatasetManagerPageTab: FunctionComponent<DatasetManagerPageTabProps> = (pr
   )
 }
 
-export default DatasetManagerPageTab
+export default DailyCapacityDMTab

@@ -1,21 +1,10 @@
 import { FunctionComponent } from 'react'
 import { Tabs, Space, Typography } from 'antd'
 import { useTranslate } from 'react-admin'
-import DatasetManagerPageTab from './DatasetManagerPageTab'
-import type { DatasetManagerPageTabProps } from './DatasetManagerPageTab'
+import DailySellsDMTab from './tabs/DailySellsDMTab'
+import DailyCapacityDMTab from './tabs/DailyCapacityDMTab'
 
 export interface UploadTrainedModelPageProps {}
-
-const tabs: (DatasetManagerPageTabProps & { title: string })[] = [
-  {
-    datasetId: 'daily_capacities',
-    title: 'Aforo diario',
-  },
-  {
-    datasetId: 'daily_sells',
-    title: 'Ventas diaria',
-  },
-]
 
 const DatasetManagerPage: FunctionComponent<UploadTrainedModelPageProps> = () => {
   const translate = useTranslate()
@@ -28,11 +17,12 @@ const DatasetManagerPage: FunctionComponent<UploadTrainedModelPageProps> = () =>
         {translate('imagina.dataset.manager.description')}
       </Typography.Text>
       <Tabs>
-        {tabs.map((tab) => (
-          <Tabs.TabPane tab={tab.title} key={tab.datasetId}>
-            <DatasetManagerPageTab {...tab} />
-          </Tabs.TabPane>
-        ))}
+        <Tabs.TabPane tab="Aforo diario" key="1">
+          <DailyCapacityDMTab />
+        </Tabs.TabPane>
+        <Tabs.TabPane tab="Ventas diarias" key="2">
+          <DailySellsDMTab />
+        </Tabs.TabPane>
       </Tabs>
     </Space>
   )

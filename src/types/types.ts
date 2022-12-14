@@ -37,8 +37,28 @@ export type SpecialDayResponse = {
   }[]
 }
 
-export type DailyCapacityDB = SpecialDay & {
+export type DailyCapacityDB = {
   id: string,
+  date: Date,
+  isHoliday?: boolean,
+  isVacation?: boolean,
+  footfall: number,
+  price: number,
+}
+
+export type DailySellsDB = {
+  id: string,
+  purchase: {
+    date: Date,
+    isHoliday?: boolean,
+    isVacation?: boolean,
+  },
+  event: {
+    date: Date,
+    isHoliday?: boolean,
+    isVacation?: boolean,
+  },
+  price: number,
   footfall: number,
 }
 
@@ -51,4 +71,11 @@ export type RetrainedInfo = {
   name: string,
   status: string,
   targetEpochs: number,
+}
+
+export type DailySellsRequest = {
+  purchase_date: Date,
+  event_date: Date,
+  start_price: number,
+  end_price: number,
 }
