@@ -129,7 +129,10 @@ const DailyCapacityPage: FunctionComponent<DailyCapacityPageProps> = () => {
             },
           ]}
         >
-          <InputNumber min={0} />
+          <InputNumber
+            formatter={(value) => `$ ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+            parser={(value) => value!.replace(/\$\s?|(,*)/g, '')}
+          />
         </Form.Item>
 
         <Form.Item
