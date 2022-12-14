@@ -14,6 +14,7 @@ import SpecialDaysPage from './components/special-days/SpecialDaysPage'
 import RetrainingListPage from './components/training/RetrainingListPage'
 import RetrainReportPage from './components/training/RetrainReportPage'
 import PriceOptimizationPage from './components/price-optimization/PriceOptimizationPage'
+import DailySellsPage from './components/special-days/DailySellsPage'
 
 const App = () => (
   <div className="App">
@@ -26,7 +27,7 @@ const App = () => (
         <Route path="/daily-capacity" element={<DailyCapacityPage />} />
       </CustomRoutes>
       <CustomRoutes>
-        <Route path="/daily-sells" element={<>not implemented</>} />
+        <Route path="/daily-sells" element={<DailySellsPage />} />
       </CustomRoutes>
       <CustomRoutes>
         <Route path="/dataset/manager" element={<DatasetManagerPage />} />
