@@ -231,7 +231,7 @@ const DailySellsDMTab: FunctionComponent<DailySellsDMTabProps> = () => {
         onCancel={closeForm}
       >
         <Typography.Title>
-          {translate('imagina.dataset.modal.add_data')}
+          {translate('imagina.dataset.manager.modal.add_data')}
         </Typography.Title>
         <Form
           form={form}
@@ -242,11 +242,11 @@ const DailySellsDMTab: FunctionComponent<DailySellsDMTabProps> = () => {
         >
           <Form.Item
             name="purchaseDate"
-            label={translate('imagina.general.purchase_date')}
+            label={translate('imagina.daily_sells.purchase_date')}
             rules={[
               {
                 required: true,
-                message: translate('imagina.dataset.manager.write_purchase_date'),
+                message: translate('imagina.form.error.required_date'),
               },
             ]}
           >
@@ -254,11 +254,11 @@ const DailySellsDMTab: FunctionComponent<DailySellsDMTabProps> = () => {
           </Form.Item>
           <Form.Item
             name="eventDate"
-            label={translate('imagina.general.event_date')}
+            label={translate('imagina.daily_sells.event_date')}
             rules={[
               {
                 required: true,
-                message: translate('imagina.dataset.manager.write_event_date'),
+                message: translate('imagina.form.error.required_date'),
               },
             ]}
           >
@@ -271,7 +271,7 @@ const DailySellsDMTab: FunctionComponent<DailySellsDMTabProps> = () => {
             rules={[
               {
                 required: true,
-                message: translate('imagina.dataset.manager.write_footfall'),
+                message: translate('imagina.form.error.required_footfall'),
               },
               {
                 type: 'integer',
