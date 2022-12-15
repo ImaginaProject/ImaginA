@@ -16,6 +16,7 @@ import {
   Tooltip,
   Form,
 } from 'antd'
+import { useTranslate } from 'react-admin'
 import { UploadOutlined, SyncOutlined, LoadingOutlined } from '@ant-design/icons'
 import type { ColumnsType } from 'antd/es/table'
 import type { UploadFile } from 'antd/es/upload/interface'
@@ -64,6 +65,7 @@ const TrainedModelsPageTab: FunctionComponent<TrainedModelsPageTabProps> = (prop
   const [errorFetchingError, setErrorFetchingError] = useState('')
 
   const [form] = Form.useForm()
+  const translate = useTranslate()
 
   const showErrorAlert = (message: string) => {
     setErrorAlertMessage(message)
@@ -81,7 +83,7 @@ const TrainedModelsPageTab: FunctionComponent<TrainedModelsPageTabProps> = (prop
       setErrorFetchingError('')
     } catch (err) {
       console.error(err)
-      setErrorFetchingError('Error de conexión: no se puede conectar a la API.')
+      setErrorFetchingError(translate('imagina.error.api_network'))
     }
     // Finishs
     setIsLoading(false)
@@ -138,7 +140,7 @@ const TrainedModelsPageTab: FunctionComponent<TrainedModelsPageTabProps> = (prop
     }).then((response) => response.json())
       .then((data) => {
         if (data.app_exception) {
-          showErrorAlert(`Error obtenido: ${data.app_exception}`)
+          showErrorAlert(`${translate('imagina.error.got')}: ${data.app_exception}`)
         } else {
           console.log(data)
           requestAllModels().catch((err) => console.error(err))
@@ -149,22 +151,22 @@ const TrainedModelsPageTab: FunctionComponent<TrainedModelsPageTabProps> = (prop
 
   const columns: ColumnsType<DataType> = [
     {
-      title: 'Nombre',
+      title: translate('imagina.general.name'),
       dataIndex: 'name',
       key: 'name',
     },
     {
-      title: 'Descripción',
+      title: translate('imagina.general.description'),
       dataIndex: 'description',
       key: 'description',
     },
     {
-      title: 'Última modificación',
+      title: translate('imagina.training.upload_model.last_modification'),
       dataIndex: 'last_date',
       key: 'last_date',
     },
     {
-      title: 'Opciones',
+      title: translate('imagina.general.options'),
       dataIndex: 'model',
       key: 'model',
       render: (item: RegisteredModel) => (
@@ -198,19 +200,22 @@ const TrainedModelsPageTab: FunctionComponent<TrainedModelsPageTabProps> = (prop
       <Form form={form} onFinish={onFormFinish}>
         <Form.Item
           name="name"
-          label="Nombre del modelo"
-          rules={[{ required: true, message: 'El nombre es requerido' }]}
+          label={translate('imagina.training.upload_model.model_name')}
+          rules={[{ required: true, message: translate('imagina.form.error.required_name') }]}
         >
-          <Input placeholder="Model name" />
+          <Input placeholder={translate('imagina.general.model')} />
         </Form.Item>
 
-        <Form.Item name="description" label="Descripción del modelo">
-          <Input.TextArea placeholder="Model description (optional)" />
+        <Form.Item
+          name="description"
+          label={translate('imagina.training.upload_model.model_description')}
+        >
+          <Input.TextArea placeholder={translate('imagina.general.description')} />
         </Form.Item>
 
         <Form.Item
           name="fileList"
-          label="Archivo del modelo"
+          label={translate('imagina.training.upload_model.model_file')}
           valuePropName="fileList"
           getValueFromEvent={(e) => {
             if (Array.isArray(e)) {
@@ -221,7 +226,7 @@ const TrainedModelsPageTab: FunctionComponent<TrainedModelsPageTabProps> = (prop
           rules={[
             {
               required: true,
-              message: 'Archivo requerido',
+              message: translate('imagina.form.error.required_file'),
             },
           ]}
         >
@@ -235,7 +240,7 @@ const TrainedModelsPageTab: FunctionComponent<TrainedModelsPageTabProps> = (prop
               const isEnable = file.type ? ENABLE_TYPE.includes(file.type) : file.name.toLowerCase().endsWith('.h5')
               if (!isEnable) {
                 console.error('File is not enable:', file)
-                showErrorAlert('Tipo de archivo no soportado')
+                showErrorAlert(translate('imagina.form.error.bad_file_type'))
               }
               return isEnable || Upload.LIST_IGNORE
             }}
@@ -246,7 +251,7 @@ const TrainedModelsPageTab: FunctionComponent<TrainedModelsPageTabProps> = (prop
             onRemove={handleRemove}
           >
             <Button icon={isUploading ? <LoadingOutlined /> : <UploadOutlined />}>
-              Click para subir un modelo
+              {translate('imagina.training.upload_model.click_to_upload')}
             </Button>
           </Upload>
         </Form.Item>
@@ -257,7 +262,7 @@ const TrainedModelsPageTab: FunctionComponent<TrainedModelsPageTabProps> = (prop
             disabled={isUploading}
             icon={isSubmiting ? <LoadingOutlined /> : undefined}
           >
-            Agregar modelo
+            {translate('imagina.training.upload_model.add_model')}
           </Button>
         </Form.Item>
       </Form>

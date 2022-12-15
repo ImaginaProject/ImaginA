@@ -18,6 +18,8 @@ import {
   Image,
 } from 'antd'
 
+import { useTranslate } from 'react-admin'
+
 import DailyCapacity from '../../classes/DailyCapacity'
 import { ExistentModel } from '../../types/types'
 
@@ -28,6 +30,7 @@ const PriceOptimizationPage: FunctionComponent<PriceOptimizationPageProps> = () 
   const [possibleTrainedModelList, setPossibleTrainedModelList] = useState<ExistentModel[]>([]);
   const [imageB64, setImageB64] = useState<string | null>(null);
   const [form] = Form.useForm()
+  const translate = useTranslate()
 
   const onFormFinish = useCallback((values: any) => {
     console.log('form:', values)
@@ -53,14 +56,14 @@ const PriceOptimizationPage: FunctionComponent<PriceOptimizationPageProps> = () 
       <Typography.Title>Optimización de precios</Typography.Title>
       <Space direction="vertical">
         <Typography.Text>
-          Inserte datos de predicción
+          {translate('imagina.price_optimization.insert_data')}
         </Typography.Text>
         <Form form={form} onFinish={onFormFinish}>
           <Form.Item
             label="Modelo"
             name="modelId"
             rules={[
-              { required: true, message: 'Seleccione un modelo para usar' },
+              { required: true, message: translate('imagina.price_optimization.select_model') },
             ]}
           >
             <Select
@@ -73,10 +76,10 @@ const PriceOptimizationPage: FunctionComponent<PriceOptimizationPageProps> = () 
           </Form.Item>
 
           <Form.Item
-            label="Fecha"
+            label={translate('imagina.general.date')}
             name="date"
             rules={[
-              { required: true, message: 'La fecha es requerida' },
+              { required: true, message: translate('imagina.form.error.required_date') },
             ]}
           >
             <DatePicker />
@@ -85,10 +88,10 @@ const PriceOptimizationPage: FunctionComponent<PriceOptimizationPageProps> = () 
           <Row gutter={16}>
             <Col md={12} sm={24}>
               <Form.Item
-                label="Precio mínimo"
+                label={translate('imagina.general.min_price')}
                 name="minPrice"
                 rules={[
-                  { required: true, message: 'Fije un precio mínimo' },
+                  { required: true, message: translate('imagina.form.error.required_price') },
                 ]}
               >
                 <InputNumber
@@ -100,10 +103,10 @@ const PriceOptimizationPage: FunctionComponent<PriceOptimizationPageProps> = () 
             </Col>
             <Col md={12} sm={24}>
               <Form.Item
-                label="Precio máximo"
+                label={translate('imagina.general.max_price')}
                 name="maxPrice"
                 rules={[
-                  { required: true, message: 'Fije un precio máximo' },
+                  { required: true, message: translate('imagina.form.error.required_price') },
                 ]}
               >
                 <InputNumber
@@ -117,7 +120,7 @@ const PriceOptimizationPage: FunctionComponent<PriceOptimizationPageProps> = () 
 
           <Form.Item>
             <Button htmlType="submit">
-              Predecir
+              {translate('imagina.general.predice')}
             </Button>
           </Form.Item>
         </Form>

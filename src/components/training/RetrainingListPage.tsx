@@ -22,6 +22,9 @@ import {
   UploadOutlined,
   DeleteOutlined,
 } from '@ant-design/icons'
+
+import { useTranslate } from 'react-admin'
+
 import type { UploadFile } from 'antd/es/upload/interface'
 import type { UploadProps } from 'antd'
 // import dayjs, { Dayjs } from 'dayjs'
@@ -57,15 +60,16 @@ const RetrainingListPage: FunctionComponent<RetrainingListPageProps> = () => {
   const [wasRecientlyNewTaskAdded, setWasRecientlyNewTaskAdded] = useState(false)
 
   const [form] = Form.useForm()
+  const translate = useTranslate()
 
   const columns: ColumnsType<DateSource> = [
     {
-      title: 'Proceso',
+      title: translate('imagina.training.retraining.process'),
       key: 'process',
       dataIndex: 'name',
     },
     {
-      title: 'Estado',
+      title: translate('imagina.training.retraining.state'),
       key: 'status',
       dataIndex: 'status',
       render: (item: string) => {
@@ -87,12 +91,12 @@ const RetrainingListPage: FunctionComponent<RetrainingListPageProps> = () => {
             color = 'cyan'
         }
         return (
-          <Tag color={color}>{item}</Tag>
+          <Tag color={color}>{translate(`imagina.training.retraining.states.${item}`, { _: item })}</Tag>
         )
       },
     },
     {
-      title: 'Hora inicio',
+      title: translate('imagina.training.retraining.start_hour'),
       key: 'start-time',
       dataIndex: 'startDate',
       render: (item: string | null) => {
@@ -102,7 +106,7 @@ const RetrainingListPage: FunctionComponent<RetrainingListPageProps> = () => {
       },
     },
     {
-      title: 'Hora final',
+      title: translate('imagina.training.retraining.end_hour'),
       key: 'end-time',
       dataIndex: 'endDate',
       render: (item: string | null) => {
@@ -112,24 +116,24 @@ const RetrainingListPage: FunctionComponent<RetrainingListPageProps> = () => {
       },
     },
     {
-      title: 'Épocas',
+      title: translate('imagina.training.retraining.epochs'),
       key: 'epochs',
       // dataIndex: 'epochs',
       render: (item: DateSource) => {
         const { epochs, targetEpochs } = item
         return (
           <p>
-            {`${epochs} de ${targetEpochs}`}
+            {translate('imagina.training.retraining.epochs_of', { epochs, epochTotal: targetEpochs })}
           </p>
         )
       },
     },
     {
-      title: 'Opciones',
+      title: translate('imagina.general.options'),
       key: 'opctions',
       render: (item: RetrainedInfo) => (
         <Space key={item.taskId}>
-          <Tooltip title={`Eliminar "${item.name}"`}>
+          <Tooltip title={`${translate('imagina.general.delete')} "${item.name}"`}>
             <Button
               danger
               onClick={() => {
@@ -230,11 +234,11 @@ const RetrainingListPage: FunctionComponent<RetrainingListPageProps> = () => {
         <Form form={form} onFinish={activeRetraining}>
           <Form.Item
             name="name"
-            label="Nombre"
+            label={translate('imagina.general.name')}
             rules={[
               {
                 required: true,
-                message: 'Nombre requerido',
+                message: translate('imagina.form.error.required_name'),
               },
             ]}
           >
@@ -242,11 +246,11 @@ const RetrainingListPage: FunctionComponent<RetrainingListPageProps> = () => {
           </Form.Item>
           <Form.Item
             name="epochs"
-            label="Épocas"
+            label={translate('imagina.training.retraining.epochs')}
             rules={[
               {
                 required: true,
-                message: 'La cantidad de épocas es requerido',
+                message: translate('imagina.form.error.required_epochs_amount'),
               },
               // {
               //   min: 1,
@@ -259,7 +263,7 @@ const RetrainingListPage: FunctionComponent<RetrainingListPageProps> = () => {
           </Form.Item>
           <Form.Item
             name="fileList"
-            label="Archivo"
+            label={translate('imagina.general.file')}
             valuePropName="fileList"
             getValueFromEvent={(e) => {
               // console.log('Upload event:', e)
@@ -271,7 +275,7 @@ const RetrainingListPage: FunctionComponent<RetrainingListPageProps> = () => {
             rules={[
               {
                 required: true,
-                message: 'Archivo requerido',
+                message: translate('imagina.form.error.required_file'),
               },
             ]}
           >
@@ -301,18 +305,18 @@ const RetrainingListPage: FunctionComponent<RetrainingListPageProps> = () => {
                 icon={isUploading ? <LoadingOutlined /> : <UploadOutlined />}
                 disabled={isUploading}
               >
-                Subir nuevos datos (.csv or .xlsx)
+                {translate('imagina.training.retraining.upload_new_csv_or_xlsx_data')}
               </Button>
             </Upload>
           </Form.Item>
           <Form.Item
             name="testSize"
-            label="Tamaño de muestra de pruebas"
+            label={translate('imagina.training.retraining.test_size')}
             initialValue={0.1}
             rules={[
               {
                 required: true,
-                message: 'Inserte alguna cantidad aunque sea 0',
+                message: translate('imagina.form.error.required_test_size'),
               },
             ]}
           >
@@ -320,12 +324,12 @@ const RetrainingListPage: FunctionComponent<RetrainingListPageProps> = () => {
           </Form.Item>
           <Form.Item
             name="validationSplit"
-            label="Tamaño de muestra para validación"
+            label={translate('imagina.training.retraining.validation_split')}
             initialValue={0.1}
             rules={[
               {
                 required: true,
-                message: 'Inserte alguna cantidad aunque sea 0',
+                message: translate('imagina.form.error.required_validation_split'),
               },
             ]}
           >
@@ -334,16 +338,16 @@ const RetrainingListPage: FunctionComponent<RetrainingListPageProps> = () => {
 
           <Form.Item
             name="modelId"
-            label="Modelo base"
+            label={translate('imagina.training.retraining.model_base')}
             rules={[
               {
                 required: true,
-                message: 'Necesario seleccionar un modelo base',
+                message: translate('imagina.form.error.required_model_base'),
               },
             ]}
           >
             <Select
-              placeholder="Modelos disponible seleccionado"
+              placeholder={translate('imagina.training.retraining.selected_model')}
               options={availableModelIDs}
               loading={isLoadingModels}
             />
@@ -359,14 +363,14 @@ const RetrainingListPage: FunctionComponent<RetrainingListPageProps> = () => {
                 ) : undefined
               }
             >
-              Agregar tarea de reentrenamiento
+              {translate('imagina.training.retraining.submit')}
             </Button>
           </Form.Item>
         </Form>
       </Space>
 
       {wasRecientlyNewTaskAdded && (
-        <Alert type="info" icon={<LoadingOutlined />} message="Preparando..." />
+        <Alert type="info" icon={<LoadingOutlined />} message={translate('imagina.training.retraining.working')} />
       )}
 
       <Table loading={isWaitingForRealtimeData} columns={columns} dataSource={dataSource} />

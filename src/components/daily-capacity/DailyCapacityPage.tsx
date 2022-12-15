@@ -19,6 +19,8 @@ import weekday from 'dayjs/plugin/weekday'
 import localeData from 'dayjs/plugin/localeData'
 import customParseFormat from 'dayjs/plugin/customParseFormat'
 
+import { useTranslate } from 'react-admin'
+
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -58,6 +60,7 @@ const DailyCapacityPage: FunctionComponent<DailyCapacityPageProps> = () => {
   const [posibleTrainedModelList, setPossibleTrainedModelList] = useState<ExistentModel[]>([])
 
   const [form] = Form.useForm()
+  const translate = useTranslate()
 
   const onFormFinish = (values: any) => {
     console.log(values)
@@ -92,12 +95,12 @@ const DailyCapacityPage: FunctionComponent<DailyCapacityPageProps> = () => {
       >
         <Form.Item
           name="startDate"
-          label="Fecha inicio"
+          label={translate('imagina.general.start_date')}
           initialValue={dayjs(new Date()).add(-5, 'days')}
           rules={[
             {
               required: true,
-              message: 'La fecha inicial es requerida',
+              message: translate('imagina.form.error.required_date'),
             },
           ]}
         >
@@ -106,12 +109,12 @@ const DailyCapacityPage: FunctionComponent<DailyCapacityPageProps> = () => {
 
         <Form.Item
           name="endDate"
-          label="Fecha fin"
+          label={translate('imagina.general.end_date')}
           initialValue={dayjs(new Date())}
           rules={[
             {
               required: true,
-              message: 'La fecha final es requerida',
+              message: translate('imagina.form.error.required_date'),
             },
           ]}
         >
@@ -120,12 +123,12 @@ const DailyCapacityPage: FunctionComponent<DailyCapacityPageProps> = () => {
 
         <Form.Item
           name="price"
-          label="Precio"
+          label={translate('imagina.general.price')}
           initialValue={1}
           rules={[
             {
               required: true,
-              message: 'El precio es requerido',
+              message: translate('imagina.form.error.required_price'),
             },
           ]}
         >
@@ -137,13 +140,13 @@ const DailyCapacityPage: FunctionComponent<DailyCapacityPageProps> = () => {
 
         <Form.Item
           name="modelId"
-          label="Modelo"
+          label={translate('imagina.general.model')}
           rules={[
-            { required: true, message: 'El modelo es requerido' },
+            { required: true, message: translate('imagina.form.error.required_model') },
           ]}
         >
           <Select
-            placeholder="Realizar predicción usando"
+            placeholder={translate('imagina.daily_capacity.do_prediction_using')}
             loading={isLoadingAllModels}
             // value={selectedModel?.id}
             options={posibleTrainedModelList.map((model) => ({
@@ -156,7 +159,7 @@ const DailyCapacityPage: FunctionComponent<DailyCapacityPageProps> = () => {
 
         <Form.Item>
           <Button htmlType="submit" type="primary">
-            Predecir
+            {translate('imagina.general.predice')}
           </Button>
         </Form.Item>
       </Form>
@@ -164,7 +167,7 @@ const DailyCapacityPage: FunctionComponent<DailyCapacityPageProps> = () => {
       <Typography.Text>
         {dc.lastPrediction.length}
         {' '}
-        resultados predichos
+        {translate('imagina.daily_capacity.prediced_results')}
       </Typography.Text>
       {isLoading ? <Loading /> : <Bar options={dc.graphOptions} data={dc.barData} />}
     </Space>

@@ -115,7 +115,7 @@ const DailyCapacityDMTab: FunctionComponent<DailyCapacityDMTabProps> = () => {
 
   const columns: ColumnsType<DailyCapacityDB> = [
     {
-      title: translate('imagina.word.date'),
+      title: translate('imagina.general.date'),
       key: 'date',
       dataIndex: 'date',
       render: (item: Date) => dayjs(item).format('DD/MM/YYYY'),
@@ -126,7 +126,7 @@ const DailyCapacityDMTab: FunctionComponent<DailyCapacityDMTabProps> = () => {
       },
     },
     {
-      title: translate('imagina.word.footfall'),
+      title: translate('imagina.general.footfall'),
       key: 'capacity',
       dataIndex: 'footfall',
       filters: [
@@ -150,7 +150,7 @@ const DailyCapacityDMTab: FunctionComponent<DailyCapacityDMTabProps> = () => {
       onFilter: (value, record) => record.footfall >= value,
     },
     {
-      title: translate('imagina.word.price'),
+      title: translate('imagina.general.price'),
       key: 'price',
       dataIndex: 'price',
       filters: [
@@ -174,7 +174,7 @@ const DailyCapacityDMTab: FunctionComponent<DailyCapacityDMTabProps> = () => {
       onFilter: (value, record) => record.footfall >= value,
     },
     {
-      title: translate('imagina.word.options'),
+      title: translate('imagina.general.options'),
       key: 'options',
       render: (item: DailyCapacityDB) => (
         <Space>
@@ -218,7 +218,7 @@ const DailyCapacityDMTab: FunctionComponent<DailyCapacityDMTabProps> = () => {
         onCancel={closeForm}
       >
         <Typography.Title>
-          {translate('imagina.dataset.modal.add_data')}
+          {translate('imagina.dataset.manager.modal.add_data')}
         </Typography.Title>
         <Form
           form={form}
@@ -229,11 +229,11 @@ const DailyCapacityDMTab: FunctionComponent<DailyCapacityDMTabProps> = () => {
         >
           <Form.Item
             name="date"
-            label={translate('imagina.word.date')}
+            label={translate('imagina.general.date')}
             rules={[
               {
                 required: true,
-                message: translate('imagina.dataset.manager.write_date'),
+                message: translate('imagina.form.error.required_date'),
               },
             ]}
           >
@@ -241,12 +241,12 @@ const DailyCapacityDMTab: FunctionComponent<DailyCapacityDMTabProps> = () => {
           </Form.Item>
 
           <Form.Item
-            label={translate('imagina.word.footfall')}
+            label={translate('imagina.general.footfall')}
             name="footfall"
             rules={[
               {
                 required: true,
-                message: translate('imagina.dataset.manager.write_footfall'),
+                message: translate('imagina.form.error.required_footfall'),
               },
               {
                 type: 'integer',
@@ -256,7 +256,7 @@ const DailyCapacityDMTab: FunctionComponent<DailyCapacityDMTabProps> = () => {
                 validator: (_, value) => {
                   if (value < 0) {
                     return Promise.reject(
-                      new Error(translate('imagina.form.error.require_positive_integer')),
+                      new Error(translate('imagina.form.error.required_positive_integer')),
                     )
                   }
                   return Promise.resolve()
@@ -269,9 +269,9 @@ const DailyCapacityDMTab: FunctionComponent<DailyCapacityDMTabProps> = () => {
 
           <Form.Item
             name="price"
-            label="Precio"
+            label={translate('imagina.general.price')}
             rules={[
-              { required: true, message: 'El precio es requerido' },
+              { required: true, message: translate('imagina.form.error.required_price') },
             ]}
             initialValue={30000}
           >
@@ -286,7 +286,7 @@ const DailyCapacityDMTab: FunctionComponent<DailyCapacityDMTabProps> = () => {
             disabled={isFormSubmiting}
             icon={(isFormSubmiting && <LoadingOutlined />) || undefined}
           >
-            {translate('imagina.word.submit')}
+            {translate('imagina.general.submit')}
           </Button>
         </Form>
       </Modal>

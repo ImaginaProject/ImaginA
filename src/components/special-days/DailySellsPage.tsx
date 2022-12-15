@@ -18,6 +18,8 @@ import {
   Col,
 } from 'antd'
 
+import { useTranslate } from 'react-admin'
+
 import DailySells from '../../classes/DailySells'
 import { ExistentModel } from '../../types/types'
 
@@ -28,6 +30,7 @@ const DailySellsPage: FunctionComponent<DailySellsPageProps> = () => {
   const [possibleTrainedModelList, setPossibleTrainedModelList] = useState<ExistentModel[]>([]);
   const [imageB64, setImageB64] = useState<string | null>(null);
   const [form] = Form.useForm()
+  const translate = useTranslate()
 
   const onFormFinish = useCallback((values: any) => {
     console.log('form:', values)
@@ -55,14 +58,14 @@ const DailySellsPage: FunctionComponent<DailySellsPageProps> = () => {
       <Typography.Title>Ventas diarias</Typography.Title>
       <Space direction="vertical">
         <Typography.Text>
-          Inserte datos de predicción
+          {translate('imagina.daily_sells.insert_data')}
         </Typography.Text>
         <Form form={form} onFinish={onFormFinish}>
           <Form.Item
-            label="Modelo"
+            label={translate('imagina.general.model')}
             name="modelId"
             rules={[
-              { required: true, message: 'Seleccione un modelo para usar' },
+              { required: true, message: translate('imagina.form.error.required_model') },
             ]}
           >
             <Select
@@ -75,20 +78,20 @@ const DailySellsPage: FunctionComponent<DailySellsPageProps> = () => {
           </Form.Item>
 
           <Form.Item
-            label="Fecha de compra"
+            label={translate('imagina.daily_sells.purchase_date')}
             name="purchaseDate"
             rules={[
-              { required: true, message: 'La fecha es requerida' },
+              { required: true, message: translate('imagina.form.error.required_date') },
             ]}
           >
             <DatePicker />
           </Form.Item>
 
           <Form.Item
-            label="Fecha del evento"
+            label={translate('imagina.daily_sells.event_date')}
             name="eventDate"
             rules={[
-              { required: true, message: 'La fecha es requerida' },
+              { required: true, message: translate('imagina.form.error.required_date') },
             ]}
           >
             <DatePicker />
@@ -97,10 +100,10 @@ const DailySellsPage: FunctionComponent<DailySellsPageProps> = () => {
           <Row gutter={16}>
             <Col md={12} sm={24}>
               <Form.Item
-                label="Precio mínimo"
+                label={translate('imagina.general.min_price')}
                 name="minPrice"
                 rules={[
-                  { required: true, message: 'Fije un precio mínimo' },
+                  { required: true, message: translate('imagina.form.error.required_price') },
                 ]}
               >
                 <InputNumber
@@ -112,10 +115,10 @@ const DailySellsPage: FunctionComponent<DailySellsPageProps> = () => {
             </Col>
             <Col md={12} sm={24}>
               <Form.Item
-                label="Precio máximo"
+                label={translate('imagina.general.max_price')}
                 name="maxPrice"
                 rules={[
-                  { required: true, message: 'Fije un precio máximo' },
+                  { required: true, message: translate('imagina.form.error.required_price') },
                 ]}
               >
                 <InputNumber
@@ -129,7 +132,7 @@ const DailySellsPage: FunctionComponent<DailySellsPageProps> = () => {
 
           <Form.Item>
             <Button htmlType="submit">
-              Predecir
+              {translate('imagina.general.predice')}
             </Button>
           </Form.Item>
         </Form>

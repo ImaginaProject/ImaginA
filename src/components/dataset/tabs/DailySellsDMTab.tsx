@@ -117,7 +117,7 @@ const DailySellsDMTab: FunctionComponent<DailySellsDMTabProps> = () => {
 
   const columns: ColumnsType<DailySellsDB> = [
     {
-      title: 'fecha de compra',
+      title: translate('imagina.daily_sells.purchase_date'),
       key: 'purchase_date',
       dataIndex: 'purchaseDate',
       render: (purchaseDate) => dayjs(purchaseDate).format('DD/MM/YYYY'),
@@ -128,7 +128,7 @@ const DailySellsDMTab: FunctionComponent<DailySellsDMTabProps> = () => {
       },
     },
     {
-      title: 'fecha del evento',
+      title: translate('imagina.daily_sells.event_date'),
       key: 'event',
       dataIndex: 'eventDate',
       render: (eventDate) => dayjs(eventDate).format('DD/MM/YYYY'),
@@ -139,7 +139,7 @@ const DailySellsDMTab: FunctionComponent<DailySellsDMTabProps> = () => {
       },
     },
     {
-      title: translate('imagina.word.footfall'),
+      title: translate('imagina.general.footfall'),
       key: 'capacity',
       dataIndex: 'footfall',
       filters: [
@@ -163,7 +163,7 @@ const DailySellsDMTab: FunctionComponent<DailySellsDMTabProps> = () => {
       onFilter: (value, record) => record.footfall >= value,
     },
     {
-      title: translate('imagina.word.price'),
+      title: translate('imagina.general.price'),
       key: 'price',
       dataIndex: 'price',
       filters: [
@@ -187,7 +187,7 @@ const DailySellsDMTab: FunctionComponent<DailySellsDMTabProps> = () => {
       onFilter: (value, record) => record.footfall >= value,
     },
     {
-      title: translate('imagina.word.options'),
+      title: translate('imagina.general.options'),
       key: 'options',
       render: (item: DailySellsDB) => (
         <Space>
@@ -242,7 +242,7 @@ const DailySellsDMTab: FunctionComponent<DailySellsDMTabProps> = () => {
         >
           <Form.Item
             name="purchaseDate"
-            label={translate('imagina.word.purchase_date')}
+            label={translate('imagina.general.purchase_date')}
             rules={[
               {
                 required: true,
@@ -254,7 +254,7 @@ const DailySellsDMTab: FunctionComponent<DailySellsDMTabProps> = () => {
           </Form.Item>
           <Form.Item
             name="eventDate"
-            label={translate('imagina.word.event_date')}
+            label={translate('imagina.general.event_date')}
             rules={[
               {
                 required: true,
@@ -266,7 +266,7 @@ const DailySellsDMTab: FunctionComponent<DailySellsDMTabProps> = () => {
           </Form.Item>
 
           <Form.Item
-            label={translate('imagina.word.footfall')}
+            label={translate('imagina.general.footfall')}
             name="footfall"
             rules={[
               {
@@ -296,7 +296,7 @@ const DailySellsDMTab: FunctionComponent<DailySellsDMTabProps> = () => {
             name="price"
             label="Precio"
             rules={[
-              { required: true, message: 'El precio es requerido' },
+              { required: true, message: translate('imagina.form.error.required_price') },
             ]}
             initialValue={30000}
           >
@@ -311,7 +311,7 @@ const DailySellsDMTab: FunctionComponent<DailySellsDMTabProps> = () => {
             disabled={isFormSubmiting}
             icon={(isFormSubmiting && <LoadingOutlined />) || undefined}
           >
-            {translate('imagina.word.submit')}
+            {translate('imagina.general.submit')}
           </Button>
         </Form>
       </Modal>
