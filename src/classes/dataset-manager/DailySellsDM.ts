@@ -22,16 +22,8 @@ export default class DatasetManager {
         id: item.id,
         footfall: item.footfall,
         price: item.price,
-        purchase: {
-          date: item.purchase.date,
-          isHoliday: item.purchase.is_holiday,
-          isVacation: item.purchase.is_vacation,
-        },
-        event: {
-          date: item.event.date,
-          isHoliday: item.event.is_holiday,
-          isVacation: item.event.is_vacation,
-        },
+        purchaseDate: item.purchaseDate,
+        eventDate: item.eventDate,
       }
       return processedData
     })
@@ -53,16 +45,8 @@ export default class DatasetManager {
   // eslint-disable-next-line class-methods-use-this
   async add(data: DailySellsDB) {
     const payload = {
-      purchase: {
-        date: dayjs(data.purchase.date).format('DD/MM/YYYY'),
-        is_holiday: data.purchase.isHoliday,
-        is_vacation: data.purchase.isVacation,
-      },
-      event: {
-        date: dayjs(data.event.date).format('DD/MM/YYYY'),
-        is_holiday: data.event.isHoliday,
-        is_vacation: data.event.isVacation,
-      },
+      purchase_date: dayjs(data.purchaseDate).format('DD/MM/YYYY'),
+      event_date: dayjs(data.eventDate).format('DD/MM/YYYY'),
       footfall: data.footfall,
       price: data.price,
     }

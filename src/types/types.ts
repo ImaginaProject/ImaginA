@@ -48,16 +48,8 @@ export type DailyCapacityDB = {
 
 export type DailySellsDB = {
   id: string,
-  purchase: {
-    date: Date,
-    isHoliday?: boolean,
-    isVacation?: boolean,
-  },
-  event: {
-    date: Date,
-    isHoliday?: boolean,
-    isVacation?: boolean,
-  },
+  purchaseDate: Date,
+  eventDate: Date,
   price: number,
   footfall: number,
 }
