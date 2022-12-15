@@ -9,6 +9,7 @@ import {
   Typography,
   Image,
   Alert,
+  Spin,
 } from 'antd'
 import DailyCapacity from '../../classes/DailyCapacity'
 
@@ -30,6 +31,7 @@ const RetrainReportPage: FunctionComponent<RetrainReportPageProps> = () => {
   const [availableModelIDs, setAvailableModelIDs] = useState<AvailableModelID[]>([])
   const [reportPlots, setReportPlots] = useState<ReportPlot[]>([])
   const [isLoadingModels, setIsLoadingModels] = useState(false)
+  const [isLoadingReports, setIsLoadingReports] = useState(false);
   const [errorMessage, setErrorMessage] = useState('')
 
   const onSelectedChange = (value: string, option: AvailableModelID | AvailableModelID[]) => {
@@ -61,6 +63,8 @@ const RetrainReportPage: FunctionComponent<RetrainReportPageProps> = () => {
     const url = `${import.meta.env.VITE_APP_ENDPOINT}/reports/model`
 
     setIsLoadingModels(true)
+    setIsLoadingReports(true)
+  
     fetch(`${url}?model_id=${modelId}`)
       .then((response) => response.json())
       .then((data) => {
@@ -74,7 +78,10 @@ const RetrainReportPage: FunctionComponent<RetrainReportPageProps> = () => {
             base64Image: plot.resource,
           })))
         }
-      }).finally(() => setIsLoadingModels(false))
+      }).finally(() => {
+        setIsLoadingModels(false)
+        setIsLoadingReports(false)
+      })
   }, [selectedModelID])
 
   return (
@@ -105,6 +112,7 @@ const RetrainReportPage: FunctionComponent<RetrainReportPageProps> = () => {
         {errorMessage && (
           <Alert closable type="error" message={errorMessage} />
         )}
+        {isLoadingReports && <Spin />}
         {reportPlots.map((reportPlot) => (
           <>
             <Typography.Text>
