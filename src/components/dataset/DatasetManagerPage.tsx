@@ -6,6 +6,19 @@ import DailyCapacityDMTab from './tabs/DailyCapacityDMTab'
 
 export interface UploadTrainedModelPageProps {}
 
+const tabs = [
+  {
+    label: 'Aforo diario',
+    key: '1',
+    children: <DailyCapacityDMTab />,
+  },
+  {
+    label: 'Ventas diarias',
+    key: '2',
+    children: <DailySellsDMTab />,
+  },
+]
+
 const DatasetManagerPage: FunctionComponent<UploadTrainedModelPageProps> = () => {
   const translate = useTranslate()
   return (
@@ -16,14 +29,7 @@ const DatasetManagerPage: FunctionComponent<UploadTrainedModelPageProps> = () =>
       <Typography.Text>
         {translate('imagina.dataset.manager.description')}
       </Typography.Text>
-      <Tabs>
-        <Tabs.TabPane tab="Aforo diario" key="1">
-          <DailyCapacityDMTab />
-        </Tabs.TabPane>
-        <Tabs.TabPane tab="Ventas diarias" key="2">
-          <DailySellsDMTab />
-        </Tabs.TabPane>
-      </Tabs>
+      <Tabs items={tabs} />
     </Space>
   )
 }

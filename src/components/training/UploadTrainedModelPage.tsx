@@ -5,29 +5,29 @@ import type { TrainedModelsPageTabProps } from './TrainedModelsPageTab'
 
 export interface UploadTrainedModelPageProps {}
 
-const tabs: TrainedModelsPageTabProps[] = [
+const tabData: (TrainedModelsPageTabProps & {label: string})[] = [
   {
     actionURL: `${import.meta.env.VITE_APP_ENDPOINT}/models/daily-capacity`,
     directory: 'daily-capacity',
-    title: 'Modelo para aforo diario',
+    label: 'Modelo para aforo diario',
   },
   {
     actionURL: `${import.meta.env.VITE_APP_ENDPOINT}/models/daily-sells`,
     directory: 'daily-sells',
-    title: 'Modelo para ventas diario',
+    label: 'Modelo para ventas diario',
   },
 ]
+
+const tabs = tabData.map(({ label, ...data }) => ({
+  label,
+  key: data.directory,
+  children: <TrainedModelsPageTab {...data} />,
+}))
 
 const UploadTrainedModelPage: FunctionComponent<UploadTrainedModelPageProps> = () => (
   <Space style={{ padding: '2em', width: '100%' }} direction="vertical">
     <Typography.Title>Subir modelo entrenado</Typography.Title>
-    <Tabs>
-      {tabs.map((tab) => (
-        <Tabs.TabPane tab={tab.title} key={tab.directory}>
-          <TrainedModelsPageTab {...tab} />
-        </Tabs.TabPane>
-      ))}
-    </Tabs>
+    <Tabs items={tabs} />
   </Space>
 )
 

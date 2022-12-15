@@ -302,51 +302,61 @@ const SpecialDaysPage: FunctionComponent<SpecialDaysPageProps> = () => {
       </Space>
       {errorAlertMessage !== null && <Alert message={errorAlertMessage} type="error" />}
       <Divider />
-      <Tabs>
-        <Tabs.TabPane tab="Calendario" key="1">
-          <Calendar
-            dateCellRender={dateCellRender}
-            monthCellRender={monthCellRender}
-            onPanelChange={(value: any, mode: CalendarMode) => {
-              console.log((value as Dayjs).format('YYYY-MM-DD'), mode)
-            }}
-            onChange={(date) => console.log('date:', date)}
-            onSelect={(date) => console.log('select:', date)}
-          />
-        </Tabs.TabPane>
-        <Tabs.TabPane tab="Listado" key="2">
-          <List
-            dataSource={specialDays}
-            renderItem={(item: SpecialDay) => (
-              <List.Item
-                actions={[
-                  <Button danger onClick={() => onDelete(item)}>
-                    <DeleteOutlined />
-                  </Button>,
-                ]}
-              >
-                <Skeleton title={false} loading={isLoading} active>
-                  <Typography.Text strong>
-                    Fecha:
-                    {' '}
-                    {dayjs(item.date).format('DD/MM/YYYY')}
-                  </Typography.Text>
-                  {item.isHoliday ? (
-                    <Badge count="Festivo" style={{ backgroundColor: 'greenyellow' }} />
-                  ) : (
-                    <Badge count="No festivo" style={{ backgroundColor: 'orangered' }} />
-                  )}
-                  {item.isVacation ? (
-                    <Badge count="Día vacaciones" style={{ backgroundColor: 'red' }} />
-                  ) : (
-                    <Badge count="No es vacaciones" style={{ backgroundColor: 'olivedrab' }} />
-                  )}
-                </Skeleton>
-              </List.Item>
-            )}
-          />
-        </Tabs.TabPane>
-      </Tabs>
+      <Tabs
+        items={[
+          {
+            label: 'Calendario',
+            key: '1',
+            children: (
+              <Calendar
+                dateCellRender={dateCellRender}
+                monthCellRender={monthCellRender}
+                onPanelChange={(value: any, mode: CalendarMode) => {
+                  console.log((value as Dayjs).format('YYYY-MM-DD'), mode)
+                }}
+                onChange={(date) => console.log('date:', date)}
+                onSelect={(date) => console.log('select:', date)}
+              />
+            ),
+          },
+          {
+            label: 'Listado',
+            key: '2',
+            children: (
+              <List
+                dataSource={specialDays}
+                renderItem={(item: SpecialDay) => (
+                  <List.Item
+                    actions={[
+                      <Button danger onClick={() => onDelete(item)}>
+                        <DeleteOutlined />
+                      </Button>,
+                    ]}
+                  >
+                    <Skeleton title={false} loading={isLoading} active>
+                      <Typography.Text strong>
+                        Fecha:
+                        {' '}
+                        {dayjs(item.date).format('DD/MM/YYYY')}
+                      </Typography.Text>
+                      {item.isHoliday ? (
+                        <Badge count="Festivo" style={{ backgroundColor: 'greenyellow' }} />
+                      ) : (
+                        <Badge count="No festivo" style={{ backgroundColor: 'orangered' }} />
+                      )}
+                      {item.isVacation ? (
+                        <Badge count="Día vacaciones" style={{ backgroundColor: 'red' }} />
+                      ) : (
+                        <Badge count="No es vacaciones" style={{ backgroundColor: 'olivedrab' }} />
+                      )}
+                    </Skeleton>
+                  </List.Item>
+                )}
+              />
+            ),
+          },
+        ]}
+      />
     </Space>
   )
 }
