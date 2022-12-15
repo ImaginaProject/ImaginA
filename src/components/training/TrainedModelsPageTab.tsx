@@ -38,7 +38,6 @@ interface DataType extends RegisteredModel {
 
 export interface TrainedModelsPageTabProps {
   directory: string,
-  title: string,
   actionURL: string,
 }
 
@@ -51,7 +50,6 @@ const TrainedModelsPageTab: FunctionComponent<TrainedModelsPageTabProps> = (prop
   const {
     actionURL,
     directory,
-    title,
   } = props
 
   const [allModels, setAllModels] = useState<RegisteredModel[]>([])
@@ -182,7 +180,7 @@ const TrainedModelsPageTab: FunctionComponent<TrainedModelsPageTabProps> = (prop
 
   useEffect(() => {
     requestAllModels().then(() => {
-      console.log(`render "${title}" (${directory})`)
+      console.log(`render (${directory})`)
     })
   }, [])
 
