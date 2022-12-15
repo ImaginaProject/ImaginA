@@ -50,6 +50,7 @@ export default class DatasetManager {
       is_holiday: data.isHoliday,
       is_vacation: data.isVacation,
       footfall: data.footfall,
+      price: data.price,
     }
     const response = await fetch(`${this.endpoint}/datasets/${this.datasetName}`, {
       method: 'POST',
