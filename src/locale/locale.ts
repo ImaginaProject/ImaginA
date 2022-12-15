@@ -80,7 +80,14 @@ const localeSet = {
           model_base: 'Modelo base',
           selected_model: 'Modelos seleccionado',
           submit: 'Agregar tarea de reentrenamiento',
-          working: 'Preparando..',
+          working: 'Preparando...',
+        },
+        reports: {
+          select_model: 'Seleccione un modelo para mostrar sus reportes',
+          selected_model: 'Modelo seleccionado',
+          available_models: 'Modelos disponibles',
+          report_found: 'Encontradas %{amount} gráficas',
+          graph_for: 'Gráfica para',
         },
       },
       dataset: {

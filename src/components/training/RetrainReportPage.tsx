@@ -11,6 +11,9 @@ import {
   Alert,
   Spin,
 } from 'antd'
+
+import { useTranslate } from 'react-admin'
+
 import DailyCapacity from '../../classes/DailyCapacity'
 
 type AvailableModelID = {
@@ -33,6 +36,8 @@ const RetrainReportPage: FunctionComponent<RetrainReportPageProps> = () => {
   const [isLoadingModels, setIsLoadingModels] = useState(false)
   const [isLoadingReports, setIsLoadingReports] = useState(false);
   const [errorMessage, setErrorMessage] = useState('')
+
+  const translate = useTranslate()
 
   const onSelectedChange = (value: string, option: AvailableModelID | AvailableModelID[]) => {
     if (Array.isArray(option)) {
@@ -64,13 +69,13 @@ const RetrainReportPage: FunctionComponent<RetrainReportPageProps> = () => {
 
     setIsLoadingModels(true)
     setIsLoadingReports(true)
-  
+
     fetch(`${url}?model_id=${modelId}`)
       .then((response) => response.json())
       .then((data) => {
         console.log(data)
         if (data.app_exception) {
-          setErrorMessage(`Error obtenido: ${data.app_exception}`)
+          setErrorMessage(`${translate('imagina.error.got')}: ${data.app_exception}`)
         } else {
           setErrorMessage('')
           setReportPlots(data.plots.map((plot: any) => ({
@@ -88,18 +93,18 @@ const RetrainReportPage: FunctionComponent<RetrainReportPageProps> = () => {
     <Space style={{ padding: '2em', width: '100%' }} direction="vertical">
       <Space direction="vertical">
         <Typography.Text>
-          Seleccione un modelo para mostrar sus reportes.
+          {translate('imagina.training.reports.select_model')}
         </Typography.Text>
         {selectedModelID && (
           <Typography.Text>
-            Modelo seleccionado:
+            {translate('imagina.training.reports.selected_model')}
             {' '}
             {selectedModelID.label}
           </Typography.Text>
         )}
         <Select
           style={{ width: '100%' }}
-          placeholder="Modelos disponible seleccionado"
+          placeholder={translate('imagina.training.reports.available_models')}
           options={availableModelIDs}
           loading={isLoadingModels}
           onChange={onSelectedChange}
@@ -108,7 +113,7 @@ const RetrainReportPage: FunctionComponent<RetrainReportPageProps> = () => {
       </Space>
 
       <Space direction="vertical">
-        {`Encontrada(s) ${reportPlots.length} gráfica(s)`}
+        {translate('imagina.training.reports.report_found', { amount: reportPlots.length })}
         {errorMessage && (
           <Alert closable type="error" message={errorMessage} />
         )}
@@ -116,7 +121,7 @@ const RetrainReportPage: FunctionComponent<RetrainReportPageProps> = () => {
         {reportPlots.map((reportPlot) => (
           <>
             <Typography.Text>
-              Grafica para
+              {translate('imagina.training.reports.graph_for')}
               <Typography.Text strong>
                 {` ${reportPlot.type}`}
               </Typography.Text>
