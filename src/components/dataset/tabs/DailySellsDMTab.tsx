@@ -119,8 +119,8 @@ const DailySellsDMTab: FunctionComponent<DailySellsDMTabProps> = () => {
     {
       title: 'fecha de compra',
       key: 'purchase_date',
-      dataIndex: 'purchase_date',
-      render: (purchase: {date: Date}) => dayjs(purchase.date).format('DD/MM/YYYY'),
+      dataIndex: 'purchaseDate',
+      render: (purchaseDate) => dayjs(purchaseDate).format('DD/MM/YYYY'),
       sorter: (a, b) => {
         if (a.purchaseDate === b.purchaseDate) return 0
         if (a.purchaseDate > b.purchaseDate) return 1
@@ -130,8 +130,8 @@ const DailySellsDMTab: FunctionComponent<DailySellsDMTabProps> = () => {
     {
       title: 'fecha del evento',
       key: 'event',
-      dataIndex: 'event',
-      render: (event: {date: Date}) => dayjs(event.date).format('DD/MM/YYYY'),
+      dataIndex: 'eventDate',
+      render: (eventDate) => dayjs(eventDate).format('DD/MM/YYYY'),
       sorter: (a, b) => {
         if (a.eventDate === b.eventDate) return 0
         if (a.eventDate > b.eventDate) return 1
