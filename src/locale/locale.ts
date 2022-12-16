@@ -4,6 +4,8 @@ const localeSet = {
       general: {
         submit: 'Enviar',
         delete: 'Eliminar',
+        remove: 'Quitar',
+        restore: 'Restaurar',
         option: 'Opción',
         options: 'Opciones',
         footfall: 'Gentío',
@@ -20,6 +22,7 @@ const localeSet = {
         start_date: 'Fecha inicial',
         min_price: 'Precio mínimo',
         max_price: 'Precio máximo',
+        add: 'Agregar',
       },
       holiday: {
         date: 'Fecha festiva',
@@ -89,6 +92,13 @@ const localeSet = {
           report_found: 'Encontradas %{amount} gráficas',
           graph_for: 'Gráfica para',
         },
+        train: {
+          layer: 'Capa',
+          create_model: 'Crear modelo',
+          input_size: 'Cantidad de parámetros de entrada',
+          neurons: 'Neuronas',
+          activation_function: 'Función de activación',
+        },
       },
       dataset: {
         manager: {
@@ -115,6 +125,9 @@ const localeSet = {
           required_test_size: 'Tamaño de muestra de prueba es requerido',
           required_validation_split: 'Tamaño de muestra de validación es requerido',
           required_model_base: 'El modelo base para el reentrenamiento es requerido',
+          required_input_size: 'La cantidad de datos de entrada es requerido',
+          required_activation_function: 'La función de activación es requerida',
+          required_neurons_size: 'La cantidad de neuronas es requerido',
           bad_file_type: 'Tipo de archivo raro',
         },
       },
