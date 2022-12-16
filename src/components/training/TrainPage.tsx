@@ -28,38 +28,42 @@ type DynamicForm = {
   activationFunctionTypeProps: FormItemProps,
 }
 
+type ActivationFunction = 'relu'
+
+type NNSettings = {
+  input: {
+    size: number,
+  },
+  layers: {
+    activationFunction: ActivationFunction,
+    neuronAmount: number,
+  }[]
+}
+
 export interface TrainPageProps {}
 
 const TrainPage: FunctionComponent<TrainPageProps> = () => {
   const [dynamicForms, setDynamicForms] = useState<DynamicForm[]>([]);
-  const [activationFunctions, setActivationFunctions] = useState<string[]>([]);
+  const [
+    possibleActivationFunctions,
+    setPossibleActivationFunctions,
+  ] = useState<ActivationFunction[]>([]);
+  const [nnSettings, setNnSettings] = useState<NNSettings>({ input: { size: 1 }, layers: [] });
 
   const [form] = Form.useForm()
   const translate = useTranslate()
 
   const onAdd = () => {
-    setDynamicForms((previous) => {
-      let key = 0
-      const last = previous[previous.length - 1]
-      if (last) {
-        key = last.key + 1
-      }
-      console.info('add new item with key:', key)
-      return [
-        ...previous,
+    setNnSettings((previous) => ({
+      input: previous.input,
+      layers: [
+        ...previous.layers,
         {
-          key,
-          neuronsSizeProps: {
-            name: ['neurons', key],
-            label: translate('imagina.training.train.neurons'),
-          },
-          activationFunctionTypeProps: {
-            name: ['activationFunctions', key],
-            label: translate('imagina.training.train.activation_function'),
-          },
+          activationFunction: possibleActivationFunctions[0],
+          neuronAmount: 1,
         },
-      ]
-    })
+      ],
+    }))
   }
 
   const onPreDeleteItem = (key: any) => {
@@ -105,10 +109,37 @@ const TrainPage: FunctionComponent<TrainPageProps> = () => {
   }
 
   useEffect(() => {
-    setActivationFunctions([
-      'relu',
-    ])
+    // Simulate fetching from API
+    setPossibleActivationFunctions(['relu'])
+    setNnSettings({ input: { size: 1 }, layers: [] })
   }, [])
+
+  useEffect(() => {
+    // We need all the unique activation functions
+    const allActivationFunctions = nnSettings.layers.map((layer) => layer.activationFunction)
+    console.log(allActivationFunctions)
+    setPossibleActivationFunctions((previous) => {
+      allActivationFunctions.push(...previous)
+      const allItem = allActivationFunctions
+        .filter((item, index) => allActivationFunctions.indexOf(item) === index)
+      return allItem
+    })
+
+    // Update the list that allows create FormItem components
+    setDynamicForms(nnSettings.layers.map((layer, index) => ({
+      key: index + 1,
+      neuronsSizeProps: {
+        name: ['neurons', index],
+        label: translate('imagina.training.train.neurons'),
+        initialValue: layer.neuronAmount,
+      },
+      activationFunctionTypeProps: {
+        name: ['activationFunctions', index],
+        label: translate('imagina.training.train.activation_function'),
+        initialValue: layer.activationFunction,
+      },
+    })))
+  }, [nnSettings])
 
   return (
     <Space style={{ padding: '2em', width: '100%' }} direction="vertical">
@@ -118,12 +149,23 @@ const TrainPage: FunctionComponent<TrainPageProps> = () => {
         <Form.Item
           name="inputSize"
           label={translate('imagina.training.train.input_size')}
-          initialValue={1}
+          initialValue={nnSettings.input.size}
           rules={[
             { required: true, message: translate('imagina.form.error.required_input_size') },
           ]}
         >
-          <InputNumber min={1} />
+          <InputNumber
+            min={1}
+            value={nnSettings.input.size}
+            onChange={(value) => {
+              if (value) {
+                setNnSettings((previous) => ({
+                  ...previous,
+                  input: { ...previous.input, size: value },
+                }))
+              }
+            }}
+          />
         </Form.Item>
 
         {dynamicForms.map((dynamic) => (
@@ -170,7 +212,6 @@ const TrainPage: FunctionComponent<TrainPageProps> = () => {
               <>
                 <Form.Item
                   {...dynamic.neuronsSizeProps}
-                  initialValue={1}
                   rules={[
                     { required: true, message: translate('imagina.form.error.required_neurons_size') },
                   ]}
@@ -179,13 +220,12 @@ const TrainPage: FunctionComponent<TrainPageProps> = () => {
                 </Form.Item>
                 <Form.Item
                   {...dynamic.activationFunctionTypeProps}
-                  initialValue={activationFunctions[0]}
                   rules={[
                     { required: true, message: translate('imagina.form.error.required_activation_function') },
                   ]}
                 >
                   <Select
-                    options={activationFunctions.map((item) => ({
+                    options={possibleActivationFunctions.map((item) => ({
                       label: item,
                       value: item,
                     }))}
