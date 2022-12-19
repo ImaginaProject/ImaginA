@@ -3,43 +3,28 @@ import {
   useState,
   useEffect,
 } from 'react'
+import { useNavigate } from 'react-router-dom'
 
 import {
   Space,
   Typography,
   Form,
-  FormItemProps,
   InputNumber,
   Button,
-  Card,
   Select,
-  Skeleton,
   Divider,
-  Tooltip,
   Input,
+  Card,
+  FormItemProps,
 } from 'antd'
+import { DeleteOutlined, LoadingOutlined } from '@ant-design/icons'
 
 import { useTranslate } from 'react-admin'
-import { DeleteOutlined, DeleteRowOutlined, UndoOutlined } from '@ant-design/icons'
 
-type DynamicForm = {
-  key: number,
-  deleted?: boolean,
-  neuronsSizeProps: FormItemProps,
-  activationFunctionTypeProps: FormItemProps,
-}
-
-type ActivationFunction = 'relu'
-
-type NNSettings = {
-  input: {
-    size: number,
-  },
-  layers: {
-    activationFunction: ActivationFunction,
-    neuronAmount: number,
-  }[]
-}
+import {
+  NNSettings,
+  ActivationFunction,
+} from '../../types/train'
 
 const modelTypes = [
   {
@@ -52,120 +37,114 @@ const modelTypes = [
   },
 ]
 
+type DynamicField = {
+  key: string,
+  inputSizeProps: FormItemProps,
+  activationFunctionProps: FormItemProps,
+}
+
 export interface TrainPageProps {}
 
 const TrainPage: FunctionComponent<TrainPageProps> = () => {
-  const [dynamicForms, setDynamicForms] = useState<DynamicForm[]>([]);
-  const [
-    possibleActivationFunctions,
-    setPossibleActivationFunctions,
-  ] = useState<ActivationFunction[]>([]);
-  const [nnSettings, setNnSettings] = useState<NNSettings>({
-    input: { size: 1 },
-    layers: [],
-  });
+  const [isPosting, setIsPosting] = useState(false);
+  const [allActivationFunctions, setAllActivationFunctions] = useState<ActivationFunction[]>([]);
 
+  const [fields, setFields] = useState<DynamicField[]>([]);
+
+  const navigate = useNavigate()
   const [form] = Form.useForm()
   const translate = useTranslate()
 
   const onAdd = () => {
-    setNnSettings((previous) => ({
-      input: previous.input,
-      layers: [
-        ...previous.layers,
-        {
-          activationFunction: possibleActivationFunctions[0],
-          neuronAmount: 1,
+    const nextIndex = fields.length + 1
+    const key = `${nextIndex}`
+    setFields([
+      ...fields,
+      {
+        key,
+        inputSizeProps: {
+          name: ['neuronAmount', nextIndex],
+          initialValue: 1,
+          label: translate('imagina.training.train.neurons'),
         },
-      ],
-    }))
-  }
-
-  const onPreDeleteItem = (key: any) => {
-    setDynamicForms((previous) => previous.map((item) => {
-      const newItem = { ...item }
-      if (newItem.key === key) {
-        newItem.deleted = true
-      }
-      return newItem
-    }))
-  }
-
-  const onRestoreDeleteItem = (key: any) => {
-    setDynamicForms((previous) => previous.map((item) => {
-      const newItem = { ...item }
-      if (newItem.key === key) {
-        newItem.deleted = false
-      }
-      return newItem
-    }))
+        activationFunctionProps: {
+          name: ['activationFunction', nextIndex],
+          initialValue: allActivationFunctions[0],
+          label: translate('imagina.training.train.activation_function'),
+        },
+      },
+    ])
   }
 
   const onDeleteItem = (key: any) => {
-    setNnSettings((previous) => ({
-      ...previous,
-      layers: previous.layers.filter((item, index) => index !== key),
-    }))
+    setFields(fields.filter((field) => field.key !== key))
   }
 
   const onFormFinish = (values: any) => {
     console.log(values)
-    const prePayload = {
-      inputSize: values.inputSize,
-      neurons: [] as any[],
+
+    const { modelGroup } = values
+    if (!modelGroup) {
+      // eslint-disable-next-line no-alert
+      alert('Falta modelGroup')
+      return
     }
 
-    const neurons = (values.neurons as any[]) || []
-
-    if (neurons.length === 0) {
+    if (!values.neuronAmount || values.neuronAmount.length === 0) {
       // eslint-disable-next-line no-alert
       alert('Agregue al menos una capa')
       return
     }
 
-    neurons.forEach((neuronSize: number, index: number) => {
-      const activationFunction: string = values.activationFunctions[index]
-      prePayload.neurons.push({
-        neuronSize,
-        activationFunction,
-      })
-    })
+    const prePayload: NNSettings = {
+      modelName: values.modelName,
+      modelDescription: values.modelDescription,
+      inputSize: values.inputSize,
+      layers: [] as any[],
+    }
 
-    console.log(prePayload)
+    prePayload.layers = values.neuronAmount.map((value: undefined | number, index: number) => {
+      if (value !== undefined) {
+        return {
+          neuronAmount: value,
+          activationFunction: values.activationFunction[index],
+        }
+      }
+      return undefined
+    }).filter((element: any) => !!element)
+
+    console.log(modelGroup, prePayload)
+
+    // This must be in a logic-class
+    const endpoint = import.meta.env.VITE_APP_ENDPOINT
+    setIsPosting(true)
+    const payload = {
+      input_size: prePayload.inputSize,
+      layers: prePayload.layers.map((layer) => ({
+        activation_function: layer.activationFunction,
+        neuron_amount: layer.neuronAmount,
+      })),
+      model_description: prePayload.modelDescription,
+      model_name: prePayload.modelName,
+    }
+    fetch(`${endpoint}/training/create_model/${modelGroup}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json;charset=utf-8',
+      },
+      body: JSON.stringify(payload),
+    }).then((response) => response.json()).then((data) => {
+      console.debug(data)
+      if (data.model_id) {
+        // TODO: redirect
+        navigate('/training/retraining')
+      }
+    }).finally(() => setIsPosting(false))
   }
 
   useEffect(() => {
-    // Simulate fetching from API
-    setPossibleActivationFunctions(['relu'])
-    setNnSettings({ ...nnSettings })
+    setAllActivationFunctions(['relu'])
   }, [])
-
-  useEffect(() => {
-    // We need all the unique activation functions
-    const allActivationFunctions = nnSettings.layers.map((layer) => layer.activationFunction)
-    console.log(allActivationFunctions)
-    setPossibleActivationFunctions((previous) => {
-      allActivationFunctions.push(...previous)
-      const allItem = allActivationFunctions
-        .filter((item, index) => allActivationFunctions.indexOf(item) === index)
-      return allItem
-    })
-
-    // Update the list that allows create FormItem components
-    setDynamicForms(nnSettings.layers.map((layer, index) => ({
-      key: index,
-      neuronsSizeProps: {
-        name: ['neurons', index],
-        label: translate('imagina.training.train.neurons'),
-        initialValue: layer.neuronAmount,
-      },
-      activationFunctionTypeProps: {
-        name: ['activationFunctions', index],
-        label: translate('imagina.training.train.activation_function'),
-        initialValue: layer.activationFunction,
-      },
-    })))
-  }, [nnSettings])
 
   return (
     <Space style={{ padding: '2em', width: '100%' }} direction="vertical">
@@ -175,23 +154,11 @@ const TrainPage: FunctionComponent<TrainPageProps> = () => {
         <Form.Item
           name="inputSize"
           label={translate('imagina.training.train.input_size')}
-          initialValue={nnSettings.input.size}
           rules={[
             { required: true, message: translate('imagina.form.error.required_input_size') },
           ]}
         >
-          <InputNumber
-            min={1}
-            value={nnSettings.input.size}
-            onChange={(value) => {
-              if (value) {
-                setNnSettings((previous) => ({
-                  ...previous,
-                  input: { ...previous.input, size: value },
-                }))
-              }
-            }}
-          />
+          <InputNumber min={1} />
         </Form.Item>
 
         <Form.Item
@@ -221,73 +188,39 @@ const TrainPage: FunctionComponent<TrainPageProps> = () => {
           <Select options={modelTypes} />
         </Form.Item>
 
-        {dynamicForms.map((dynamic) => (
+        {fields.map((field) => (
           <Card
             bordered
-            key={dynamic.key}
-            title={!dynamic.deleted ? (
-              <Typography.Text strong>
-                {`${translate('imagina.training.train.layer')} ${dynamic.key + 1}`}
-              </Typography.Text>
-            ) : (
-              <>
-                <Tooltip title={translate('imagina.general.delete')}>
-                  <Button
-                    danger
-                    size="small"
-                    icon={<DeleteOutlined />}
-                    onClick={() => onDeleteItem(dynamic.key)}
-                  />
-                </Tooltip>
-                <Tooltip title={translate('imagina.general.restore')}>
-                  <Button
-                    type="primary"
-                    size="small"
-                    icon={<UndoOutlined />}
-                    onClick={() => onRestoreDeleteItem(dynamic.key)}
-                  />
-                </Tooltip>
-              </>
-            )}
-            actions={!dynamic.deleted ? [
-              <Button
-                danger
-                icon={<DeleteRowOutlined />}
-                onClick={() => onPreDeleteItem(dynamic.key)}
-              >
-                {translate('imagina.general.remove')}
-              </Button>,
-            ] : []}
+            key={field.key}
+            title={`${translate('imagina.training.train.layer')} ${field.key}`}
+            actions={[
+              <Button danger icon={<DeleteOutlined />} onClick={() => onDeleteItem(field.key)} />,
+            ]}
           >
-            {dynamic.deleted ? (
-              <Skeleton paragraph={false} />
-            ) : (
-              <>
-                <Form.Item
-                  {...dynamic.neuronsSizeProps}
-                  rules={[
-                    { required: true, message: translate('imagina.form.error.required_neurons_size') },
-                  ]}
-                >
-                  <InputNumber min={1} />
-                </Form.Item>
-                <Form.Item
-                  {...dynamic.activationFunctionTypeProps}
-                  rules={[
-                    { required: true, message: translate('imagina.form.error.required_activation_function') },
-                  ]}
-                >
-                  <Select
-                    options={possibleActivationFunctions.map((item) => ({
-                      label: item,
-                      value: item,
-                    }))}
-                  />
-                </Form.Item>
-              </>
-            )}
+            <Form.Item
+              {...field.inputSizeProps}
+              rules={[
+                { required: true, message: translate('imagina.form.error.required_neurons_size') },
+              ]}
+            >
+              <InputNumber />
+            </Form.Item>
+            <Form.Item
+              {...field.activationFunctionProps}
+              rules={[
+                { required: true, message: translate('imagina.form.error.required_activation_function') },
+              ]}
+            >
+              <Select
+                options={allActivationFunctions.map((elem) => ({ label: elem, value: elem }))}
+              />
+            </Form.Item>
           </Card>
         ))}
+
+        <Typography.Text strong>
+          {translate('imagina.training.train.add_layer')}
+        </Typography.Text>
 
         <Form.Item>
           <Button onClick={onAdd} type="ghost" size="large">
@@ -298,7 +231,12 @@ const TrainPage: FunctionComponent<TrainPageProps> = () => {
         <Divider />
 
         <Form.Item>
-          <Button htmlType="submit" type="primary">
+          <Button
+            htmlType="submit"
+            type="primary"
+            disabled={isPosting}
+            icon={isPosting ? <LoadingOutlined /> : undefined}
+          >
             {translate('imagina.general.submit')}
           </Button>
         </Form.Item>
