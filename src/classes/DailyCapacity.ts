@@ -1,4 +1,5 @@
 import dayjs, { Dayjs } from 'dayjs'
+import modelGroupValues from '../constants/modelGroup'
 import type {
   ExistentModel,
   PredictionResult,
@@ -6,7 +7,7 @@ import type {
   RegisteredModelResponse,
 } from '../types/types'
 
-const modelGroup = 'daily-capacity'
+const modelGroup = modelGroupValues.DAILY_CAPACITY
 
 export default class DailyCapacity {
   public graphOptions: any

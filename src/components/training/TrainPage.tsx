@@ -26,15 +26,16 @@ import {
   ActivationFunction,
 } from '../../types/train'
 import TrainingManager from '../../classes/TrainingManager'
+import modelGroupValues from '../../constants/modelGroup'
 
 const modelTypes = [
   {
     label: 'Aforo diario',
-    value: 'daily-capacity',
+    value: modelGroupValues.DAILY_CAPACITY,
   },
   {
     label: 'Ventas diarias',
-    value: 'daily-sells',
+    value: modelGroupValues.DAILY_SELLS,
   },
 ]
 
@@ -121,11 +122,12 @@ const TrainPage: FunctionComponent<TrainPageProps> = () => {
     setIsPosting(true)
     tm.createModel(modelGroup, prePayload)
       .then((modelId) => {
-        // TODO: use constants for the route values
-        if (modelGroup === 'daily-capacity') {
+        if (modelGroup === modelGroupValues.DAILY_CAPACITY) {
           navigate('/training/retraining', { state: { initialSelectedModelId: modelId } })
-        } else if (modelGroup === 'daily-sells') {
+        } else if (modelGroup === modelGroupValues.DAILY_SELLS) {
           navigate('/daily-sells', { state: { initialSelectedModelId: modelId } })
+        } else {
+          console.warn('unknown model group:', modelGroup)
         }
       })
       .finally(() => setIsPosting(false))

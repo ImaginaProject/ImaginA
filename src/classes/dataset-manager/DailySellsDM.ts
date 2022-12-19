@@ -1,5 +1,6 @@
 import dayjs from 'dayjs'
 import { DailySellsDB } from '../../types/types'
+import datasetNames from '../../constants/datasetNames'
 
 export default class DatasetManager {
   private datasetName: string
@@ -10,7 +11,7 @@ export default class DatasetManager {
 
   constructor() {
     this.endpoint = import.meta.env.VITE_APP_ENDPOINT
-    this.datasetName = 'daily-sells'
+    this.datasetName = datasetNames.DAILY_SELLS
     this.datasetList = []
   }
 

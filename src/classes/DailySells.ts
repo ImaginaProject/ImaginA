@@ -1,11 +1,12 @@
 import dayjs, { Dayjs } from 'dayjs'
+import modelGroupValues from '../constants/modelGroup'
 import {
   ExistentModel,
   RegisteredModel,
   RegisteredModelResponse,
 } from '../types/types'
 
-const modelGroup = 'daily-sells'
+const modelGroup = modelGroupValues.DAILY_SELLS
 
 export default class DailySells {
   private endpoint: string
