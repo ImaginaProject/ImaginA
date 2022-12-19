@@ -18,6 +18,7 @@ import {
   Col,
 } from 'antd'
 
+import { useLocation } from 'react-router-dom'
 import { useTranslate } from 'react-admin'
 
 import DailySells from '../../classes/DailySells'
@@ -29,8 +30,10 @@ const DailySellsPage: FunctionComponent<DailySellsPageProps> = () => {
   const [ds] = useState(new DailySells());
   const [possibleTrainedModelList, setPossibleTrainedModelList] = useState<ExistentModel[]>([]);
   const [imageB64, setImageB64] = useState<string | null>(null);
+
   const [form] = Form.useForm()
   const translate = useTranslate()
+  const location = useLocation()
 
   const onFormFinish = useCallback((values: any) => {
     console.log('form:', values)
@@ -67,6 +70,7 @@ const DailySellsPage: FunctionComponent<DailySellsPageProps> = () => {
             rules={[
               { required: true, message: translate('imagina.form.error.required_model') },
             ]}
+            initialValue={location.state?.initialSelectedModelId}
           >
             <Select
               style={{ width: '100%' }}

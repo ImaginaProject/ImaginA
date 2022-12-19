@@ -3,6 +3,7 @@ import {
   useState,
   useEffect,
 } from 'react'
+import { useLocation } from 'react-router-dom'
 import type { Key } from 'react'
 import {
   Space,
@@ -61,6 +62,7 @@ const RetrainingListPage: FunctionComponent<RetrainingListPageProps> = () => {
 
   const [form] = Form.useForm()
   const translate = useTranslate()
+  const location = useLocation()
 
   const columns: ColumnsType<DateSource> = [
     {
@@ -198,6 +200,7 @@ const RetrainingListPage: FunctionComponent<RetrainingListPageProps> = () => {
   }
 
   useEffect(() => {
+    console.debug('initialSelectedModelId', location.state?.initialSelectedModelId)
     rm.active((ls) => {
       if (isWaitingForRealtimeData) {
         setIsWaitingForRealtimeData(() => false)
@@ -345,6 +348,7 @@ const RetrainingListPage: FunctionComponent<RetrainingListPageProps> = () => {
                 message: translate('imagina.form.error.required_model_base'),
               },
             ]}
+            initialValue={location.state?.initialSelectedModelId}
           >
             <Select
               placeholder={translate('imagina.training.retraining.selected_model')}
