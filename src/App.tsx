@@ -13,6 +13,7 @@ import UploadTrainedModelPage from './components/training/UploadTrainedModelPage
 import SpecialDaysPage from './components/special-days/SpecialDaysPage'
 import RetrainingListPage from './components/training/RetrainingListPage'
 import RetrainReportPage from './components/training/RetrainReportPage'
+import TrainPage from './components/training/TrainPage'
 import PriceOptimizationPage from './components/price-optimization/PriceOptimizationPage'
 import DailySellsPage from './components/special-days/DailySellsPage'
 
@@ -37,6 +38,9 @@ const App = () => (
       </CustomRoutes>
       <CustomRoutes>
         <Route path="/training/upload-model" element={<UploadTrainedModelPage />} />
+      </CustomRoutes>
+      <CustomRoutes>
+        <Route path="/training/train" element={<TrainPage />} />
       </CustomRoutes>
       <CustomRoutes>
         <Route path="/training/retraining/reports" element={<RetrainReportPage />} />
