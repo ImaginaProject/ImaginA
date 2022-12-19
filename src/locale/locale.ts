@@ -98,6 +98,9 @@ const localeSet = {
           input_size: 'Cantidad de parámetros de entrada',
           neurons: 'Neuronas',
           activation_function: 'Función de activación',
+          model_name: 'Nombre del modelo',
+          model_description: 'Descripción del modelo',
+          model_group: 'Tipo de modelo',
         },
       },
       dataset: {
@@ -119,6 +122,8 @@ const localeSet = {
           required_date: 'La fecha es requerida',
           required_footfall: 'El aforo es requerido',
           required_model: 'El modelo es requerido',
+          required_model_name: 'El nombre del modelo es requerido',
+          required_model_group: 'El tipo de grupo es requerido',
           required_file: 'Archivo es requerido',
           required_name: 'El nombre es requerido',
           required_epochs_amount: 'La cantidad de épocas es requerido',
