@@ -16,6 +16,7 @@ import {
   Skeleton,
   Divider,
   Tooltip,
+  Input,
 } from 'antd'
 
 import { useTranslate } from 'react-admin'
@@ -40,6 +41,17 @@ type NNSettings = {
   }[]
 }
 
+const modelTypes = [
+  {
+    label: 'Aforo diario',
+    value: 'daily-capacity',
+  },
+  {
+    label: 'Ventas diarias',
+    value: 'daily-sells',
+  },
+]
+
 export interface TrainPageProps {}
 
 const TrainPage: FunctionComponent<TrainPageProps> = () => {
@@ -48,7 +60,10 @@ const TrainPage: FunctionComponent<TrainPageProps> = () => {
     possibleActivationFunctions,
     setPossibleActivationFunctions,
   ] = useState<ActivationFunction[]>([]);
-  const [nnSettings, setNnSettings] = useState<NNSettings>({ input: { size: 1 }, layers: [] });
+  const [nnSettings, setNnSettings] = useState<NNSettings>({
+    input: { size: 1 },
+    layers: [],
+  });
 
   const [form] = Form.useForm()
   const translate = useTranslate()
@@ -87,7 +102,10 @@ const TrainPage: FunctionComponent<TrainPageProps> = () => {
   }
 
   const onDeleteItem = (key: any) => {
-    setDynamicForms((previous) => previous.filter((item) => item.key !== key))
+    setNnSettings((previous) => ({
+      ...previous,
+      layers: previous.layers.filter((item, index) => index !== key),
+    }))
   }
 
   const onFormFinish = (values: any) => {
@@ -97,7 +115,15 @@ const TrainPage: FunctionComponent<TrainPageProps> = () => {
       neurons: [] as any[],
     }
 
-    values.neurons.forEach((neuronSize: number, index: number) => {
+    const neurons = (values.neurons as any[]) || []
+
+    if (neurons.length === 0) {
+      // eslint-disable-next-line no-alert
+      alert('Agregue al menos una capa')
+      return
+    }
+
+    neurons.forEach((neuronSize: number, index: number) => {
       const activationFunction: string = values.activationFunctions[index]
       prePayload.neurons.push({
         neuronSize,
@@ -111,7 +137,7 @@ const TrainPage: FunctionComponent<TrainPageProps> = () => {
   useEffect(() => {
     // Simulate fetching from API
     setPossibleActivationFunctions(['relu'])
-    setNnSettings({ input: { size: 1 }, layers: [] })
+    setNnSettings({ ...nnSettings })
   }, [])
 
   useEffect(() => {
@@ -127,7 +153,7 @@ const TrainPage: FunctionComponent<TrainPageProps> = () => {
 
     // Update the list that allows create FormItem components
     setDynamicForms(nnSettings.layers.map((layer, index) => ({
-      key: index + 1,
+      key: index,
       neuronsSizeProps: {
         name: ['neurons', index],
         label: translate('imagina.training.train.neurons'),
@@ -166,6 +192,33 @@ const TrainPage: FunctionComponent<TrainPageProps> = () => {
               }
             }}
           />
+        </Form.Item>
+
+        <Form.Item
+          name="modelName"
+          label={translate('imagina.training.train.model_name')}
+          rules={[
+            { required: true, message: translate('imagina.form.error.required_model_name') },
+          ]}
+        >
+          <Input />
+        </Form.Item>
+
+        <Form.Item
+          name="modelDescription"
+          label={translate('imagina.training.train.model_description')}
+        >
+          <Input.TextArea />
+        </Form.Item>
+
+        <Form.Item
+          name="modelGroup"
+          label={translate('imagina.training.train.model_group')}
+          rules={[
+            { required: true, message: translate('imagina.form.error.required_model_group') },
+          ]}
+        >
+          <Select options={modelTypes} />
         </Form.Item>
 
         {dynamicForms.map((dynamic) => (
