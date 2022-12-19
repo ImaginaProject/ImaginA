@@ -25,6 +25,7 @@ import {
   NNSettings,
   ActivationFunction,
 } from '../../types/train'
+import TrainingManager from '../../classes/TrainingManager'
 
 const modelTypes = [
   {
@@ -51,9 +52,11 @@ const TrainPage: FunctionComponent<TrainPageProps> = () => {
 
   const [fields, setFields] = useState<DynamicField[]>([]);
 
+  const [tm] = useState(new TrainingManager())
+
   const navigate = useNavigate()
-  const [form] = Form.useForm()
   const translate = useTranslate()
+  const [form] = Form.useForm()
 
   const onAdd = () => {
     const nextIndex = fields.length + 1
@@ -115,31 +118,17 @@ const TrainPage: FunctionComponent<TrainPageProps> = () => {
 
     console.log(modelGroup, prePayload)
 
-    // This must be in a logic-class
-    const endpoint = import.meta.env.VITE_APP_ENDPOINT
     setIsPosting(true)
-    const payload = {
-      input_size: prePayload.inputSize,
-      layers: prePayload.layers.map((layer) => ({
-        activation_function: layer.activationFunction,
-        neuron_amount: layer.neuronAmount,
-      })),
-      model_description: prePayload.modelDescription,
-      model_name: prePayload.modelName,
-    }
-    fetch(`${endpoint}/training/create_model/${modelGroup}`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json;charset=utf-8',
-      },
-      body: JSON.stringify(payload),
-    }).then((response) => response.json()).then((data) => {
-      console.debug(data)
-      if (data.model_id) {
-        // TODO: redirect
-        navigate('/training/retraining')
-      }
-    }).finally(() => setIsPosting(false))
+    tm.createModel(modelGroup, prePayload)
+      .then((modelId) => {
+        // TODO: use constants for the route values
+        if (modelGroup === 'daily-capacity') {
+          navigate('/training/retraining', { state: { initialSelectedModelId: modelId } })
+        } else if (modelGroup === 'daily-sells') {
+          navigate('/daily-sells', { state: { initialSelectedModelId: modelId } })
+        }
+      })
+      .finally(() => setIsPosting(false))
   }
 
   useEffect(() => {
