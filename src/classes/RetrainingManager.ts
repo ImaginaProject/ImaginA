@@ -1,3 +1,4 @@
+import dayjs from 'dayjs'
 import fb from '../libs/firebase'
 import {
   RetraindInfoInFirebaseSnapshots,
@@ -24,14 +25,14 @@ export default class RetrainingManager {
   }
 
   // eslint-disable-next-line class-methods-use-this
-  async active(cb?: SnapshotCallback) {
+  async active(cb?: SnapshotCallback, sortted?: boolean) {
     const ref = fb.ref(fb.realtimeDB, '/retraining')
 
     this.#unsubscribe = fb.onValue(ref, (snapshot) => {
       const data: RetraindInfoInFirebaseSnapshots = snapshot.val()
       console.debug(data)
       if (cb) {
-        const items = Object.entries(data).map(([key, value]) => {
+        let items = Object.entries(data).map(([key, value]) => {
           //
           const {
             done,
@@ -54,6 +55,17 @@ export default class RetrainingManager {
           }
           return info
         })
+        // Sort by `startDate`
+        if (sortted) {
+          items = items.sort((a, b) => {
+            const dayA = dayjs(a.startDate, 'DD/M/YYYY - HH:mm:ss')
+            const dayB = dayjs(b.startDate, 'DD/M/YYYY - HH:mm:ss')
+            // console.debug(dayA, dayB, b.startDate, a.startDate, dayjs)
+            if (dayA > dayB) return 1
+            if (dayA < dayB) return -1
+            return 0
+          }).reverse()
+        }
         cb(items)
       }
     })

@@ -213,7 +213,7 @@ const RetrainingListPage: FunctionComponent<RetrainingListPageProps> = () => {
         }
         return report
       }))
-    }).catch((err) => console.error(err))
+    }, true).catch((err) => console.error(err))
 
     setIsLoadingModels(true)
     dc.requestAllModels().then((registeredModels) => {
