@@ -94,6 +94,7 @@ const localeSet = {
         },
         train: {
           layer: 'Capa',
+          add_layer: 'Agregar nueva capa',
           create_model: 'Crear modelo',
           input_size: 'Cantidad de parámetros de entrada',
           neurons: 'Neuronas',
