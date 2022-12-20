@@ -3,6 +3,7 @@ import {
   useState,
   useEffect,
 } from 'react'
+import dayjs, { Dayjs } from 'dayjs'
 import { useLocation } from 'react-router-dom'
 import type { Key } from 'react'
 import {
@@ -59,6 +60,11 @@ const RetrainingListPage: FunctionComponent<RetrainingListPageProps> = () => {
   const [availableModelIDs, setAvailableModelIDs] = useState<AvailableModelID[]>([])
   const [isLoadingModels, setIsLoadingModels] = useState(false)
   const [wasRecientlyNewTaskAdded, setWasRecientlyNewTaskAdded] = useState(false)
+
+  const [
+    autoInitialSelectedModelId,
+    setAutoInitialSelectedModelId,
+  ] = useState<string | undefined>(undefined)
 
   const [form] = Form.useForm()
   const translate = useTranslate()
@@ -217,12 +223,32 @@ const RetrainingListPage: FunctionComponent<RetrainingListPageProps> = () => {
 
     setIsLoadingModels(true)
     dc.requestAllModels().then((registeredModels) => {
-      const options = registeredModels.map((modelInfo) => (
-        {
-          label: modelInfo.name,
+      // Get the earlier model
+      if (registeredModels.length > 0) {
+        const earlierModelId = registeredModels.map((modelInfo) => {
+          const dateString = modelInfo.last_date
+          const day = dayjs(dateString)
+          // console.debug('modelInfo.md5_sum', modelInfo.md5_sum)
+          return {
+            day,
+            modelId: modelInfo.md5_sum,
+          }
+        }).sort((a, b) => {
+          if (a.day > b.day) return 1
+          if (a.day < b.day) return -1
+          return 0
+        }).map((element) => element.modelId)[0]
+        console.debug('earlierModelId', earlierModelId)
+        setAutoInitialSelectedModelId(earlierModelId)
+      }
+      const options = registeredModels.map((modelInfo) => {
+        const dateString = modelInfo.last_date
+        const day = dayjs(dateString)
+        return {
+          label: `${modelInfo.name} - ${day.format('DD MMM, YYYY - HH:mm:ss')}`,
           value: modelInfo.md5_sum,
         }
-      ))
+      })
       setAvailableModelIDs(options)
     }).finally(() => setIsLoadingModels(false))
 
@@ -348,7 +374,7 @@ const RetrainingListPage: FunctionComponent<RetrainingListPageProps> = () => {
                 message: translate('imagina.form.error.required_model_base'),
               },
             ]}
-            initialValue={location.state?.initialSelectedModelId}
+            initialValue={location.state?.initialSelectedModelId || autoInitialSelectedModelId}
           >
             <Select
               placeholder={translate('imagina.training.retraining.selected_model')}
