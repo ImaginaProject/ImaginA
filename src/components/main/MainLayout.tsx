@@ -19,6 +19,7 @@ import {
   CloudUploadOutlined,
   DashboardOutlined,
   DatabaseOutlined,
+  FileAddOutlined,
   FileSyncOutlined,
   LineChartOutlined,
   SettingOutlined,
@@ -78,9 +79,9 @@ const items: MenuItem[] = [
         title: 'Subir modelo entrenado',
       },
       {
-        key: 'train-model',
-        icon: <CloudUploadOutlined />,
-        label: <Link to="/training/train">Entrenar modelo</Link>,
+        key: 'create-model',
+        icon: <FileAddOutlined />,
+        label: <Link to="/training/create-model">Crear modelo</Link>,
       },
       {
         key: 'retrain-model',

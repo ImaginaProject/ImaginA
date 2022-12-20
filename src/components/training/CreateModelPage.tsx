@@ -45,9 +45,9 @@ type DynamicField = {
   activationFunctionProps: FormItemProps,
 }
 
-export interface TrainPageProps {}
+export interface CreateModelPageProps {}
 
-const TrainPage: FunctionComponent<TrainPageProps> = () => {
+const CreateModelPage: FunctionComponent<CreateModelPageProps> = () => {
   const [isPosting, setIsPosting] = useState(false);
   const [allActivationFunctions, setAllActivationFunctions] = useState<ActivationFunction[]>([]);
 
@@ -236,4 +236,4 @@ const TrainPage: FunctionComponent<TrainPageProps> = () => {
   )
 }
 
-export default TrainPage
+export default CreateModelPage
