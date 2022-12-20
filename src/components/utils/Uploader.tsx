@@ -18,27 +18,28 @@ import {
 import type { UploadProps, UploadFile } from 'antd'
 
 export interface UploaderProps {
-  name: string,
   label: string,
   // eslint-disable-next-line no-unused-vars
-  enableType?: string[] | ((mimetype: string) => boolean),
+  enableType?: string | string[] | ((mimetype: string) => boolean),
   // eslint-disable-next-line no-unused-vars
-  enableExtension?: string[] | ((filename: string) => boolean),
+  enableExtension?: string |string[] | ((filename: string) => boolean),
   value?: UploadFile[],
   // eslint-disable-next-line no-unused-vars
   onChange?: (fileList: UploadFile[]) => void,
+  // eslint-disable-next-line no-unused-vars
+  onUploading?: (isUploading: boolean) => void,
 }
 
 const ENDPOINT = import.meta.env.VITE_APP_ENDPOINT
 
 const Uploader: FunctionComponent<UploaderProps> = (props: UploaderProps) => {
   const {
-    name,
     label,
     enableType,
     enableExtension,
     value,
     onChange,
+    onUploading,
   } = props
 
   const [isUploading, setIsUploading] = useState(false);
@@ -46,6 +47,7 @@ const Uploader: FunctionComponent<UploaderProps> = (props: UploaderProps) => {
 
   const handleUpload: UploadProps['onChange'] = (info) => {
     setIsUploading(info.file.status === 'uploading')
+    if (onUploading) onUploading(info.file.status === 'uploading')
     const newUploadFiles = info.fileList.map((uploadedFile) => {
       console.debug('response:', uploadedFile.response)
       if (uploadedFile.response?.file) {
@@ -77,6 +79,9 @@ const Uploader: FunctionComponent<UploaderProps> = (props: UploaderProps) => {
     } else if (Array.isArray(enableType)) {
       isEnable = enableType.includes(file.type)
       console.debug('check type', file.type, 'in', enableType)
+    } else if (typeof enableType === 'string') {
+      isEnable = file.type.length > 0 && enableType.toLowerCase() === file.type.toLowerCase()
+      console.debug('check type', file.type, 'is equal to', enableType)
     }
 
     if (typeof enableExtension === 'function') {
@@ -87,6 +92,9 @@ const Uploader: FunctionComponent<UploaderProps> = (props: UploaderProps) => {
         (extension) => file.name.endsWith(extension),
       )
       console.debug('check extension', file.type, 'in', enableExtension)
+    } else if (typeof enableExtension === 'string') {
+      isEnable = file.name.toLowerCase().endsWith(enableExtension.toLowerCase())
+      console.debug('check extension', file.type, 'is equal to', enableExtension)
     }
 
     if (!isEnable) {
@@ -101,7 +109,7 @@ const Uploader: FunctionComponent<UploaderProps> = (props: UploaderProps) => {
 
   return (
     <Upload
-      name={name}
+      name="file"
       method="POST"
       action={`${ENDPOINT}/upload`}
       listType="text"
@@ -126,6 +134,7 @@ Uploader.defaultProps = {
   enableExtension: undefined,
   value: undefined,
   onChange: undefined,
+  onUploading: undefined,
 }
 
 export default Uploader

@@ -3,14 +3,13 @@ import {
   useState,
   useEffect,
 } from 'react'
-import dayjs, { Dayjs } from 'dayjs'
+import dayjs from 'dayjs'
 import { useLocation } from 'react-router-dom'
 import type { Key } from 'react'
 import {
   Space,
   Button,
   Table,
-  Upload,
   Form,
   Input,
   InputNumber,
@@ -21,20 +20,18 @@ import {
 } from 'antd'
 import {
   LoadingOutlined,
-  UploadOutlined,
   DeleteOutlined,
 } from '@ant-design/icons'
 
 import { useTranslate } from 'react-admin'
 
-import type { UploadFile } from 'antd/es/upload/interface'
-import type { UploadProps } from 'antd'
 // import dayjs, { Dayjs } from 'dayjs'
 import type { ColumnsType } from 'antd/es/table'
 
 import type { RetrainedInfo } from '../../types/types'
 import RetrainingManager from '../../classes/RetrainingManager'
 import DailyCapacity from '../../classes/DailyCapacity'
+import Uploader from '../utils/Uploader'
 
 type DateSource = RetrainedInfo & { key: Key }
 type AvailableModelID = {
@@ -44,7 +41,6 @@ type AvailableModelID = {
 
 export interface RetrainingListPageProps {}
 
-const ENDPOINT = import.meta.env.VITE_APP_ENDPOINT
 const ENABLE_TYPE = [
   'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
   'text/csv',
@@ -53,8 +49,6 @@ const ENABLE_TYPE = [
 const RetrainingListPage: FunctionComponent<RetrainingListPageProps> = () => {
   const [rm] = useState(new RetrainingManager())
   const [dc] = useState(new DailyCapacity())
-  const [isUploading, setIsUploading] = useState(false)
-  const [uploadFiles, setUploadFiles] = useState<UploadFile[]>([])
   const [dataSource, setDataSource] = useState<DateSource[]>([])
   const [isWaitingForRealtimeData, setIsWaitingForRealtimeData] = useState(true)
   const [availableModelIDs, setAvailableModelIDs] = useState<AvailableModelID[]>([])
@@ -184,27 +178,6 @@ const RetrainingListPage: FunctionComponent<RetrainingListPageProps> = () => {
     })
   }
 
-  const handleUpload: UploadProps['onChange'] = (info) => {
-    setIsUploading(info.file.status === 'uploading')
-    const newUploadFiles = info.fileList.map((uploadedFile) => {
-      console.debug('response:', uploadedFile.response)
-      if (uploadedFile.response?.file) {
-        // eslint-disable-next-line no-param-reassign
-        uploadedFile.url = `${ENDPOINT}/upload/${uploadedFile.response.file}`
-      }
-      return uploadedFile
-    })
-    setUploadFiles(newUploadFiles)
-  }
-
-  const handleRemove: UploadProps['onRemove'] = (file) => {
-    console.log('wanna remove', file)
-    fetch(`${file.url}`, { method: 'DELETE' })
-      .then((response) => response.json())
-      .then((value) => console.log(value))
-      .catch((err) => console.error(err))
-  }
-
   useEffect(() => {
     console.debug('initialSelectedModelId', location.state?.initialSelectedModelId)
     rm.active((ls) => {
@@ -293,7 +266,6 @@ const RetrainingListPage: FunctionComponent<RetrainingListPageProps> = () => {
           <Form.Item
             name="fileList"
             label={translate('imagina.general.file')}
-            valuePropName="fileList"
             getValueFromEvent={(e) => {
               // console.log('Upload event:', e)
               if (Array.isArray(e)) {
@@ -308,35 +280,10 @@ const RetrainingListPage: FunctionComponent<RetrainingListPageProps> = () => {
               },
             ]}
           >
-            <Upload
-              name="file"
-              action={`${ENDPOINT}/upload`}
-              listType="text"
-              maxCount={1}
-              onChange={handleUpload}
-              progress={{
-                format: (percent) => percent && `${parseFloat(percent.toFixed(2))}%`,
-              }}
-              beforeUpload={(file, fileList) => {
-                console.debug('will upload', file, fileList)
-                const isEnable = ENABLE_TYPE.includes(file.type)
-                if (!isEnable) {
-                  console.error('File is not enable:', file)
-                }
-                return isEnable || Upload.LIST_IGNORE
-              }}
-              directory={false}
-              fileList={uploadFiles}
-              method="POST"
-              onRemove={handleRemove}
-            >
-              <Button
-                icon={isUploading ? <LoadingOutlined /> : <UploadOutlined />}
-                disabled={isUploading}
-              >
-                {translate('imagina.training.retraining.upload_new_csv_or_xlsx_data')}
-              </Button>
-            </Upload>
+            <Uploader
+              enableType={ENABLE_TYPE}
+              label={translate('imagina.training.retraining.upload_new_csv_or_xlsx_data')}
+            />
           </Form.Item>
           <Form.Item
             name="testSize"

@@ -8,7 +8,6 @@ import dayjs from 'dayjs'
 import {
   Space,
   Table,
-  Upload,
   Button,
   Input,
   Alert,
@@ -17,12 +16,11 @@ import {
   Form,
 } from 'antd'
 import { useTranslate } from 'react-admin'
-import { UploadOutlined, SyncOutlined, LoadingOutlined } from '@ant-design/icons'
+import { SyncOutlined, LoadingOutlined } from '@ant-design/icons'
 import type { ColumnsType } from 'antd/es/table'
-import type { UploadFile } from 'antd/es/upload/interface'
-import type { UploadProps } from 'antd'
 import ToolDeleteModel from './ToolDeleteModel'
 import Loading from '../loading/Loading'
+import Uploader from '../utils/Uploader'
 
 type RegisteredModel = {
   name: string,
@@ -42,7 +40,6 @@ export interface TrainedModelsPageTabProps {
   actionURL: string,
 }
 
-const ENDPOINT = import.meta.env.VITE_APP_ENDPOINT
 const ENABLE_TYPE = [
   'application/x-hdf',
 ]
@@ -57,7 +54,6 @@ const TrainedModelsPageTab: FunctionComponent<TrainedModelsPageTabProps> = (prop
   const [isLoading, setIsLoading] = useState(false)
   const [dataSource, setDataSource] = useState<DataType[]>([])
 
-  const [uploadFiles, setUploadFiles] = useState<UploadFile[]>([]);
   const [isUploading, setIsUploading] = useState(false);
   const [isSubmiting, setIsSubmiting] = useState(false);
 
@@ -87,27 +83,6 @@ const TrainedModelsPageTab: FunctionComponent<TrainedModelsPageTabProps> = (prop
     }
     // Finishs
     setIsLoading(false)
-  }
-
-  const handleUpload: UploadProps['onChange'] = (info) => {
-    setIsUploading(info.file.status === 'uploading')
-    const newUploadFiles = info.fileList.map((uploadedFile) => {
-      console.debug('response:', uploadedFile.response)
-      if (uploadedFile.response?.file) {
-        // eslint-disable-next-line no-param-reassign
-        uploadedFile.url = `${ENDPOINT}/upload/${uploadedFile.response.file}`
-      }
-      return uploadedFile
-    })
-    setUploadFiles(newUploadFiles)
-  }
-
-  const handleRemove: UploadProps['onRemove'] = (file) => {
-    console.log('wanna remove', file)
-    fetch(`${file.url}`, { method: 'DELETE' })
-      .then((response) => response.json())
-      .then((value) => console.log(value))
-      .catch((err) => console.error(err))
   }
 
   const onFormFinish = (values: any) => {
@@ -216,7 +191,6 @@ const TrainedModelsPageTab: FunctionComponent<TrainedModelsPageTabProps> = (prop
         <Form.Item
           name="fileList"
           label={translate('imagina.training.upload_model.model_file')}
-          valuePropName="fileList"
           getValueFromEvent={(e) => {
             if (Array.isArray(e)) {
               return e
@@ -230,30 +204,12 @@ const TrainedModelsPageTab: FunctionComponent<TrainedModelsPageTabProps> = (prop
             },
           ]}
         >
-          <Upload
-            name="file"
-            action={`${ENDPOINT}/upload`}
-            listType="text"
-            maxCount={1}
-            beforeUpload={(file, fileList) => {
-              console.debug('will upload', file, fileList)
-              const isEnable = file.type ? ENABLE_TYPE.includes(file.type) : file.name.toLowerCase().endsWith('.h5')
-              if (!isEnable) {
-                console.error('File is not enable:', file)
-                showErrorAlert(translate('imagina.form.error.bad_file_type'))
-              }
-              return isEnable || Upload.LIST_IGNORE
-            }}
-            onChange={handleUpload}
-            directory={false}
-            fileList={uploadFiles}
-            method="POST"
-            onRemove={handleRemove}
-          >
-            <Button icon={isUploading ? <LoadingOutlined /> : <UploadOutlined />}>
-              {translate('imagina.training.upload_model.click_to_upload')}
-            </Button>
-          </Upload>
+          <Uploader
+            enableType={ENABLE_TYPE}
+            enableExtension=".h5"
+            label={translate('imagina.training.upload_model.click_to_upload')}
+            onUploading={setIsUploading}
+          />
         </Form.Item>
 
         <Form.Item>
