@@ -17,6 +17,9 @@ import {
 
 import type { UploadProps, UploadFile } from 'antd'
 
+// eslint-disable-next-line no-unused-vars
+export type OnChangeUploader = (fileList: UploadFile[]) => void
+
 export interface UploaderProps {
   label: string,
   // eslint-disable-next-line no-unused-vars
@@ -24,8 +27,7 @@ export interface UploaderProps {
   // eslint-disable-next-line no-unused-vars
   enableExtension?: string |string[] | ((filename: string) => boolean),
   value?: UploadFile[],
-  // eslint-disable-next-line no-unused-vars
-  onChange?: (fileList: UploadFile[]) => void,
+  onChange?: OnChangeUploader,
   // eslint-disable-next-line no-unused-vars
   onUploading?: (isUploading: boolean) => void,
 }
