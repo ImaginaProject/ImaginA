@@ -69,4 +69,33 @@ export default class DatasetManager {
     console.warn('got status code:', response.status, data)
     return false
   }
+
+  async addFromUploadedFile(fileReference: string) {
+    const payload = {
+      md5_sum_with_ext: fileReference,
+    }
+
+    const response = await fetch(`${this.endpoint}/datasets/${this.datasetName}/file`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json;charset=utf-8',
+      },
+      body: JSON.stringify(payload),
+    })
+
+    const json = await response.json()
+    if (response.status === 200) {
+      console.debug('addding entry got json:', json)
+      return json.success as boolean
+    }
+
+    console.error(json)
+    if (json.app_exception === 'MismatchedDataset') {
+      const missings = ((json.context.missing as []) || []).join(', ')
+      // TODO: use translate strings
+      throw new Error(`Mismatched dataset - missing columns: ${missings}`)
+    } else {
+      throw new Error(`Error: ${json.app_exception}`)
+    }
+  }
 }
