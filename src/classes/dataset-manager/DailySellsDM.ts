@@ -1,24 +1,18 @@
 import dayjs from 'dayjs'
 import { DailySellsDB } from '../../types/types'
 import datasetNames from '../../constants/datasetNames'
+import DatasetManagerBase from './DatasetManagerBase'
 
-export default class DatasetManager {
-  private datasetName: string
-
-  private endpoint: string
-
+export default class DailySellsDatasetManager extends DatasetManagerBase {
   public datasetList: DailySellsDB[]
 
   constructor() {
-    this.endpoint = import.meta.env.VITE_APP_ENDPOINT
-    this.datasetName = datasetNames.DAILY_SELLS
+    super(datasetNames.DAILY_SELLS)
     this.datasetList = []
   }
 
   async requestAll() {
-    const response = fetch(`${this.endpoint}/datasets/${this.datasetName}`)
-    const data = await (await response).json()
-    this.datasetList = data.entries.map((item: any) => {
+    this.datasetList = (await super.requestAll()).entries.map((item: any) => {
       const processedData: DailySellsDB = {
         id: item.id,
         footfall: item.footfall,
@@ -31,18 +25,6 @@ export default class DatasetManager {
     return this.datasetList
   }
 
-  async deleteById(id: string) {
-    const response = await fetch(`${this.endpoint}/datasets/${this.datasetName}/${id}`, { method: 'DELETE' })
-    const data = await response.json()
-    if (response.status === 200) {
-      console.debug('deleting process responses:', data)
-      return data.success as boolean
-    }
-
-    console.warn('deleting process got status code:', response.status)
-    return false
-  }
-
   // eslint-disable-next-line class-methods-use-this
   async add(data: DailySellsDB) {
     const payload = {
@@ -51,20 +33,10 @@ export default class DatasetManager {
       footfall: data.footfall,
       price: data.price,
     }
-    const response = await fetch(`${this.endpoint}/datasets/${this.datasetName}`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json;charset=utf-8',
-      },
-      body: JSON.stringify(payload),
-    })
-    const json = await response.json()
-    if (response.status === 200) {
-      console.debug('addding entry got json:', json)
-      return json.success as boolean
+    const success = super.postSimple(payload)
+    if (!success) {
+      console.warn(data)
     }
-
-    console.warn('got status code:', response.status, data)
-    return false
+    return success
   }
 }
