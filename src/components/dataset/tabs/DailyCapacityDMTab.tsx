@@ -134,6 +134,7 @@ const DailyCapacityDMTab: FunctionComponent<DailyCapacityDMTabProps> = () => {
           message: 'Dataset agregado',
           description: 'El archivo ha sido subido y ha sido agregado',
         })
+        requestAllEntries()
       } else {
         notification.error({
           message: 'Error al agregar el dataset',
