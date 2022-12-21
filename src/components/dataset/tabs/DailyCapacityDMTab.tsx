@@ -15,12 +15,14 @@ import {
   Form,
   DatePicker,
   InputNumber,
+  notification,
 } from 'antd'
 import { useTranslate } from 'react-admin'
 import type { ColumnsType } from 'antd/es/table'
 import { DeleteOutlined, LoadingOutlined } from '@ant-design/icons'
 import DailyCapacityDM from '../../../classes/dataset-manager/DailyCapacityDM'
 import type { DailyCapacityDB } from '../../../types/types'
+import Uploader, { OnChangeUploader } from '../../utils/Uploader'
 
 export interface DailyCapacityDMTabProps {}
 
@@ -110,6 +112,40 @@ const DailyCapacityDMTab: FunctionComponent<DailyCapacityDMTabProps> = () => {
     }).finally(() => {
       setIsFormSubmiting(false)
       closeForm()
+    })
+  }
+
+  const onUploadedChange: OnChangeUploader = (fileList) => {
+    if (fileList.length === 0) {
+      console.info('no file in event on change')
+      return
+    }
+    console.log('fileList', fileList)
+    const file = fileList[0]
+    if (!file.response?.file) {
+      console.log('ignore non-uploaded file yet', file)
+      return
+    }
+
+    dm.addFromUploadedFile(file.response.file).then((success) => {
+      // TODO: use translate strings
+      if (success) {
+        notification.info({
+          message: 'Dataset agregado',
+          description: 'El archivo ha sido subido y ha sido agregado',
+        })
+      } else {
+        notification.error({
+          message: 'Error al agregar el dataset',
+          description: 'Ha ocurrido un problema inesperado... en serio, no esperaba esto, no lo tenía en mis planes de problemas',
+        })
+      }
+    }).catch((err) => {
+      console.error(err)
+      notification.error({
+        message: 'Error al agregar el dataset',
+        description: err.message,
+      })
     })
   }
 
@@ -203,10 +239,10 @@ const DailyCapacityDMTab: FunctionComponent<DailyCapacityDMTabProps> = () => {
         <Button onClick={openForm} type="primary">
           {translate('imagina.dataset.manager.add_element')}
         </Button>
-        {/* eslint-disable-next-line no-alert */}
-        <Button disabled onClick={() => alert('Not implement yet')}>
-          {translate('imagina.dataset.manager.add_from_file')}
-        </Button>
+        <Uploader
+          label={translate('imagina.dataset.manager.add_from_file')}
+          onChange={onUploadedChange}
+        />
       </Space>
 
       <Divider />
