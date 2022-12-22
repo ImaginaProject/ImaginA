@@ -262,10 +262,6 @@ const RetrainingListPage: FunctionComponent<RetrainingListPageProps> = () => {
                 required: true,
                 message: translate('imagina.form.error.required_epochs_amount'),
               },
-              // {
-              //   min: 1,
-              //   message: 'Mínimo una época',
-              // },
             ]}
             initialValue={100}
           >
@@ -276,7 +272,10 @@ const RetrainingListPage: FunctionComponent<RetrainingListPageProps> = () => {
             label="Fuente"
             initialValue={sourceFrom}
             rules={[
-              { required: true, message: 'La fuente es requerida' },
+              {
+                required: true,
+                message: translate('imagina.form.error.required_dataset_source'),
+              },
             ]}
           >
             <Radio.Group
@@ -286,8 +285,12 @@ const RetrainingListPage: FunctionComponent<RetrainingListPageProps> = () => {
                 setSourceFrom(e.target.value)
               }}
             >
-              <Radio value="dataset">Desde dataset</Radio>
-              <Radio value="file">Desde archivo</Radio>
+              <Radio value="dataset">
+                {translate('imagina.training.retraining.from_dataset')}
+              </Radio>
+              <Radio value="file">
+                {translate('imagina.training.retraining.from_file')}
+              </Radio>
             </Radio.Group>
           </Form.Item>
           {sourceFrom === 'file' && (
