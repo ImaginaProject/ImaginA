@@ -149,7 +149,7 @@ const MainLayout: FunctionComponent<MainLayoutProps> = (props) => {
       <Layout.Footer>
         <small>
           <small>
-            Version 1.11.0
+            Version 1.11.1
             {' '}
             <Badge status={apiData === null ? 'error' : 'success'} />
             {' '}

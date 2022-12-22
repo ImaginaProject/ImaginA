@@ -76,8 +76,12 @@ const tagMessages = [
     message: 'This version first updates the Uploader component and after implements a button to upload dataset from files',
   },
   {
-    tag: '1.11.1',
+    tag: '1.11.0',
     message: 'This finishs the retraing page details and adds a ChangeLog component with logs by tags',
+  },
+  {
+    tag: '1.11.1',
+    message: 'New version with updates in locale',
   },
 ].reverse()
 
