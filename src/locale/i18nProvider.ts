@@ -10,6 +10,7 @@ import localeSet from './locale'
 const translations = {
   en: {
     ...en,
+    ...localeSet.en,
   },
   es: {
     ...customES,
