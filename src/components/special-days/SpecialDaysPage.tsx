@@ -21,6 +21,7 @@ import 'dayjs/locale/es'
 import weekday from 'dayjs/plugin/weekday'
 import localeData from 'dayjs/plugin/localeData'
 import customParseFormat from 'dayjs/plugin/customParseFormat'
+import { useTranslate } from 'react-admin'
 
 // import Loading from '../loading/Loading'
 
@@ -50,6 +51,7 @@ const SpecialDaysPage: FunctionComponent<SpecialDaysPageProps> = () => {
   const [isAdding, setIsAdding] = useState(false)
 
   const [form] = Form.useForm()
+  const translate = useTranslate()
 
   const requestAllSpecialDays = async () => {
     setIsLoading(true)
@@ -183,10 +185,14 @@ const SpecialDaysPage: FunctionComponent<SpecialDaysPageProps> = () => {
       return (
         <>
           <Tag color="magenta">
-            <strong>Festivo</strong>
+            <strong>
+              {translate('imagina.holiday.is')}
+            </strong>
           </Tag>
           <Tag color="green">
-            <strong>Vacaciones</strong>
+            <strong>
+              {translate('imagina.vacation.is')}
+            </strong>
           </Tag>
         </>
       )
@@ -195,7 +201,9 @@ const SpecialDaysPage: FunctionComponent<SpecialDaysPageProps> = () => {
     if (currentDay.isHoliday) {
       return (
         <Tag color="magenta">
-          <strong>Festivo</strong>
+          <strong>
+            {translate('imagina.holiday.is')}
+          </strong>
         </Tag>
       )
     }
@@ -203,14 +211,14 @@ const SpecialDaysPage: FunctionComponent<SpecialDaysPageProps> = () => {
     if (currentDay.isVacation) {
       return (
         <Tag color="green">
-          <strong>Vacaciones</strong>
+          <strong>{translate('imagina.vacation.is')}</strong>
         </Tag>
       )
     }
 
     return (
       <Tag>
-        <span>Día normal</span>
+        <span>{translate('imagina.normal.day')}</span>
       </Tag>
     )
   }
@@ -222,11 +230,11 @@ const SpecialDaysPage: FunctionComponent<SpecialDaysPageProps> = () => {
       .map((_sd) => dayjs(_sd.date).format('DD'))
       .map((day) => Number.parseInt(day, 10))
       .join(', ')
-    if (!stringDays) return <p>Sin días</p>
+    if (!stringDays) return <p>{translate('imagina.general.no_day')}</p>
     return (
       <p>
-        días:
-        {' '}
+        {translate('imagina.general.day')}
+        {': '}
         {stringDays}
       </p>
     )
@@ -235,42 +243,46 @@ const SpecialDaysPage: FunctionComponent<SpecialDaysPageProps> = () => {
   return (
     <Space style={{ padding: '2em', width: '100%' }} direction="vertical">
       <Typography.Title>
-        Configuración de días especiales
+        {translate('imagina.special_days.config_special_days')}
       </Typography.Title>
 
       {/* Form that asks for date */}
       <Space direction="vertical" style={{ width: '100%' }}>
-        <Typography.Text strong>Agregar nuevo día</Typography.Text>
+        <Typography.Text strong>
+          {translate('imagina.special_days.add_new_day')}
+        </Typography.Text>
         <Form {...formItemLayout} form={form} onFinish={onFormFinish}>
           <Form.Item
             name="date"
-            label="Fecha"
+            label={translate('imagina.general.date')}
             rules={[
               {
                 required: true,
-                message: '¡Escriba la fecha!',
+                message: translate('imagina.form.error.required_date'),
               },
             ]}
           >
             <DatePicker />
           </Form.Item>
-          <Form.Item label="¿Rango de fecha?">
+          <Form.Item
+            label={translate('imagina.special_days.date_range')}
+          >
             <Checkbox
               defaultChecked={isDateWithRange}
               onChange={(e) => setIsDateWithRange(e.target.checked)}
             >
-              Sí
+              {translate('imagina.general.yes')}
             </Checkbox>
 
           </Form.Item>
           {isDateWithRange && (
           <Form.Item
-            label="Fecha final"
+            label={translate('imagina.general.end_date')}
             name="dateEnd"
             rules={isDateWithRange ? [
               {
                 required: true,
-                message: '¡Escriba la fecha final!',
+                message: translate('imagina.form.error.required_date'),
               },
             ] : undefined}
           >
@@ -278,14 +290,22 @@ const SpecialDaysPage: FunctionComponent<SpecialDaysPageProps> = () => {
           </Form.Item>
           )}
           <Typography.Text strong>Configuración del día</Typography.Text>
-          <Form.Item label="Día es festivo" name="isHoliday" valuePropName="checked">
+          <Form.Item
+            label={translate('imagina.holiday.date')}
+            name="isHoliday"
+            valuePropName="checked"
+          >
             <Checkbox value>
-              Es festivo
+              {translate('imagina.holiday.is')}
             </Checkbox>
           </Form.Item>
-          <Form.Item label="Día es vacaciones" name="isVacation" valuePropName="checked">
+          <Form.Item
+            label={translate('imagina.holiday.date')}
+            name="isVacation"
+            valuePropName="checked"
+          >
             <Checkbox value>
-              Es vacaciones
+              {translate('imagina.vacation.is')}
             </Checkbox>
           </Form.Item>
           <Form.Item wrapperCol={{ span: 12, offset: 6 }}>
@@ -295,7 +315,7 @@ const SpecialDaysPage: FunctionComponent<SpecialDaysPageProps> = () => {
               disabled={isAdding}
               icon={isAdding && <LoadingOutlined />}
             >
-              Submit
+              {translate('imagina.general.submit')}
             </Button>
           </Form.Item>
         </Form>
@@ -305,7 +325,7 @@ const SpecialDaysPage: FunctionComponent<SpecialDaysPageProps> = () => {
       <Tabs
         items={[
           {
-            label: 'Calendario',
+            label: translate('imagina.general.calendar'),
             key: '1',
             children: (
               <Calendar
@@ -320,7 +340,7 @@ const SpecialDaysPage: FunctionComponent<SpecialDaysPageProps> = () => {
             ),
           },
           {
-            label: 'Listado',
+            label: translate('imagina.general.list'),
             key: '2',
             children: (
               <List
@@ -335,19 +355,31 @@ const SpecialDaysPage: FunctionComponent<SpecialDaysPageProps> = () => {
                   >
                     <Skeleton title={false} loading={isLoading} active>
                       <Typography.Text strong>
-                        Fecha:
-                        {' '}
+                        {translate('imagina.general.date')}
+                        {': '}
                         {dayjs(item.date).format('DD/MM/YYYY')}
                       </Typography.Text>
                       {item.isHoliday ? (
-                        <Badge count="Festivo" style={{ backgroundColor: 'greenyellow' }} />
+                        <Badge
+                          count={translate('imagina.holiday.is')}
+                          style={{ backgroundColor: 'greenyellow' }}
+                        />
                       ) : (
-                        <Badge count="No festivo" style={{ backgroundColor: 'orangered' }} />
+                        <Badge
+                          count={translate('imagina.holiday.is_not')}
+                          style={{ backgroundColor: 'orangered' }}
+                        />
                       )}
                       {item.isVacation ? (
-                        <Badge count="Día vacaciones" style={{ backgroundColor: 'red' }} />
+                        <Badge
+                          count={translate('imagina.vacation.is')}
+                          style={{ backgroundColor: 'red' }}
+                        />
                       ) : (
-                        <Badge count="No es vacaciones" style={{ backgroundColor: 'olivedrab' }} />
+                        <Badge
+                          count={translate('imagina.vacation.is_not')}
+                          style={{ backgroundColor: 'olivedrab' }}
+                        />
                       )}
                     </Skeleton>
                   </List.Item>

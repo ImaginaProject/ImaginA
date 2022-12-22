@@ -31,7 +31,7 @@ const UploadTrainedModelPage: FunctionComponent<UploadTrainedModelPageProps> = (
 
   return (
     <Space style={{ padding: '2em', width: '100%' }} direction="vertical">
-      <Typography.Title>Subir modelo entrenado</Typography.Title>
+      <Typography.Title>{translate('imagina.layout.upload_trained_model')}</Typography.Title>
       <Tabs
         items={tabs.map(({ label, ...rest }) => ({ label: translate(label), ...rest }))}
       />

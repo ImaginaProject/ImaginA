@@ -89,6 +89,7 @@ const DailyCapacityPage: FunctionComponent<DailyCapacityPageProps> = () => {
 
   return (
     <Space style={{ padding: '2em', width: '100%' }} direction="vertical">
+      <Typography.Title>{translate('imagina.layout.daily_capacity')}</Typography.Title>
       <Form
         form={form}
         onFinish={onFormFinish}

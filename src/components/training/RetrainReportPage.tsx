@@ -91,6 +91,7 @@ const RetrainReportPage: FunctionComponent<RetrainReportPageProps> = () => {
 
   return (
     <Space style={{ padding: '2em', width: '100%' }} direction="vertical">
+      <Typography.Title>{translate('imagina.layout.retrain')}</Typography.Title>
       <Space direction="vertical">
         <Typography.Text>
           {translate('imagina.training.reports.select_model')}

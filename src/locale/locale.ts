@@ -1,7 +1,23 @@
 const localeSet = {
   es: {
     imagina: {
+      layout: {
+        dashboard: 'Dashboard',
+        daily_capacity: 'Aforo diario',
+        daily_sells: 'Ventas día',
+        import_data: 'Importación datos',
+        manage_dataset: 'Administrar dataset',
+        training: 'Entrenamiento',
+        upload_trained_model: 'Subir modelo',
+        create_model: 'Crear modelo',
+        retrain: 'Reentrenar',
+        reports: 'Reportes',
+        config_special_days: 'Config. días especiales',
+        price_optimization: 'Optimización precios',
+      },
       general: {
+        yes: 'Sí',
+        not: 'No',
         submit: 'Enviar',
         delete: 'Eliminar',
         remove: 'Quitar',
@@ -23,12 +39,20 @@ const localeSet = {
         min_price: 'Precio mínimo',
         max_price: 'Precio máximo',
         add: 'Agregar',
+        calendar: 'Calendario',
+        list: 'Listado',
+        no_day: 'Sin día',
+        day: 'Día',
       },
       holiday: {
         date: 'Fecha festiva',
         day: 'Día festivo',
         is: 'Es festivo',
         is_not: 'No es festivo',
+      },
+      normal: {
+        date: 'Fecha normal',
+        day: 'Día normal',
       },
       vacation: {
         date: 'Fecha vacacional',
@@ -52,6 +76,11 @@ const localeSet = {
       price_optimization: {
         insert_data: 'Inserte datos de predicción',
         select_model: 'Seleccione un modelo para usar',
+      },
+      special_days: {
+        config_special_days: 'Configurar días especiales',
+        add_new_day: 'Agregar nuevo día',
+        date_range: '¿Rango de fecha?',
       },
       training: {
         upload_model: {
@@ -145,7 +174,23 @@ const localeSet = {
 
   en: {
     imagina: {
+      layout: {
+        dashboard: 'Dashboard',
+        daily_capacity: 'Daily capacity',
+        daily_sells: 'Daily sells',
+        import_data: 'Import data',
+        manage_dataset: 'Manage dataset',
+        training: 'Training',
+        upload_trained_model: 'Upload trained model',
+        create_model: 'Create model',
+        retrain: 'Retrain',
+        reports: 'Reports',
+        config_special_days: 'Config. special days',
+        price_optimization: 'Price optimization',
+      },
       general: {
+        yes: 'Yes',
+        not: 'Not',
         submit: 'Submit',
         delete: 'Delete',
         remove: 'Remove',
@@ -167,12 +212,20 @@ const localeSet = {
         min_price: 'Min price',
         max_price: 'Max price',
         add: 'Add',
+        calendar: 'Calendar',
+        list: 'List',
+        no_day: 'No day',
+        day: 'Day',
       },
       holiday: {
         date: 'Holiday date',
         day: 'Holiday day',
         is: 'It is holiday',
         is_not: 'It isn\'t holiday',
+      },
+      normal: {
+        date: 'Normal date',
+        day: 'Normal day',
       },
       vacation: {
         date: 'Vacational date',
@@ -196,6 +249,11 @@ const localeSet = {
       price_optimization: {
         insert_data: 'Insert data for price optimization',
         select_model: 'Select the model',
+      },
+      special_days: {
+        config_special_days: 'Config special days',
+        add_new_day: 'Add new day',
+        date_range: 'Date range?',
       },
       training: {
         upload_model: {

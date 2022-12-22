@@ -18,6 +18,7 @@ import {
   Tag,
   Tooltip,
   Radio,
+  Typography,
 } from 'antd'
 import {
   LoadingOutlined,
@@ -240,6 +241,7 @@ const RetrainingListPage: FunctionComponent<RetrainingListPageProps> = () => {
 
   return (
     <Space style={{ padding: '2em', width: '100%' }} direction="vertical">
+      <Typography.Title>{translate('imagina.layout.retrain')}</Typography.Title>
       <Space>
         <Form form={form} onFinish={activeRetraining}>
           <Form.Item

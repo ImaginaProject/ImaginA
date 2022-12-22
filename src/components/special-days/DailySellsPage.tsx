@@ -58,7 +58,7 @@ const DailySellsPage: FunctionComponent<DailySellsPageProps> = () => {
 
   return (
     <Space style={{ padding: '2em', width: '100%' }} direction="vertical">
-      <Typography.Title>Ventas diarias</Typography.Title>
+      <Typography.Title>{translate('imagina.layout.daily_sells')}</Typography.Title>
       <Space direction="vertical">
         <Typography.Text>
           {translate('imagina.daily_sells.insert_data')}
