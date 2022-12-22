@@ -17,6 +17,7 @@ import {
   Alert,
   Tag,
   Tooltip,
+  Radio,
 } from 'antd'
 import {
   LoadingOutlined,
@@ -54,6 +55,8 @@ const RetrainingListPage: FunctionComponent<RetrainingListPageProps> = () => {
   const [availableModelIDs, setAvailableModelIDs] = useState<AvailableModelID[]>([])
   const [isLoadingModels, setIsLoadingModels] = useState(false)
   const [wasRecientlyNewTaskAdded, setWasRecientlyNewTaskAdded] = useState(false)
+
+  const [sourceFrom, setSourceFrom] = useState('file');
 
   const [
     autoInitialSelectedModelId,
@@ -152,18 +155,23 @@ const RetrainingListPage: FunctionComponent<RetrainingListPageProps> = () => {
 
   const activeRetraining = (values: any) => {
     console.log('form:', values)
-    const fileList = values?.fileList as any[] || []
-    if (fileList.length === 0) {
-      // eslint-disable-next-line no-alert
-      alert('No hay archivo que subir')
-      return
+    let uploadFile: null | string = null
+
+    if (values.source === 'file') {
+      const fileList = values?.fileList as any[] || []
+      if (fileList.length === 0) {
+        // eslint-disable-next-line no-alert
+        alert('No hay archivo que subir')
+        return
+      }
+      const file = fileList[0]
+      uploadFile = file.response.file as string
     }
 
-    const file = fileList[0]
     setWasRecientlyNewTaskAdded(true)
     rm.retrain(
       values.modelId,
-      file.response.file,
+      uploadFile,
       values.epochs,
       values.name,
       values.testSize,
@@ -264,27 +272,48 @@ const RetrainingListPage: FunctionComponent<RetrainingListPageProps> = () => {
             <InputNumber min={1} />
           </Form.Item>
           <Form.Item
-            name="fileList"
-            label={translate('imagina.general.file')}
-            getValueFromEvent={(e) => {
-              // console.log('Upload event:', e)
-              if (Array.isArray(e)) {
-                return e
-              }
-              return e?.fileList || []
-            }}
+            name="source"
+            label="Fuente"
+            initialValue={sourceFrom}
             rules={[
-              {
-                required: true,
-                message: translate('imagina.form.error.required_file'),
-              },
+              { required: true, message: 'La fuente es requerida' },
             ]}
           >
-            <Uploader
-              enableType={ENABLE_TYPE}
-              label={translate('imagina.training.retraining.upload_new_csv_or_xlsx_data')}
-            />
+            <Radio.Group
+              value={sourceFrom}
+              onChange={(e) => {
+                console.debug('source:', e.target.value)
+                setSourceFrom(e.target.value)
+              }}
+            >
+              <Radio value="dataset">Desde dataset</Radio>
+              <Radio value="file">Desde archivo</Radio>
+            </Radio.Group>
           </Form.Item>
+          {sourceFrom === 'file' && (
+            <Form.Item
+              name="fileList"
+              label={translate('imagina.general.file')}
+              getValueFromEvent={(e) => {
+                // console.log('Upload event:', e)
+                if (Array.isArray(e)) {
+                  return e
+                }
+                return e?.fileList || []
+              }}
+              rules={[
+                {
+                  required: true,
+                  message: translate('imagina.form.error.required_file'),
+                },
+              ]}
+            >
+              <Uploader
+                enableType={ENABLE_TYPE}
+                label={translate('imagina.training.retraining.upload_new_csv_or_xlsx_data')}
+              />
+            </Form.Item>
+          )}
           <Form.Item
             name="testSize"
             label={translate('imagina.training.retraining.test_size')}

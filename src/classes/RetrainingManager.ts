@@ -80,7 +80,7 @@ export default class RetrainingManager {
 
   async retrain(
     modelId: string,
-    uploadFile: string,
+    uploadFile: string | null,
     epochs: number,
     name: string,
     testSize: number,
